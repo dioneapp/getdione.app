@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /$
+Sitemap: https://getdione.app/sitemap.xml
