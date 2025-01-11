@@ -1,0 +1,327 @@
+---
+import Layout from "../../layouts/Layout.astro";
+
+const WEBHOOK_URL = import.meta.env.DISCORD_WEBHOOK_URL;
+
+let error = "";
+let success = false;
+
+if (Astro.request.method === "POST") {
+  try {
+    const formData = await Astro.request.formData();
+    const trapField = formData.get("trap_field")?.toString() || "";
+
+    if (trapField !== "") {
+      error = "Form submission rejected.";
+      console.warn("Possible bot detected.");
+      return;
+    }
+    const name = formData.get("name")?.toString() || "";
+    const email = formData.get("email")?.toString() || "";
+    const reason = formData.get("reason")?.toString() || "";
+    const os = formData.get("os")?.toString() || "";
+    const role = formData.get("role")?.toString() || "";
+    const experience = formData.get("experience")?.toString() || "";
+    const usage = formData.get("usage")?.toString() || "";
+    const updates = formData.get("updates")?.toString() || "no";
+
+    if (!name || !email || !os || !role || !experience || !usage) {
+      error = "All fields are required";
+    } else {
+      const webhookBody = {
+        embeds: [
+          {
+            title: "New Beta Program Signup",
+            color: 0xbcb1e7,
+            fields: [
+              {
+                name: "Name",
+                value: name,
+                inline: true,
+              },
+              {
+                name: "Email",
+                value: email,
+                inline: true,
+              },
+              {
+                name: "Operating System",
+                value: os,
+                inline: true,
+              },
+              {
+                name: "Role",
+                value: role,
+                inline: true,
+              },
+              {
+                name: "AI Experience",
+                value: experience,
+                inline: true,
+              },
+              {
+                name: "Intended Usage",
+                value: usage,
+                inline: true,
+              },
+              {
+                name: "Newsletter Signup",
+                value: updates === "yes" ? "Subscribed" : "Not subscribed",
+                inline: true,
+              },
+              {
+                name: "Reason for Interest",
+                value: reason,
+              },
+            ],
+            timestamp: new Date().toISOString(),
+          },
+        ],
+      };
+
+      const response = await fetch(WEBHOOK_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(webhookBody),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Discord webhook error: ${response.statusText}`);
+      }
+
+      success = true;
+      return Astro.redirect("/beta/success");
+    }
+  } catch (e) {
+    console.error("Form submission error:", e);
+    error = "There was an error submitting your application. Please try again.";
+  }
+}
+---
+
+<Layout>
+  <div>
+    {/* background elements */}
+    <div class="fixed inset-0 flex justify-center items-center">
+      <div class="bg-[#BCB1E7]/30 h-[70vh] w-[70vh] rounded-full blur-[150px]">
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="relative flex flex-col items-center justify-center min-h-[100dvh] px-4 sm:px-8 pt-24 sm:pt-32 pb-16"
+  >
+    <div
+      class="absolute inset-0 bg-gradient-to-b from-transparent to-black/20 pointer-events-none"
+    >
+    </div>
+
+    <h1
+      class="text-4xl sm:text-5xl md:text-6xl font-bold text-white tracking-tighter mt-6 text-balance text-center"
+    >
+      Join the Beta Program
+    </h1>
+
+    <h2
+      class="mt-4 mb-8 max-w-xl text-center text-base sm:text-lg text-white/80 leading-relaxed text-balance px-4"
+    >
+      Be among the first to try Dione and help shape the future of AI app
+      management.
+    </h2>
+
+    {
+      error && (
+        <div class="w-full max-w-xl mb-6">
+          <div class="bg-red-500/10 border border-red-500/20 text-red-200 px-4 py-3 rounded-lg">
+            {error}
+          </div>
+        </div>
+      )
+    }
+
+    <form
+      method="POST"
+      class="w-full max-w-xl bg-white/10 backdrop-blur-md rounded-xl p-6 sm:p-8 border border-white/10"
+    >
+      <div class="space-y-4">
+        <div class="flex gap-4 flex-col sm:flex-row">
+          <div class="flex-1">
+            <label for="name" class="block text-sm font-medium text-white mb-2"
+              >Name</label
+            >
+            <input
+              type="text"
+              id="name"
+              name="name"
+              required
+              class="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50"
+              placeholder="Your name"
+            />
+          </div>
+          <div class="flex-1">
+            <label for="email" class="block text-sm font-medium text-white mb-2"
+              >Email</label
+            >
+            <input
+              type="email"
+              id="email"
+              name="email"
+              required
+              class="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50"
+              placeholder="your@email.com"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label for="role" class="block text-sm font-medium text-white mb-2"
+            >What best describes your role?</label
+          >
+          <select
+            id="role"
+            name="role"
+            required
+            class="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+          >
+            <option value="" disabled selected class="bg-[#080808]"
+              >Select your role</option
+            >
+            <option value="Developer" class="bg-[#080808]">Developer</option>
+            <option value="Data Scientist" class="bg-[#080808]"
+              >Data Scientist</option
+            >
+            <option value="Researcher" class="bg-[#080808]">Researcher</option>
+            <option value="Student" class="bg-[#080808]">Student</option>
+            <option value="Business Professional" class="bg-[#080808]"
+              >Business Professional</option
+            >
+            <option value="Other" class="bg-[#080808]">Other</option>
+          </select>
+        </div>
+
+        <div>
+          <label
+            for="experience"
+            class="block text-sm font-medium text-white mb-2"
+            >Experience with AI tools</label
+          >
+          <select
+            id="experience"
+            name="experience"
+            required
+            class="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+          >
+            <option value="" disabled selected class="bg-[#080808]"
+              >Select your experience level</option
+            >
+            <option value="Beginner" class="bg-[#080808]"
+              >Beginner - Just starting out</option
+            >
+            <option value="Intermediate" class="bg-[#080808]"
+              >Intermediate - Regular user</option
+            >
+            <option value="Advanced" class="bg-[#080808]"
+              >Advanced - Power user</option
+            >
+            <option value="Expert" class="bg-[#080808]"
+              >Expert - Professional experience</option
+            >
+          </select>
+        </div>
+
+        <div>
+          <label for="usage" class="block text-sm font-medium text-white mb-2"
+            >Primary intended usage</label
+          >
+          <select
+            id="usage"
+            name="usage"
+            required
+            class="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+          >
+            <option value="" disabled selected class="bg-[#080808]"
+              >Select primary usage</option
+            >
+            <option value="Personal Projects" class="bg-[#080808]"
+              >Personal Projects</option
+            >
+            <option value="Professional Work" class="bg-[#080808]"
+              >Professional Work</option
+            >
+            <option value="Academic Research" class="bg-[#080808]"
+              >Academic Research</option
+            >
+            <option value="Business Applications" class="bg-[#080808]"
+              >Business Applications</option
+            >
+            <option value="Learning/Education" class="bg-[#080808]"
+              >Learning/Education</option
+            >
+          </select>
+        </div>
+
+        <div>
+          <label for="os" class="block text-sm font-medium text-white mb-2"
+            >Operating System</label
+          >
+          <select
+            id="os"
+            name="os"
+            required
+            class="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+          >
+            <option value="" disabled selected class="bg-[#080808]"
+              >Select your OS</option
+            >
+            <option value="Windows" class="bg-[#080808]">Windows</option>
+            <option value="macOS" class="bg-[#080808]">macOS</option>
+            <option value="Linux" class="bg-[#080808]">Linux</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="reason" class="block text-sm font-medium text-white mb-2"
+            >Why are you interested in Dione?</label
+          >
+          <textarea
+            id="reason"
+            name="reason"
+            rows="4"
+            class="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50 resize-none"
+            placeholder="Tell us why you want to join the beta program..."
+            maxlength="1000"></textarea>
+          <p class="text-xs text-white/50">Optional</p>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <input
+            type="checkbox"
+            id="updates"
+            name="updates"
+            value="yes"
+            class="w-4 h-4 rounded border-white/20 bg-white/10 text-white focus:ring-2 focus:ring-white/50"
+          />
+          <label for="updates" class="text-sm text-white/80">
+            Keep me updated about Dione news and releases
+          </label>
+        </div>
+        <input
+          type="text"
+          name="trap_field"
+          style="display: none;"
+          tabindex="-1"
+          autocomplete="off"
+        />
+
+        <button
+          type="submit"
+          class="w-full h-12 flex items-center justify-center bg-white text-[#080808] font-semibold rounded-lg hover:bg-white/90 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/50"
+        >
+          Submit Application
+        </button>
+      </div>
+    </form>
+  </div>
+</Layout>
