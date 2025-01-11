@@ -10,6 +10,7 @@
 		"check": "pnpm biome check --write ."
 	},
 	"dependencies": {
+		"@astrojs/cloudflare": "^12.1.0",
 		"@astrojs/tailwind": "^5.1.4",
 		"@fontsource/poppins": "^5.1.1",
 		"astro": "^5.1.2",
