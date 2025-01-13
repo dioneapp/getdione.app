@@ -1,0 +1,223 @@
+---
+import Layout from "./Layout.astro";
+
+type Props = {
+    frontmatter?: {
+        title: string;
+        order: number;
+    };
+};
+
+
+// get all documentation pages
+const docs = await Astro.glob("/src/pages/docs/**/*.md");
+const sections = docs.reduce(
+    (acc, doc) => {
+        const pathParts = doc.file.split("/docs/")[1].split("/");
+        const section = pathParts[0];
+        if (!acc[section]) {
+            acc[section] = [];
+        }
+        acc[section].push({
+            title: doc.frontmatter.title,
+            order: doc.frontmatter.order || 99,
+            url: `/docs/${doc.file.split("/docs/")[1].replace(/\.md$/, "")}`,
+        });
+        return acc;
+    },
+    {} as Record<string, Array<{ title: string; order: number; url: string }>>,
+);
+
+// sort sections and their pages
+for (const section of Object.keys(sections)) {
+    sections[section].sort((a, b) => a.order - b.order);
+}
+---
+
+<Layout>
+    <div class="min-h-screen bg-[#080808] pt-24 relative">
+        <div
+            class="fixed inset-0 flex justify-center items-center z-0 pointer-events-none"
+            aria-hidden="true"
+        >
+            <div
+                class="bg-[#BCB1E7]/30 h-[70vh] w-[70vh] rounded-full blur-[150px]"
+            >
+            </div>
+        </div>
+
+        <button
+            id="mobile-menu-button"
+            class="fixed bottom-8 right-8 z-50 lg:hidden bg-white/10 backdrop-blur-xl border border-white/20 rounded-full p-4 text-white/80 hover:text-white hover:bg-white/15 transition-all duration-300 shadow-2xl hover:scale-105 active:scale-95"
+            aria-label="Toggle documentation menu"
+        >
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-6 h-6"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"></path>
+            </svg>
+        </button>
+
+        <aside
+            id="docs-sidebar"
+            class="fixed inset-y-0 left-0 z-40 w-80 -translate-x-full lg:translate-x-0 bg-gradient-to-b from-white/8 to-white/[0.02] backdrop-blur-xl border-r border-white/10 overflow-y-auto transition-all duration-300"
+        >
+            <nav class="p-6 sticky top-0 pt-20">
+                <div class="space-y-8">
+                    {
+                        Object.entries(sections).map(([section, pages]) => (
+                            <div class="animate-fade-in">
+                                <h2 class="px-4 text-sm font-bold text-white/70 uppercase tracking-wider mb-3">
+                                    {section}
+                                </h2>
+                                <ul class="space-y-1.5">
+                                    {pages.map((page) => (
+                                        <li>
+                                            <a
+                                                href={page.url}
+                                                class:list={[
+                                                    "block px-4 py-2 text-[0.95rem] rounded-lg transition-all duration-300 hover:scale-[1.02]",
+                                                    Astro.url.pathname ===
+                                                    page.url
+                                                        ? "bg-white/15 text-white font-medium shadow-sm"
+                                                        : "text-white/70 hover:bg-white/10 hover:text-white",
+                                                ]}
+                                            >
+                                                {page.title}
+                                            </a>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        ))
+                    }
+                </div>
+            </nav>
+        </aside>
+
+        <div
+            id="sidebar-backdrop"
+            class="fixed inset-0 bg-black/60 backdrop-blur-sm z-30 hidden lg:hidden"
+        >
+        </div>
+
+        <main class="lg:pl-80 transition-all duration-300 relative z-1">
+            <div class="max-w-4xl mx-auto px-6 sm:px-8 py-16">
+                <div
+                    class="prose prose-invert prose-headings:text-white prose-p:text-white/80 prose-a:text-[#BCB1E7] hover:prose-a:text-white prose-strong:text-white/90 prose-code:text-white/90 prose-code:bg-white/15 prose-code:rounded-md prose-code:px-1.5 prose-code:py-0.5 animate-fade-in"
+                >
+                    <slot />
+                </div>
+            </div>
+        </main>
+    </div>
+</Layout>
+
+<style>
+    .animate-fade-in {
+        animation: fade-in 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    aside {
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+    aside::-webkit-scrollbar {
+        display: none;
+    }
+</style>
+
+<script is:inline>
+    // TODO: Better mobile support; kinda works but not great
+    class MobileMenu {
+        constructor() {
+            // initialize immediately
+            this.setup();
+
+            // retry setup if elements aren't found initially
+            if (!this.button || !this.sidebar || !this.backdrop) {
+                const retrySetup = setInterval(() => {
+                    this.setup();
+                    if (this.button && this.sidebar && this.backdrop) {
+                        clearInterval(retrySetup);
+                    }
+                }, 100);
+            }
+        }
+
+        setup() {
+            this.button = document.getElementById("mobile-menu-button");
+            this.sidebar = document.getElementById("docs-sidebar");
+            this.backdrop = document.getElementById("sidebar-backdrop");
+            this.isOpen = false;
+
+            if (this.button && this.sidebar && this.backdrop) {
+                this.init();
+            }
+        }
+
+        init() {
+            // handle button click
+            this.button?.addEventListener("click", () => this.toggle());
+
+            // handle backdrop click
+            this.backdrop?.addEventListener("click", () => this.close());
+
+            // handle links click on mobile
+            this.sidebar?.querySelectorAll("a").forEach((link) => {
+                link.addEventListener("click", () => {
+                    if (window.innerWidth < 1024) {
+                        this.close();
+                    }
+                });
+            });
+
+            // handle resize
+            window.addEventListener("resize", () => this.handleResize());
+
+            // handle escape key
+            document.addEventListener("keydown", (e) => {
+                if (e.key === "Escape") this.close();
+            });
+        }
+
+        toggle() {
+            this.isOpen ? this.close() : this.open();
+        }
+
+        open() {
+            this.sidebar?.classList.remove("-translate-x-full");
+            this.backdrop?.classList.remove("hidden");
+            document.body.classList.add("overflow-hidden");
+            this.isOpen = true;
+        }
+
+        close() {
+            this.sidebar?.classList.add("-translate-x-full");
+            this.backdrop?.classList.add("hidden");
+            document.body.classList.remove("overflow-hidden");
+            this.isOpen = false;
+        }
+
+        handleResize() {
+            if (window.innerWidth >= 1024) {
+                this.sidebar?.classList.remove("-translate-x-full");
+                this.backdrop?.classList.add("hidden");
+                document.body.classList.remove("overflow-hidden");
+            } else if (this.isOpen === false) {
+                this.sidebar?.classList.add("-translate-x-full");
+            }
+        }
+    }
+
+    // initialize immediately
+    new MobileMenu();
+</script>
