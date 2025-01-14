@@ -169,7 +169,7 @@ const links = [
 </nav>
 
 <script is:inline>
-  document.addEventListener("DOMContentLoaded", () => {
+  const setupMobileMenu = () => {
     const mobileMenuButton = document.getElementById("mobile-menu-button");
     const closeMenuButton = document.getElementById("close-menu-button");
     const mobileMenu = document.getElementById("mobile-menu");
@@ -218,5 +218,11 @@ const links = [
         closeMenu();
       }
     });
-  });
+  };
+
+  // initial setup
+  setupMobileMenu();
+  
+  // setup on page navigations
+  document.addEventListener('astro:page-load', setupMobileMenu)
 </script>
