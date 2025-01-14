@@ -333,74 +333,67 @@ const pageTitle = isDocsIndex
 
         <script is:inline>
             document.addEventListener("DOMContentLoaded", () => {
+                const mobileMenuButton =
+                    document.getElementById("mobile-menu-button");
+                const sidebar = document.getElementById("docs-sidebar");
+                const backdrop = document.getElementById("sidebar-backdrop");
 
-            const mobileMenuButton = document.getElementById("mobile-menu-button");
-            const sidebar = document.getElementById("docs-sidebar");
-            const backdrop = document.getElementById("sidebar-backdrop");
+                if (!mobileMenuButton || !sidebar || !backdrop) return;
 
+                let isOpen = false;
 
-             if (!mobileMenuButton || !sidebar || !backdrop) return;
+                const toggleMenu = () => {
+                    if (isOpen) {
+                        closeMenu();
+                    } else {
+                        openMenu();
+                    }
+                    isOpen = !isOpen;
+                };
 
+                const openMenu = () => {
+                    sidebar.classList.remove("-translate-x-full");
+                    backdrop.classList.remove("hidden");
+                    document.body.classList.add("overflow-hidden");
+                    mobileMenuButton.setAttribute("aria-expanded", "true");
+                    sidebar.setAttribute("aria-hidden", "false");
+                };
+                const closeMenu = () => {
+                    sidebar.classList.add("-translate-x-full");
+                    backdrop.classList.add("hidden");
+                    document.body.classList.remove("overflow-hidden");
+                    mobileMenuButton.setAttribute("aria-expanded", "false");
+                    sidebar.setAttribute("aria-hidden", "true");
+                };
 
+                mobileMenuButton.addEventListener("click", toggleMenu);
+                backdrop.addEventListener("click", closeMenu);
 
-             let isOpen = false;
+                sidebar.querySelectorAll("a").forEach((link) => {
+                    link.addEventListener("click", () => {
+                        if (window.innerWidth < 1024) {
+                            closeMenu();
+                        }
+                    });
+                });
 
-             const toggleMenu = () => {
-                  if (isOpen) {
-                    closeMenu()
-                  }else {
-                    openMenu()
-                  }
-                  isOpen = !isOpen;
-             }
-
-             const openMenu = () => {
-                 sidebar.classList.remove("-translate-x-full");
-                 backdrop.classList.remove("hidden");
-                 document.body.classList.add("overflow-hidden");
-                 mobileMenuButton.setAttribute("aria-expanded", "true")
-                 sidebar.setAttribute("aria-hidden", "false")
-             }
-             const closeMenu = () => {
-                sidebar.classList.add("-translate-x-full");
-                 backdrop.classList.add("hidden");
-                 document.body.classList.remove("overflow-hidden");
-                 mobileMenuButton.setAttribute("aria-expanded", "false")
-                  sidebar.setAttribute("aria-hidden", "true")
-             }
-
-             mobileMenuButton.addEventListener("click", toggleMenu);
-             backdrop.addEventListener("click", closeMenu);
-
-
-              sidebar.querySelectorAll("a").forEach((link) => {
-                     link.addEventListener("click", () => {
-                         if (window.innerWidth < 1024) {
-                             closeMenu();
-                         }
-                     });
-                 });
-
-
-             window.addEventListener("resize", () => {
-                 if (window.innerWidth >= 1024) {
+                window.addEventListener("resize", () => {
+                    if (window.innerWidth >= 1024) {
                         sidebar.classList.remove("-translate-x-full");
                         backdrop.classList.add("hidden");
                         document.body.classList.remove("overflow-hidden");
-                        mobileMenuButton.setAttribute("aria-expanded", "false")
-                        sidebar.setAttribute("aria-hidden", "false")
+                        mobileMenuButton.setAttribute("aria-expanded", "false");
+                        sidebar.setAttribute("aria-hidden", "false");
                         isOpen = false;
                     } else if (isOpen === false) {
                         sidebar.classList.add("-translate-x-full");
                     }
-              });
-
-              document.addEventListener("keydown", (e) => {
-                    if (e.key === "Escape") closeMenu();
                 });
 
-
-         });
+                document.addEventListener("keydown", (e) => {
+                    if (e.key === "Escape") closeMenu();
+                });
+            });
         </script>
     </div>
 </BaseLayout>

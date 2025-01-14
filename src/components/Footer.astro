@@ -69,7 +69,7 @@ const footerData = {
     <div class="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-4">
       <div class="space-y-4">
         <h2 class="text-xl font-bold text-white">{footerData.brand.name}</h2>
-        <p class="text-sm text-white/60">{footerData.brand.description}</p>
+        <p class="text-sm text-white/70">{footerData.brand.description}</p>
 
         <div class="flex gap-4">
           {
@@ -86,7 +86,7 @@ const footerData = {
             ))
           }
         </div>
-        <p class="text-sm text-white/60">
+        <p class="text-sm text-white/20">
           © {new Date().getFullYear()}
           {footerData.brand.name}. All rights reserved.
         </p>
@@ -95,7 +95,7 @@ const footerData = {
       {
         footerData.sections.map(({ title, links }) => (
           <div class="space-y-4">
-            <h3 class="text-md font-semibold text-white/80">{title}</h3>
+            <h3 class="text-sm font-bold text-white uppercase tracking-wider mb-3">{title}</h3>
             <ul class="space-y-3">
               {links.map(({ href, label, external }) => (
                 <li>
@@ -103,7 +103,7 @@ const footerData = {
                     href={href}
                     target={external ? "_blank" : undefined}
                     rel={external ? "noopener noreferrer" : undefined}
-                    class="text-sm text-white/60 hover:text-[#BCB1E7] transition-colors"
+                    class="text-sm text-white/70 hover:text-[#BCB1E7] transition-colors"
                   >
                     {label}
                   </a>
