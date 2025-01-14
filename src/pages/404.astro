@@ -2,33 +2,26 @@
 import Layout from "../layouts/Layout.astro";
 ---
 
-<Layout>
+<Layout title="404 - Page Not Found">
   <div
     class="flex flex-col items-center w-full min-h-[100dvh] justify-center p-12 pt-6 relative"
   >
     {/* background elements */}
-    <div class="fixed inset-0 flex justify-center items-center">
+    <div
+      class="fixed inset-0 flex justify-center items-center"
+      aria-hidden="true"
+    >
       <div class="bg-[#BCB1E7]/30 h-[70vh] w-[70vh] rounded-full blur-[150px]">
       </div>
     </div>
 
-    <div
-      class="absolute inset-0 bg-gradient-to-b from-transparent to-black/20 pointer-events-none"
-    >
-    </div>
-
-    <div class="text-center z-10">
-      <h1
-        class="text-[150px] font-bold text-white/20 select-none animate-float"
-      >
-        404
-      </h1>
+    <div class="text-center z-5">
       <h2
-        class="text-4xl font-bold text-white tracking-tighter mt-2 text-balance text-center"
+        class="text-4xl font-bold text-white tracking-tighter text-balance text-center"
       >
         Page not found
       </h2>
-      <p class="text-white/70 mt-4 mb-8 max-w-md text-balance">
+      <p class="text-white/70 mt-4 mb-4 max-w-md text-balance">
         The page you're looking for doesn't exist or has been moved to another
         location.
       </p>
@@ -36,21 +29,10 @@ import Layout from "../layouts/Layout.astro";
       <div class="flex w-full mb-4 justify-center">
         <a
           href="/"
-          class="group h-11 sm:h-12 px-8 sm:px-10 inline-flex bg-white/10 backdrop-blur border border-white/10 text-white font-medium rounded-full hover:bg-white/20 hover:scale-105 active:scale-95 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/50 shadow-lg items-center gap-2"
+          rel="noopener noreferrer"
+          class="shrink-0 h-11 sm:h-12 px-8 sm:px-10 flex items-center justify-center bg-white/10 backdrop-blur border border-white/10 text-white font-semibold rounded-full hover:bg-white/20 hover:scale-105 active:scale-95 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/50 shadow-lg"
+          aria-label="Back to home"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="group-hover:-translate-x-1 transition-transform"
-            ><path d="M19 12H5M12 19l-7-7 7-7"></path></svg
-          >
           Back to home
         </a>
       </div>

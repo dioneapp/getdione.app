@@ -1,40 +1,50 @@
 ---
-import Layout from "./Layout.astro";
+import BaseLayout from "./BaseLayout.astro";
 
 type Props = {
-    frontmatter?: {
-        title: string;
-        order: number;
-    };
+	frontmatter?: {
+		title: string;
+		order: number;
+	};
 };
 
+const { frontmatter } = Astro.props;
 
 // get all documentation pages
 const docs = await Astro.glob("/src/pages/docs/**/*.md");
 const sections = docs.reduce(
-    (acc, doc) => {
-        const pathParts = doc.file.split("/docs/")[1].split("/");
-        const section = pathParts[0];
-        if (!acc[section]) {
-            acc[section] = [];
-        }
-        acc[section].push({
-            title: doc.frontmatter.title,
-            order: doc.frontmatter.order || 99,
-            url: `/docs/${doc.file.split("/docs/")[1].replace(/\.md$/, "")}`,
-        });
-        return acc;
-    },
-    {} as Record<string, Array<{ title: string; order: number; url: string }>>,
+	(acc, doc) => {
+		const pathParts = doc.file.split("/docs/")[1].split("/");
+		const section = pathParts[0];
+		if (!acc[section]) {
+			acc[section] = [];
+		}
+		acc[section].push({
+			title: doc.frontmatter.title,
+			order: doc.frontmatter.order || 99,
+			url: `/docs/${doc.file.split("/docs/")[1].replace(/\.md$/, "")}`,
+		});
+		return acc;
+	},
+	{} as Record<string, Array<{ title: string; order: number; url: string }>>,
 );
 
 // sort sections and their pages
 for (const section of Object.keys(sections)) {
-    sections[section].sort((a, b) => a.order - b.order);
+	sections[section].sort((a, b) => a.order - b.order);
 }
+
+// Determine if this is the docs index page
+const isDocsIndex =
+	Astro.url.pathname === "/docs" || Astro.url.pathname === "/docs/";
+
+// Set the page title
+const pageTitle = isDocsIndex
+	? "Documentation"
+	: `${frontmatter?.title} - Documentation`;
 ---
 
-<Layout>
+<BaseLayout title={pageTitle}>
     <div class="min-h-screen bg-[#080808] pt-24 relative">
         <div
             class="fixed inset-0 flex justify-center items-center z-0 pointer-events-none"
@@ -119,7 +129,7 @@ for (const section of Object.keys(sections)) {
             </div>
         </main>
     </div>
-</Layout>
+</BaseLayout>
 
 <style>
     .animate-fade-in {
@@ -136,7 +146,7 @@ for (const section of Object.keys(sections)) {
 </style>
 
 <script is:inline>
-    // TODO: Better mobile support; kinda works but not great
+    // Mobile menu functionality
     class MobileMenu {
         constructor() {
             // initialize immediately

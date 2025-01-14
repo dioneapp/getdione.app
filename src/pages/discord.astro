@@ -1,36 +1,13 @@
 ---
 import Layout from "../layouts/Layout.astro";
+
+if (Astro.request.method === "GET") {
+  return Astro.redirect("https://discord.gg/iahispano");
+}
 ---
 
-<Layout>
-  <div class="fixed inset-0 flex justify-center items-center">
-    <div class="bg-[#BCB1E7]/30 h-[70vh] w-[70vh] rounded-full blur-[150px]">
-    </div>
-  </div>
-
-  <div
-    class="relative flex flex-col items-center justify-center min-h-[100dvh] px-4"
-  >
-
-    <p class="mt-8 text-lg text-white/80">Redirecting...</p>
-  </div>
+<Layout title="Redirecting to Discord">
+  <main class="min-h-screen flex items-center justify-center">
+    <p class="text-white/80">Redirecting to Discord...</p>
+  </main>
 </Layout>
-
-<script>
-  window.location.href = "/";
-</script>
-
-<style>
-  @keyframes float {
-    0%,
-    100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-10px);
-    }
-  }
-  .animate-float {
-    animation: float 3s ease-in-out infinite;
-  }
-</style>
