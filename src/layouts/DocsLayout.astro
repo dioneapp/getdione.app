@@ -88,6 +88,8 @@ const pageTitle = isDocsIndex
             id="mobile-menu-button"
             class="fixed bottom-8 right-8 z-50 lg:hidden bg-white/10 backdrop-blur-xl border border-white/20 rounded-full p-4 text-white/80 hover:text-white hover:bg-white/15 transition-all duration-300 shadow-2xl hover:scale-105 active:scale-95"
             aria-label="Toggle documentation menu"
+            aria-controls="docs-sidebar"
+            aria-expanded="false"
         >
             <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -106,6 +108,7 @@ const pageTitle = isDocsIndex
         <aside
             id="docs-sidebar"
             class="fixed inset-y-0 left-0 z-40 w-80 -translate-x-full lg:translate-x-0 bg-gradient-to-b from-white/8 to-white/[0.02] backdrop-blur-xl border-r border-white/10 overflow-y-auto transition-all duration-300"
+            aria-hidden="true"
         >
             <div class="relative">
                 <div
@@ -329,94 +332,75 @@ const pageTitle = isDocsIndex
         </style>
 
         <script is:inline>
-            // Mobile menu functionality
-            class MobileMenu {
-                constructor() {
-                    // initialize immediately
-                    this.setup();
+            document.addEventListener("DOMContentLoaded", () => {
 
-                    // retry setup if elements aren't found initially
-                    if (!this.button || !this.sidebar || !this.backdrop) {
-                        const retrySetup = setInterval(() => {
-                            this.setup();
-                            if (this.button && this.sidebar && this.backdrop) {
-                                clearInterval(retrySetup);
-                            }
-                        }, 100);
-                    }
-                }
+            const mobileMenuButton = document.getElementById("mobile-menu-button");
+            const sidebar = document.getElementById("docs-sidebar");
+            const backdrop = document.getElementById("sidebar-backdrop");
 
-                setup() {
-                    this.button = document.getElementById("mobile-menu-button");
-                    this.sidebar = document.getElementById("docs-sidebar");
-                    this.backdrop = document.getElementById("sidebar-backdrop");
-                    this.isOpen = false;
 
-                    if (this.button && this.sidebar && this.backdrop) {
-                        this.init();
-                    }
-                }
+             if (!mobileMenuButton || !sidebar || !backdrop) return;
 
-                init() {
-                    // handle button click
-                    this.button?.addEventListener("click", () => this.toggle());
 
-                    // handle backdrop click
-                    this.backdrop?.addEventListener("click", () =>
-                        this.close(),
-                    );
 
-                    // handle links click on mobile
-                    this.sidebar?.querySelectorAll("a").forEach((link) => {
-                        link.addEventListener("click", () => {
-                            if (window.innerWidth < 1024) {
-                                this.close();
-                            }
-                        });
-                    });
+             let isOpen = false;
 
-                    // handle resize
-                    window.addEventListener("resize", () =>
-                        this.handleResize(),
-                    );
+             const toggleMenu = () => {
+                  if (isOpen) {
+                    closeMenu()
+                  }else {
+                    openMenu()
+                  }
+                  isOpen = !isOpen;
+             }
 
-                    // handle escape key
-                    document.addEventListener("keydown", (e) => {
-                        if (e.key === "Escape") this.close();
-                    });
-                }
+             const openMenu = () => {
+                 sidebar.classList.remove("-translate-x-full");
+                 backdrop.classList.remove("hidden");
+                 document.body.classList.add("overflow-hidden");
+                 mobileMenuButton.setAttribute("aria-expanded", "true")
+                 sidebar.setAttribute("aria-hidden", "false")
+             }
+             const closeMenu = () => {
+                sidebar.classList.add("-translate-x-full");
+                 backdrop.classList.add("hidden");
+                 document.body.classList.remove("overflow-hidden");
+                 mobileMenuButton.setAttribute("aria-expanded", "false")
+                  sidebar.setAttribute("aria-hidden", "true")
+             }
 
-                toggle() {
-                    this.isOpen ? this.close() : this.open();
-                }
+             mobileMenuButton.addEventListener("click", toggleMenu);
+             backdrop.addEventListener("click", closeMenu);
 
-                open() {
-                    this.sidebar?.classList.remove("-translate-x-full");
-                    this.backdrop?.classList.remove("hidden");
-                    document.body.classList.add("overflow-hidden");
-                    this.isOpen = true;
-                }
 
-                close() {
-                    this.sidebar?.classList.add("-translate-x-full");
-                    this.backdrop?.classList.add("hidden");
-                    document.body.classList.remove("overflow-hidden");
-                    this.isOpen = false;
-                }
+              sidebar.querySelectorAll("a").forEach((link) => {
+                     link.addEventListener("click", () => {
+                         if (window.innerWidth < 1024) {
+                             closeMenu();
+                         }
+                     });
+                 });
 
-                handleResize() {
-                    if (window.innerWidth >= 1024) {
-                        this.sidebar?.classList.remove("-translate-x-full");
-                        this.backdrop?.classList.add("hidden");
+
+             window.addEventListener("resize", () => {
+                 if (window.innerWidth >= 1024) {
+                        sidebar.classList.remove("-translate-x-full");
+                        backdrop.classList.add("hidden");
                         document.body.classList.remove("overflow-hidden");
-                    } else if (this.isOpen === false) {
-                        this.sidebar?.classList.add("-translate-x-full");
+                        mobileMenuButton.setAttribute("aria-expanded", "false")
+                        sidebar.setAttribute("aria-hidden", "false")
+                        isOpen = false;
+                    } else if (isOpen === false) {
+                        sidebar.classList.add("-translate-x-full");
                     }
-                }
-            }
+              });
 
-            // initialize immediately
-            new MobileMenu();
+              document.addEventListener("keydown", (e) => {
+                    if (e.key === "Escape") closeMenu();
+                });
+
+
+         });
         </script>
     </div>
 </BaseLayout>
