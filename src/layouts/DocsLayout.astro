@@ -1,22 +1,33 @@
 ---
 import BaseLayout from "./BaseLayout.astro";
 
+type Frontmatter = {
+	title: string;
+	order?: number;
+};
+
+type DocModule = {
+	default: unknown,
+	frontmatter: Frontmatter,
+	file: string,
+}
+
 type Props = {
-	frontmatter?: {
-		title: string;
-		order: number;
-	};
+	frontmatter?: Frontmatter;
 };
 
 const { frontmatter } = Astro.props;
 
 // get all documentation pages
-const docs = await Astro.glob("/src/pages/docs/**/*.md");
-const sections = docs.reduce(
-	(acc, doc) => {
-		const pathParts = doc.file.split("/docs/")[1].split("/");
+const docs = import.meta.glob<DocModule>("/src/pages/docs/**/*.md", { eager: true });
+
+
+const sections = Object.entries(docs).reduce(
+	(acc, [file, doc]) => {
+    const pathParts = file.split("/docs/")[1].split("/");
 		const section = pathParts[0];
 		const subsection = pathParts.length > 2 ? pathParts[1] : null;
+
 
 		if (!acc[section]) {
 			acc[section] = {
@@ -28,8 +39,9 @@ const sections = docs.reduce(
 		const pageData = {
 			title: doc.frontmatter.title,
 			order: doc.frontmatter.order || 99,
-			url: `/docs/${doc.file.split("/docs/")[1].replace(/\.md$/, "")}`,
+			url: `/docs/${file.split("/docs/")[1].replace(/\.md$/, "")}`,
 		};
+
 
 		if (subsection) {
 			if (!acc[section].subsections[subsection]) {
