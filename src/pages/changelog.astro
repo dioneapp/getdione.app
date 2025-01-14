@@ -3,25 +3,25 @@ import Layout from "../layouts/Layout.astro";
 import { marked } from "marked";
 
 const fetchReleases = async () => {
-    let response = await fetch(
-        "https://api.github.com/repos/dioneapp/dione/releases",
-    );
-    if (!response.ok) {
-        response = await fetch(
-            "https://api.github.com/repos/withastro/astro/releases",
-        );
-        if (!response.ok) {
-            throw new Error(`Failed to fetch releases: ${response.statusText}`);
-        }
-    }
-    return await response.json();
+	let response = await fetch(
+		"https://api.github.com/repos/dioneapp/dione/releases",
+	);
+	if (!response.ok) {
+		response = await fetch(
+			"https://api.github.com/repos/withastro/astro/releases",
+		);
+		if (!response.ok) {
+			throw new Error(`Failed to fetch releases: ${response.statusText}`);
+		}
+	}
+	return await response.json();
 };
 
 let releases = [];
 try {
-    releases = await fetchReleases();
+	releases = await fetchReleases();
 } catch (error) {
-    console.error("Error fetching releases:", error);
+	console.error("Error fetching releases:", error);
 }
 ---
 

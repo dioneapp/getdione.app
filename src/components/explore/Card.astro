@@ -1,0 +1,125 @@
+---
+interface Props {
+	id: number;
+	name: string;
+	description: string;
+	author: string;
+	author_url: string;
+	logo_url: string;
+	banner_url: string;
+	script_url: string;
+	version: string;
+	tags: string[];
+	likes: number;
+	downloads: number;
+	created_at: string;
+	updated_at: string;
+}
+
+const {
+	id,
+	name,
+	description,
+	author,
+	author_url,
+	logo_url,
+	banner_url,
+	script_url,
+	version,
+	tags,
+	likes,
+	downloads,
+	created_at,
+	updated_at,
+} = Astro.props;
+---
+
+<article
+  class="group relative p-6 rounded-xl border border-white/10 backdrop-blur-md bg-white/5 hover:bg-white/10 transition-all duration-300 hover:-translate-y-1 shadow-lg cursor-pointer w-full sm:w-[400px] md:w-[450px] gap-4 overflow-hidden"
+>
+  {
+    banner_url && (
+      <div
+        class="absolute top-0 left-0 w-full h-24 rounded-t-xl bg-cover bg-center bg-no-repeat blur-xl opacity-40 -z-10"
+        style={`background-image: url(${banner_url})`}
+      ></div>
+    )
+  }
+  <div class="relative z-10">
+    <div class="flex items-center gap-4 mb-4">
+      <img
+        src={logo_url}
+        alt={`${name} logo`}
+        class="w-12 h-12 rounded-md object-cover"
+      />
+      <div>
+        <h3 class="text-lg sm:text-xl font-medium text-white">{name}</h3>
+        <a
+          href={author_url}
+          class="text-sm text-white/60 hover:text-white/80 transition-colors"
+          >{author}</a
+        >
+      </div>
+    </div>
+    <p class="text-sm sm:text-base text-white/70 mb-4 line-clamp-3">
+      {description}
+    </p>
+    <div class="mt-auto pt-3 flex flex-col justify-between">
+      <div class="flex justify-between items-center mb-2">
+        <div class="flex items-center text-xs text-gray-500">
+          {
+            version && (
+              <>
+                <svg
+                  class="w-4 h-4 mr-1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="24px"
+                  viewBox="0 -960 960 960"
+                  width="24px"
+                  fill="currentColor"
+                >
+                  <path d="M856-390 570-104q-12 12-27 18t-30 6q-15 0-30-6t-27-18L103-457q-11-11-17-25.5T80-513v-287q0-33 23.5-56.5T160-880h287q16 0 31 6.5t26 17.5l352 353q12 12 17.5 27t5.5 30q0 15-5.5 29.5T856-390ZM260-640q25 0 42.5-17.5T320-700q0-25-17.5-42.5T260-760q-25 0-42.5 17.5T200-700q0 25 17.5 42.5T260-640Z" />
+                </svg>
+                v{version}
+              </>
+            )
+          }
+        </div>
+
+        <div class="flex items-center text-xs text-gray-500">
+          <span class="flex items-center mr-2">
+            <svg
+              class="w-4 h-4 mr-1"
+              xmlns="http://www.w3.org/2000/svg"
+              height="24px"
+              viewBox="0 -960 960 960"
+              width="24px"
+              fill="currentColor"
+              ><path
+                d="M840-640q32 0 56 24t24 56v80q0 7-1.5 15t-4.5 15L794-168q-9 20-30 34t-44 14H400q-33 0-56.5-23.5T320-200v-407q0-16 6.5-30.5T344-663l217-216q15-14 35.5-17t39.5 7q19 10 27.5 28t3.5 37l-45 184h218ZM160-120q-33 0-56.5-23.5T80-200v-360q0-33 23.5-56.5T160-640q33 0 56.5 23.5T240-560v360q0 33-23.5 56.5T160-120Z"
+              ></path></svg
+            >
+            {likes || 0}
+          </span>
+
+          <span class="flex items-center">
+            <svg
+              class="w-4 h-4 mr-1"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+              ><path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 16v1a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+              ></path></svg
+            >
+            {downloads || 0}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</article>
