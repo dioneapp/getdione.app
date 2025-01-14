@@ -69,4 +69,10 @@ import Layout from "../layouts/Layout.astro";
       animation: fade-in 0.6s ease-out;
     }
   </style>
+
+<script>
+  if (window.location.pathname.startsWith('/docs')) {
+    window.location.href = '/docs/';
+  }
+</script>
 </Layout>
