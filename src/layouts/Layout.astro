@@ -1,7 +1,5 @@
 ---
-import "@fontsource/poppins";
-import { ClientRouter } from "astro:transitions";
-import Footer from "../components/Footer.astro";
+import BaseLayout from "./BaseLayout.astro";
 import Navbar from "../components/Navbar.astro";
 
 interface Props {
@@ -12,77 +10,8 @@ const { title = "Dione - Explore and Install Open-Source AI Apps in 1 Click" } =
 	Astro.props;
 ---
 
-<!doctype html>
-<html lang="en">
-  <meta />
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
-  <meta name="generator" content={Astro.generator} />
-  <meta name="application-name" content="Dione" />
-  <meta
-    name="description"
-    content="Discover and install open-source AI apps effortlessly with Dione. Explore powerful tools, manage downloads, and enjoy 1-click installations—all in one intuitive platform."
-  />
-  <meta name="theme-color" content="#110F0F" />
-  <meta name="color-scheme" content="dark" />
-  <meta name="msapplication-TileColor" content="#110F0F" />
-  <meta
-    name="apple-mobile-web-app-status-bar-style"
-    content="black-translucent"
-  />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="robots" content="index, follow" />
-  <meta name="googlebot" content="index, follow" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:site" content="https://getdione.app" />
-  <meta name="twitter:creator" content="@dioneapp" />
-  <meta name="twitter:title" content="Dione" />
-  <meta
-    name="twitter:description"
-    content="Discover and install open-source AI apps effortlessly with Dione. Explore powerful tools, manage downloads, and enjoy 1-click installations—all in one intuitive platform."
-  />
-  <meta name="twitter:image" content="https://getdione.app/opengraph-image.png" />
-  <meta property="og:image:width" content="3000" />
-  <meta property="og:image:height" content="1000" />
-  <meta property="og:site_name" content="Dione" />
-  <meta property="og:locale" content="en_US" />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://getdione.app" />
-  <meta property="og:title" content="Dione" />
-  <meta
-    property="og:description"
-    content="Discover and install open-source AI apps effortlessly with Dione. Explore powerful tools, manage downloads, and enjoy 1-click installations—all in one intuitive platform."
-  />
-  <meta property="og:image" content="https://getdione.app/opengraph-image.png" />
-  <title>{title}</title>
-  <ClientRouter />
+<BaseLayout title={title}>
+<Navbar />
+<slot />
+</BaseLayout>
 
-  <body>
-    <Navbar />
-    <slot />
-    <Footer />
-  </body>
-</html>
-
-<style>
-  @tailwind base;
-  @tailwind components;
-  @tailwind utilities;
-
-  html,
-  body {
-    margin: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #080808;
-    color: #9e9e9e;
-    font-family: "Poppins", sans-serif;
-  }
-  h1 {
-    font-size: 3rem;
-    font-weight: bold;
-    color: #fff;
-  }
-</style>
