@@ -1,6 +1,6 @@
 ---
-import Layout from "../layouts/Layout.astro";
 import { marked } from "marked";
+import Layout from "../layouts/Layout.astro";
 
 const fetchReleases = async () => {
 	let response = await fetch(
@@ -47,7 +47,7 @@ try {
             </div>
 
             <h1
-                class="text-5xl font-bold text-white tracking-tighter mt-6 text-balance text-center"
+                class="text-5xl font-semibold text-white tracking-tighter mt-6 text-balance text-center"
             >
                 Changelog
             </h1>

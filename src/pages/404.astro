@@ -17,7 +17,7 @@ import Layout from "../layouts/Layout.astro";
 
     <div class="text-center z-5">
       <h2
-        class="text-4xl font-bold text-white tracking-tighter text-balance text-center"
+        class="text-4xl font-semibold text-white tracking-tighter text-balance text-center"
       >
         Page not found
       </h2>
@@ -70,9 +70,9 @@ import Layout from "../layouts/Layout.astro";
     }
   </style>
 
-<script>
-  if (window.location.pathname.startsWith('/docs')) {
-    window.location.href = '/docs/';
-  }
-</script>
+  <script>
+    if (window.location.pathname.startsWith("/docs")) {
+      window.location.href = "/docs/";
+    }
+  </script>
 </Layout>
