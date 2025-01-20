@@ -7,10 +7,11 @@ import Layout from "../../layouts/Layout.astro";
     const hash = window.location.hash.substring(1);
     const urlParams = new URLSearchParams(hash);
     const accessToken = urlParams.get('access_token');
+    const refreshToken = urlParams.get('refresh_token');
 
     function handleRedirect() {
       if (accessToken) {
-        const redirectUrl = `dione://auth=${accessToken}`;
+        const redirectUrl = `dione://auth=${accessToken}&refresh=${refreshToken}`;
         window.location.href = redirectUrl;
 
         setTimeout(() => {
