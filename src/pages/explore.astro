@@ -1,6 +1,6 @@
 ---
-import Layout from "../layouts/Layout.astro";
 import AppCard from "../components/explore/Card.astro";
+import Layout from "../layouts/Layout.astro";
 import { supabase } from "../utils/database";
 
 let scripts = [];
@@ -43,7 +43,7 @@ try {
             </div>
 
             <h1
-                class="text-5xl font-bold text-white tracking-tighter mt-6 text-balance text-center"
+                class="text-5xl font-semibold text-white tracking-tighter mt-6 text-balance text-center"
             >
                 Explore
             </h1>
@@ -55,7 +55,7 @@ try {
             </p>
 
             <section
-                class="mt-8 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 max-w-7xl"   
+                class="mt-8 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 max-w-7xl"
                 aria-labelledby="features-heading"
             >
                 {
