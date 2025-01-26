@@ -6,8 +6,7 @@ interface Props {
 	title?: string;
 }
 
-const { title = "Dione" } =
-	Astro.props;
+const { title = "Dione" } = Astro.props;
 ---
 
 <!doctype html>
@@ -57,6 +56,13 @@ const { title = "Dione" } =
         content="Discover and install open-source AI apps effortlessly with Dione. Explore powerful tools, manage downloads, and enjoy 1-click installations—all in one intuitive platform."
     />
     <meta
+    http-equiv="Content-Security-Policy"
+    content="script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com;"
+    />  
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <meta
         property="og:image"
         content="https://getdione.app/opengraph-image.png"
     />
@@ -70,8 +76,6 @@ const { title = "Dione" } =
 </html>
 
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-    
     @tailwind base;
     @tailwind components;
     @tailwind utilities;

@@ -1,36 +1,36 @@
 ---
 interface Props {
-  id: number;
-  name: string;
-  description: string;
-  author: string;
-  author_url: string;
-  logo_url: string;
-  banner_url: string;
-  script_url: string;
-  version: string;
-  tags: string[];
-  likes: number;
-  downloads: number;
-  created_at: string;
-  updated_at: string;
+	id: number;
+	name: string;
+	description: string;
+	author: string;
+	author_url: string;
+	logo_url: string;
+	banner_url: string;
+	script_url: string;
+	version: string;
+	tags: string[];
+	likes: number;
+	downloads: number;
+	created_at: string;
+	updated_at: string;
 }
 
 const {
-  id,
-  name,
-  description,
-  author,
-  author_url,
-  logo_url,
-  banner_url,
-  script_url,
-  version,
-  tags,
-  likes,
-  downloads,
-  created_at,
-  updated_at,
+	id,
+	name,
+	description,
+	author,
+	author_url,
+	logo_url,
+	banner_url,
+	script_url,
+	version,
+	tags,
+	likes,
+	downloads,
+	created_at,
+	updated_at,
 } = Astro.props;
 
 const formattedDate = new Date(created_at).toLocaleDateString();

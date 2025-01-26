@@ -2,87 +2,85 @@
 import BaseLayout from "./BaseLayout.astro";
 
 type Frontmatter = {
-    title: string;
-    order?: number;
+	title: string;
+	order?: number;
 };
 
 type DocModule = {
-    default: unknown;
-    frontmatter: Frontmatter;
-    file: string;
+	default: unknown;
+	frontmatter: Frontmatter;
+	file: string;
 };
 
 type Props = {
-    frontmatter?: Frontmatter;
+	frontmatter?: Frontmatter;
 };
 
 const { frontmatter } = Astro.props;
 
 // get all documentation pages
 const docs = import.meta.glob<DocModule>("/src/pages/docs/**/*.md", {
-    eager: true,
+	eager: true,
 });
 
 const sections = Object.entries(docs).reduce(
-    (acc, [file, doc]) => {
-        const pathParts = file.split("/docs/")[1].split("/");
-        const section = pathParts[0];
-        const subsection = pathParts.length > 2 ? pathParts[1] : null;
+	(acc, [file, doc]) => {
+		const pathParts = file.split("/docs/")[1].split("/");
+		const section = pathParts[0];
+		const subsection = pathParts.length > 2 ? pathParts[1] : null;
 
-        if (!acc[section]) {
-            acc[section] = {
-                pages: [],
-                subsections: {},
-            };
-        }
+		if (!acc[section]) {
+			acc[section] = {
+				pages: [],
+				subsections: {},
+			};
+		}
 
-        const pageData = {
-            title: doc.frontmatter.title,
-            order: doc.frontmatter.order || 99,
-            url: `/docs/${file.split("/docs/")[1].replace(/\.md$/, "")}`,
-        };
+		const pageData = {
+			title: doc.frontmatter.title,
+			order: doc.frontmatter.order || 99,
+			url: `/docs/${file.split("/docs/")[1].replace(/\.md$/, "")}`,
+		};
 
-        if (subsection) {
-            if (!acc[section].subsections[subsection]) {
-                acc[section].subsections[subsection] = [];
-            }
-            acc[section].subsections[subsection].push(pageData);
-        } else {
-            acc[section].pages.push(pageData);
-        }
+		if (subsection) {
+			if (!acc[section].subsections[subsection]) {
+				acc[section].subsections[subsection] = [];
+			}
+			acc[section].subsections[subsection].push(pageData);
+		} else {
+			acc[section].pages.push(pageData);
+		}
 
-        return acc;
-    },
-    {} as Record<
-        string,
-        {
-            pages: Array<{ title: string; order: number; url: string }>;
-            subsections: Record<
-                string,
-                Array<{ title: string; order: number; url: string }>
-            >;
-        }
-    >,
+		return acc;
+	},
+	{} as Record<
+		string,
+		{
+			pages: Array<{ title: string; order: number; url: string }>;
+			subsections: Record<
+				string,
+				Array<{ title: string; order: number; url: string }>
+			>;
+		}
+	>,
 );
 
 // sort sections, subsections and their pages
 for (const section of Object.keys(sections)) {
-    sections[section].pages.sort((a, b) => a.order - b.order);
-    for (const subsection of Object.keys(sections[section].subsections)) {
-        sections[section].subsections[subsection].sort(
-            (a, b) => a.order - b.order,
-        );
-    }
+	sections[section].pages.sort((a, b) => a.order - b.order);
+	for (const subsection of Object.keys(sections[section].subsections)) {
+		sections[section].subsections[subsection].sort((a, b) => a.order - b.order);
+	}
 }
 
 // determine if this is the docs index page
 const isDocsIndex =
-    Astro.url.pathname === "/docs" || Astro.url.pathname === "/docs/";
+	Astro.url.pathname === "/docs" || Astro.url.pathname === "/docs/";
 
 // set the page title
 const pageTitle = isDocsIndex
-    ? "Documentation"
-    : `Documentation · ${frontmatter?.title}`;
+	? "Documentation"
+	: `Documentation · ${frontmatter?.title}`;
 ---
 
 <BaseLayout title={pageTitle}>
