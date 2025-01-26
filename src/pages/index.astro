@@ -58,9 +58,7 @@ import Layout from "../layouts/Layout.astro";
         style="text-rendering: optimizeLegibility"
       >
         <span class="inline-block">
-          Discover and install open-source AI apps effortlessly with Dione.
-          Explore powerful tools, manage downloads, and enjoy 1-click
-          installations.
+          Discover & install open-source AI apps with Dione. Explore powerful tools, seamless downloads, 1-click installs.
         </span>
       </p>
 
@@ -129,7 +127,7 @@ import Layout from "../layouts/Layout.astro";
 
       {/* feature cards */}
       <section
-        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-16 sm:mt-20 px-4 max-w-5xl w-full"
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-12 sm:mt-18 px-4 max-w-5xl w-full"
         aria-labelledby="features-heading"
       >
         <h2 id="features-heading" class="sr-only">Features</h2>
@@ -138,31 +136,100 @@ import Layout from "../layouts/Layout.astro";
             {
               title: "Easy Installation",
               description: "One-click install for all your favorite AI tools",
+              icon: (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="24px"
+                  viewBox="0 -960 960 960"
+                  width="24px"
+                  fill="#FFFFFF"
+                >
+                  <path d="M480-337q-8 0-15-2.5t-13-8.5L308-492q-12-12-11.5-28t11.5-28q12-12 28.5-12.5T365-549l75 75v-286q0-17 11.5-28.5T480-800q17 0 28.5 11.5T520-760v286l75-75q12-12 28.5-11.5T652-548q11 12 11.5 28T652-492L508-348q-6 6-13 8.5t-15 2.5ZM240-160q-33 0-56.5-23.5T160-240v-80q0-17 11.5-28.5T200-360q17 0 28.5 11.5T240-320v80h480v-80q0-17 11.5-28.5T760-360q17 0 28.5 11.5T800-320v80q0 33-23.5 56.5T720-160H240Z" />
+                </svg>
+              ),
             },
             {
               title: "Open Source",
               description: "Community-driven development and transparency",
+              icon: (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="24px"
+                  viewBox="0 -960 960 960"
+                  width="24px"
+                  fill="#FFFFFF"
+                >
+                  <path d="m193-479 155 155q11 11 11 28t-11 28q-11 11-28 11t-28-11L108-452q-6-6-8.5-13T97-480q0-8 2.5-15t8.5-13l184-184q12-12 28.5-12t28.5 12q12 12 12 28.5T349-635L193-479Zm574-2L612-636q-11-11-11-28t11-28q11-11 28-11t28 11l184 184q6 6 8.5 13t2.5 15q0 8-2.5 15t-8.5 13L668-268q-12 12-28 11.5T612-269q-12-12-12-28.5t12-28.5l155-155Z" />
+                </svg>
+              ),
             },
             {
               title: "Cross Platform",
               description: "Available on Windows, Mac and Linux (coming soon)",
+              icon: (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="24px"
+                  viewBox="0 -960 960 960"
+                  width="24px"
+                  fill="#FFFFFF"
+                >
+                  <path d="M300-410v20q0 13 8.5 21.5T330-360q13 0 21.5-8.5T360-390v-100q0-13-8.5-21.5T330-520q-13 0-21.5 8.5T300-490v20h-30q-13 0-21.5 8.5T240-440q0 13 8.5 21.5T270-410h30Zm130 0h260q13 0 21.5-8.5T720-440q0-13-8.5-21.5T690-470H430q-13 0-21.5 8.5T400-440q0 13 8.5 21.5T430-410Zm230-160h30q13 0 21.5-8.5T720-600q0-13-8.5-21.5T690-630h-30v-20q0-13-8.5-21.5T630-680q-13 0-21.5 8.5T600-650v100q0 13 8.5 21.5T630-520q13 0 21.5-8.5T660-550v-20Zm-390 0h260q13 0 21.5-8.5T560-600q0-13-8.5-21.5T530-630H270q-13 0-21.5 8.5T240-600q0 13 8.5 21.5T270-570ZM160-200q-33 0-56.5-23.5T80-280v-480q0-33 23.5-56.5T160-840h640q33 0 56.5 23.5T880-760v480q0 33-23.5 56.5T800-200H640v40q0 17-11.5 28.5T600-120H360q-17 0-28.5-11.5T320-160v-40H160Z" />
+                </svg>
+              ),
             },
             {
               title: "Auto Updates",
               description:
                 "Stay current with automatic app updates and notifications",
+              icon: (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="24px"
+                  viewBox="0 -960 960 960"
+                  width="24px"
+                  fill="#FFFFFF"
+                >
+                  <path d="M148-560q0 58 19.5 111t55.5 98q9 11 9 25t-10 24q-10 10-24.5 9.5T174-304q-45-54-69.5-119.5T80-560q0-71 24.5-136.5T174-816q9-11 23.5-11.5T222-818q10 10 10 24t-9 25q-36 45-55.5 98T148-560Zm132 0q0 32 9 61t27 55q8 11 8 25.5T314-394q-10 10-24 10t-22-11q-27-35-41.5-77.5T212-560q0-45 14.5-87.5T268-725q8-11 22-11t24 10q10 10 10 24.5t-8 25.5q-18 26-27 55t-9 61Zm160 400v-308q-27-12-43.5-37T380-560q0-42 29-71t71-29q42 0 71 29t29 71q0 30-16.5 55T520-468v308q0 17-11.5 28.5T480-120q-17 0-28.5-11.5T440-160Zm240-400q0-32-9-61t-27-55q-8-11-8-25.5t10-24.5q10-10 24-10t22 11q27 35 41.5 77.5T748-560q0 45-14.5 87.5T692-395q-8 11-22 11t-24-10q-10-10-10-24.5t8-25.5q18-26 27-55t9-61Zm132 0q0-58-19.5-111T737-769q-9-11-9-25t10-24q10-10 24.5-9.5T786-816q45 54 69.5 119.5T880-560q0 71-24.5 136.5T786-304q-9 11-23.5 11.5T738-302q-10-10-10-24t9-25q36-45 55.5-98T812-560Z" />
+                </svg>
+              ),
             },
             {
               title: "App Discovery",
               description:
                 "Find and explore new AI tools curated by the community",
+              icon: (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="24px"
+                  viewBox="0 -960 960 960"
+                  width="24px"
+                  fill="#FFFFFF"
+                >
+                  <path d="M380-320q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l224 224q11 11 11 28t-11 28q-11 11-28 11t-28-11L532-372q-30 24-69 38t-83 14Zm0-80q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z" />
+                </svg>
+              ),
             },
             {
               title: "Resource Efficient",
               description: "Optimized performance with minimal system impact",
+              icon: (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="24px"
+                  viewBox="0 -960 960 960"
+                  width="24px"
+                  fill="#FFFFFF"
+                >
+                  <path d="M360-360H236q-24 0-35.5-21.5T203-423l299-430q10-14 26-19.5t33 .5q17 6 25 21t6 32l-32 259h155q26 0 36.5 23t-6.5 43L416-100q-11 13-27 17t-31-3q-15-7-23.5-21.5T328-139l32-221Z" />
+                </svg>
+              ),
             },
           ].map((feature) => (
-            <article class="group p-6 rounded-xl border border-white/10 backdrop-blur-md bg-white/5 hover:bg-white/10 transition-all duration-300 hover:-translate-y-1 shadow-lg cursor-pointer">
+            <article class="group p-5 rounded-xl border border-white/10 backdrop-blur-md bg-white/5 hover:bg-white/10 transition-all duration-300 hover:-translate-y-1 shadow-lg cursor-pointer">
+              <div class="flex items-center justify-center w-12 h-12 rounded-lg bg-white/5 backdrop-blur-md border border-white/10 mb-4">
+                {feature.icon}
+              </div>
               <h3 class="text-lg sm:text-xl font-medium text-white mb-2">
                 {feature.title}
               </h3>
