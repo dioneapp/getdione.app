@@ -69,7 +69,7 @@ import Layout from "../../layouts/Layout.astro";
         const { data, error } = await supabase.auth.signInWithOAuth({
           provider,
           options: {
-            redirectTo: 'http://localhost:4321/auth/callback',
+            redirectTo: 'http://getdione.app/auth/callback',
           },
         });
   
