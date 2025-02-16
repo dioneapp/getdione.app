@@ -6,47 +6,46 @@ import Layout from "../../layouts/Layout.astro";
   <script type="module">
     const hash = window.location.hash.substring(1);
     const urlParams = new URLSearchParams(hash);
-    const accessToken = urlParams.get('access_token');
-    const refreshToken = urlParams.get('refresh_token');
+    const accessToken = urlParams.get("access_token");
+    const refreshToken = urlParams.get("refresh_token");
 
-    function handleRedirect() {
+    window.handleRedirect = function () {
       if (accessToken) {
         const redirectUrl = `dione://auth=${accessToken}&refresh=${refreshToken}`;
         window.location.href = redirectUrl;
-
-        setTimeout(() => {
-          document.getElementById('container').innerHTML = `
-          <div class="flex flex-col items-center w-full min-h-[100dvh] justify-center p-12 pt-6 relative">
-            <div class="fixed inset-0 flex justify-center items-center" aria-hidden="true">
-              <div class="bg-[#BCB1E7]/30 h-[70vh] w-[70vh] rounded-full blur-[150px]"></div>
-            </div>
-            <div id="container" class="h-fit w-full flex max-w-xl px-0.5">
-              <div class="backdrop-blur-md bg-white/[0.02] border border-white/[0.05] rounded-xl p-12 flex flex-col items-start justify-start shadow-lg shadow-black/10 w-full h-full">
-                <h1 class="text-white text-3xl font-semibold">We open Dione app for you!</h1>
-                <h2 class="mt-2">Please continue in Dione app. You can close this window.</h2>
-                <h3 class="text-[9px]">If not redirected, please click <button class="text-purple-600 hover:underline hover:cursor-pointer" onclick="handleRedirect()">here</button>.</h3>
-              </div>
-            </div>
-          </div>
-          `;
-        }, 5000);
       }
-    }
+    };
 
     if (accessToken) {
       handleRedirect();
     }
   </script>
 
-  <div id="container" class="flex flex-col items-center w-full min-h-[100dvh] justify-center p-12 pt-6 relative">
-    <div class="fixed inset-0 flex justify-center items-center" aria-hidden="true">
-      <div class="bg-[#BCB1E7]/30 h-[70vh] w-[70vh] rounded-full blur-[150px]"></div>
+  <div
+    id="container"
+    class="flex flex-col items-center w-full min-h-[100dvh] justify-center p-12 pt-6 relative"
+  >
+    <div
+      class="fixed inset-0 flex justify-center items-center"
+      aria-hidden="true"
+    >
+      <div class="bg-[#BCB1E7]/30 h-[70vh] w-[70vh] rounded-full blur-[150px]">
+      </div>
     </div>
     <div class="h-fit w-full flex max-w-xl">
-      <div class="backdrop-blur-md bg-white/[0.02] border border-white/[0.05] rounded-xl p-12 flex flex-col items-start justify-start shadow-lg shadow-black/10 w-full h-full">
-        <h1 class="text-white text-3xl font-semibold">Please wait...</h1>
-        <h2 class="mt-4">We are redirecting you to Dione app in a few seconds.</h2>
-        <h3>If not redirected, please click <button class="text-purple-600 hover:underline hover:cursor-pointer" onclick="handleRedirect()">here</button>.</h3>
+      <div
+        class="backdrop-blur-md bg-white/[0.02] border border-white/[0.05] rounded-xl p-12 flex flex-col items-start justify-start shadow-lg shadow-black/10 w-full h-full"
+      >
+        <h1 class="text-white text-3xl font-semibold">Redirecting...</h1>
+        <h2 class="mt-2 text-white/70">
+          We are redirecting you to Dione app in a few seconds.
+        </h2>
+        <h3 class="mt-4 text-xs italic text-white/40">
+          If not redirected, please click <button
+            class="text-white/70 hover:underline hover:cursor-pointer"
+            onclick="handleRedirect()">here</button
+          >.
+        </h3>
       </div>
     </div>
   </div>
