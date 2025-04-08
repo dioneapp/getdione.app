@@ -11,7 +11,7 @@ const fetchReleases = async () => {
 			"https://api.github.com/repos/withastro/astro/releases",
 		);
 		if (!response.ok) {
-			throw new Error(`Failed to fetch releases: ${response.statusText}`);
+			console.log("Failed to fetch releases" + response.statusText);
 		}
 	}
 	return await response.json();
@@ -57,29 +57,23 @@ const releases = await fetchReleases();
                 class="grid grid-cols-1 gap-4 sm:gap-6 mt-8 px-4 max-w-4xl w-full"
                 aria-labelledby="features-heading"
             >
-                {
-                    releases.map((release: { name: unknown; html_url: string | URL | null | undefined; body: string; }) => (
-                        <article class="group p-6 rounded-xl border border-white/10 backdrop-blur-md bg-white/5 hover:bg-white/10 transition-all duration-300 hover:-translate-y-1 shadow-lg">
-                            <div class="flex items-center justify-between mb-4">
-                                <h3 class="text-lg sm:text-xl font-medium text-white">
-                                    {release.name}
-                                </h3>
-                                <a
-                                    href={release.html_url}
-                                    target="_blank"
-                                    rel="noopener"
-                                    class="text-sm text-white/70 hover:text-white/90 transition-colors"
-                                >
-                                    View on GitHub
-                                </a>
-                            </div>
-                            <div
-                                class="text-sm sm:text-base text-white/70 prose"
-                                set:html={marked.parse(release.body)}
-                            />
-                        </article>
-                    ))
-                }
+            {Array.isArray(releases) && releases.length > 0 ? (
+                releases.map((release) => (
+                    <article class="group p-6 rounded-xl border border-white/10 backdrop-blur-md bg-white/5 hover:bg-white/10 transition-all duration-300 hover:-translate-y-1 shadow-lg">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg sm:text-xl font-medium text-white">
+                                {release.name}
+                            </h3>
+                            <a href={release.html_url} target="_blank" rel="noopener" class="text-sm text-white/70 hover:text-white/90 transition-colors">
+                                View on GitHub
+                            </a>
+                        </div>
+                        <div class="text-sm sm:text-base text-white/70 prose" set:html={marked.parse(release.body)} />
+                    </article>
+                ))
+            ) : (
+                <p class="text-center text-sm">No releases found</p>
+            )}
             </section>
             <p class="text-center text-sm text-white/70 mt-8">
                 Check out the <a
