@@ -12,6 +12,7 @@ const fetchReleases = async () => {
 		);
 		if (!response.ok) {
 			console.log("Failed to fetch releases" + response.statusText);
+            return [];
 		}
 	}
 	return await response.json();
