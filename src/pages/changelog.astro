@@ -17,12 +17,7 @@ const fetchReleases = async () => {
 	return await response.json();
 };
 
-let releases = [];
-try {
-	releases = await fetchReleases();
-} catch (error) {
-	console.error("Error fetching releases:", error);
-}
+const releases = await fetchReleases();
 ---
 
 <Layout title="Changelog">
@@ -63,7 +58,7 @@ try {
                 aria-labelledby="features-heading"
             >
                 {
-                    releases.map((release) => (
+                    releases.map((release: { name: unknown; html_url: string | URL | null | undefined; body: string; }) => (
                         <article class="group p-6 rounded-xl border border-white/10 backdrop-blur-md bg-white/5 hover:bg-white/10 transition-all duration-300 hover:-translate-y-1 shadow-lg">
                             <div class="flex items-center justify-between mb-4">
                                 <h3 class="text-lg sm:text-xl font-medium text-white">
@@ -184,7 +179,7 @@ try {
         }
 
         .prose :global(code) {
-            background-color: #1f2937;
+            background-color: #1f293780;
             padding: 0.2rem 0.4rem;
             border-radius: 0.25rem;
             font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
@@ -193,7 +188,7 @@ try {
         }
 
         .prose :global(pre) {
-            background-color: #1f2937;
+            background-color: #1f293780;
             padding: 1rem;
             border-radius: 0.25rem;
             overflow-x: auto;
@@ -206,6 +201,10 @@ try {
 
         .prose :global(hr) {
             border-color: #4b5563;
+        }
+
+        .prose :global(strong) {
+            color: #ffffffc3;
         }
     </style>
 </Layout>
