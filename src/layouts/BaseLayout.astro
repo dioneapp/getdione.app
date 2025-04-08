@@ -71,7 +71,7 @@ const { title = "Dione" } = Astro.props;
 
     <body>
         <slot />
-        <Footer />
+        {!Astro.url.pathname.includes("docs") && <Footer />}
     </body>
 </html>
 
