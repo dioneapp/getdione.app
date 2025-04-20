@@ -1,14 +1,12 @@
-import type { APIRoute } from 'astro';
+interface Env {
+  FEATURED_DISCORD_WEBHOOK_URL: string;
+}
 
-export const POST: APIRoute = async ({ request, locals }) => {
-  let WEBHOOK_URL: string | undefined = undefined;
-  if (typeof import.meta.env !== 'undefined' && import.meta.env.FEATURED_DISCORD_WEBHOOK_URL) {
-    WEBHOOK_URL = import.meta.env.FEATURED_DISCORD_WEBHOOK_URL;
-  } else if (typeof process !== 'undefined' && process.env?.FEATURED_DISCORD_WEBHOOK_URL) {
-    WEBHOOK_URL = process.env.FEATURED_DISCORD_WEBHOOK_URL;
-  }
+
+export async function onRequestPost({request, env}: {request: Request, env: Env}) {
+  const WEBHOOK_URL = env.FEATURED_DISCORD_WEBHOOK_URL;
   if (!WEBHOOK_URL) {
-    return new Response(JSON.stringify({ error: 'Webhook URL not configured.' }), {
+    return new Response(JSON.stringify({ error: `Webhook URL not configured. ENV: ${env}` }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
     });
@@ -39,8 +37,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const financialInterest = formData.get('financial_interest')?.toString() || 'no';
     const updates = formData.get('updates')?.toString() || 'no';
 
-    if (!name || !email || !toolName || !github || !objective || !category || !audience || !metrics) {
-      return new Response(JSON.stringify({ error: 'Required fields are missing' }), {
+    if (!name || !email || !toolName) {
+      return new Response(JSON.stringify({ error: 'Name, email, and tool name are required.' }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' }
       });
@@ -55,19 +53,19 @@ export const POST: APIRoute = async ({ request, locals }) => {
             { name: 'Submitter Name', value: name, inline: true },
             { name: 'Submitter Email', value: email, inline: true },
             { name: 'Tool Name', value: toolName, inline: true },
-            { name: 'GitHub URL', value: github, inline: true },
-            { name: 'Website', value: website || 'N/A', inline: true },
-            { name: 'Contact Email', value: contactEmail || 'N/A', inline: true },
-            { name: 'Social Media', value: social || 'N/A', inline: true },
-            { name: 'Category', value: category, inline: true },
-            { name: 'Target Audience', value: audience, inline: true },
-            { name: 'Monthly Metrics', value: metrics, inline: true },
-            { name: 'Tool Objective', value: objective },
-            { name: 'Tags', value: tags || 'N/A', inline: true },
-            { name: 'Financial Interest', value: financialInterest === 'yes' ? 'Yes' : 'No', inline: true },
-            { name: 'Newsletter', value: updates === 'yes' ? 'Subscribed' : 'Not subscribed', inline: true },
-            { name: 'Testimonials', value: testimonials || 'N/A' },
-            { name: 'Why Feature This Tool', value: reason || 'N/A' },
+            { name: 'GitHub', value: github, inline: false },
+            { name: 'Website', value: website, inline: false },
+            { name: 'Social', value: social, inline: false },
+            { name: 'Contact Email', value: contactEmail, inline: false },
+            { name: 'Objective', value: objective, inline: false },
+            { name: 'Category', value: category, inline: false },
+            { name: 'Audience', value: audience, inline: false },
+            { name: 'Metrics', value: metrics, inline: false },
+            { name: 'Tags', value: tags, inline: false },
+            { name: 'Testimonials', value: testimonials, inline: false },
+            { name: 'Reason', value: reason, inline: false },
+            { name: 'Financial Interest', value: financialInterest, inline: true },
+            { name: 'Wants Updates', value: updates, inline: true }
           ],
           timestamp: new Date().toISOString(),
         },
@@ -90,9 +88,9 @@ export const POST: APIRoute = async ({ request, locals }) => {
     });
   } catch (e) {
     console.error('Form submission error:', e);
-    return new Response(JSON.stringify({ error: 'There was an error submitting your request. Please try again.' }), {
+    return new Response(JSON.stringify({ error: 'There was an error submitting your application. Please try again.' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
     });
   }
-};
+}

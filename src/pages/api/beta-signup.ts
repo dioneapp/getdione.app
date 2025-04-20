@@ -1,12 +1,9 @@
-import type { APIRoute } from 'astro';
+interface Env {
+  BETA_DISCORD_WEBHOOK_URL: string;
+}
 
-export const POST: APIRoute = async ({ request, locals }) => {
-  let WEBHOOK_URL: string | undefined = undefined;
-  if (typeof import.meta.env !== 'undefined' && import.meta.env.BETA_DISCORD_WEBHOOK_URL) {
-    WEBHOOK_URL = import.meta.env.BETA_DISCORD_WEBHOOK_URL;
-  } else if (typeof process !== 'undefined' && process.env?.BETA_DISCORD_WEBHOOK_URL) {
-    WEBHOOK_URL = process.env.BETA_DISCORD_WEBHOOK_URL;
-  }
+export async function onRequestPost({request, env}: {request: Request, env: Env}) {
+  const WEBHOOK_URL = env.BETA_DISCORD_WEBHOOK_URL;
   if (!WEBHOOK_URL) {
     return new Response(JSON.stringify({ error: 'Webhook URL not configured.' }), {
       status: 500,
@@ -46,12 +43,12 @@ export const POST: APIRoute = async ({ request, locals }) => {
           fields: [
             { name: 'Name', value: name, inline: true },
             { name: 'Email', value: email, inline: true },
-            { name: 'Operating System', value: os, inline: true },
+            { name: 'Reason', value: reason, inline: false },
+            { name: 'OS', value: os, inline: true },
             { name: 'Role', value: role, inline: true },
-            { name: 'AI Experience', value: experience, inline: true },
-            { name: 'Intended Usage', value: usage, inline: true },
-            { name: 'Newsletter Signup', value: updates === 'yes' ? 'Subscribed' : 'Not subscribed', inline: true },
-            { name: 'Reason for Interest', value: reason },
+            { name: 'Experience', value: experience, inline: false },
+            { name: 'Usage', value: usage, inline: false },
+            { name: 'Wants Updates', value: updates, inline: true }
           ],
           timestamp: new Date().toISOString(),
         },
@@ -79,4 +76,4 @@ export const POST: APIRoute = async ({ request, locals }) => {
       headers: { 'Content-Type': 'application/json' }
     });
   }
-};
+}
