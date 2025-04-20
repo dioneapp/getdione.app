@@ -1,5 +1,104 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+
+const WEBHOOK_URL = import.meta.env.BETA_DISCORD_WEBHOOK_URL;
+
+let error = "";
+let success = false;
+
+if (Astro.request.method === "POST") {
+	try {
+		const formData = await Astro.request.formData();
+		const trapField = formData.get("trap_field")?.toString() || "";
+
+		if (trapField !== "") {
+			error = "Form submission rejected.";
+			console.warn("Possible bot detected.");
+			return;
+		}
+		const name = formData.get("name")?.toString() || "";
+		const email = formData.get("email")?.toString() || "";
+		const reason = formData.get("reason")?.toString() || "";
+		const os = formData.get("os")?.toString() || "";
+		const role = formData.get("role")?.toString() || "";
+		const experience = formData.get("experience")?.toString() || "";
+		const usage = formData.get("usage")?.toString() || "";
+		const updates = formData.get("updates")?.toString() || "no";
+
+		if (!name || !email || !os || !role || !experience || !usage) {
+			error = "All fields are required";
+		} else {
+			const webhookBody = {
+				embeds: [
+					{
+						title: "New Beta Program Signup",
+						color: 0xbcb1e7,
+						fields: [
+							{
+								name: "Name",
+								value: name,
+								inline: true,
+							},
+							{
+								name: "Email",
+								value: email,
+								inline: true,
+							},
+							{
+								name: "Operating System",
+								value: os,
+								inline: true,
+							},
+							{
+								name: "Role",
+								value: role,
+								inline: true,
+							},
+							{
+								name: "AI Experience",
+								value: experience,
+								inline: true,
+							},
+							{
+								name: "Intended Usage",
+								value: usage,
+								inline: true,
+							},
+							{
+								name: "Newsletter Signup",
+								value: updates === "yes" ? "Subscribed" : "Not subscribed",
+								inline: true,
+							},
+							{
+								name: "Reason for Interest",
+								value: reason,
+							},
+						],
+						timestamp: new Date().toISOString(),
+					},
+				],
+			};
+
+			const response = await fetch(WEBHOOK_URL, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(webhookBody),
+			});
+
+			if (!response.ok) {
+				throw new Error(`Discord webhook error: ${response.statusText}`);
+			}
+
+			success = true;
+			return Astro.redirect("/beta/success");
+		}
+	} catch (e) {
+		console.error("Form submission error:", e);
+		error = "There was an error submitting your application. Please try again.";
+	}
+}
 ---
 
 <Layout title="Join Beta">
@@ -35,16 +134,18 @@ import Layout from "../../layouts/Layout.astro";
         management.
       </h2>
 
-      <div id="form-error" class="w-full max-w-xl mb-6" style="display:none;">
-        <div class="bg-red-500/10 border border-red-500/20 text-red-200 px-4 py-3 rounded-lg"></div>
-      </div>
-      <div id="form-success" class="w-full max-w-xl mb-6" style="display:none;">
-        <div class="bg-green-500/10 border border-green-500/20 text-green-200 px-4 py-3 rounded-lg">Application submitted successfully! Redirecting...</div>
-      </div>
+      {
+        error && (
+          <div class="w-full max-w-xl mb-6">
+            <div class="bg-red-500/10 border border-red-500/20 text-red-200 px-4 py-3 rounded-lg">
+              {error}
+            </div>
+          </div>
+        )
+      }
 
       <form
-        id="beta-signup-form"
-        autocomplete="off"
+        method="POST"
         class="w-full max-w-xl bg-white/10 backdrop-blur-md rounded-xl p-6 sm:p-8 border border-white/10"
       >
         <div class="space-y-4">
@@ -244,40 +345,6 @@ import Layout from "../../layouts/Layout.astro";
           </button>
         </div>
       </form>
-
-      <script type="module">
-        const form = document.getElementById('beta-signup-form');
-        const errorDiv = document.getElementById('form-error');
-        const successDiv = document.getElementById('form-success');
-        form.addEventListener('submit', async (e) => {
-          e.preventDefault();
-          errorDiv.style.display = 'none';
-          successDiv.style.display = 'none';
-          const formData = new FormData(form);
-          form.querySelector('[type="submit"]').disabled = true;
-          form.querySelector('[type="submit"]').innerText = 'Sending...';
-          try {
-            const res = await fetch('/api/beta-signup', { method: 'POST', body: formData });
-            const data = await res.json();
-            if (!res.ok) {
-              errorDiv.style.display = '';
-              errorDiv.querySelector('div').textContent = data.error || 'There was an error submitting your application.';
-              form.querySelector('[type="submit"]').disabled = false;
-              form.querySelector('[type="submit"]').innerText = 'Submit Application';
-              return;
-            }
-            successDiv.style.display = '';
-            setTimeout(() => {
-              window.location.href = '/beta/success';
-            }, 1200);
-          } catch (err) {
-            errorDiv.style.display = '';
-            errorDiv.querySelector('div').textContent = 'There was an error submitting your application.';
-            form.querySelector('[type="submit"]').disabled = false;
-            form.querySelector('[type="submit"]').innerText = 'Submit Application';
-          }
-        });
-      </script>
     </div>
   </main>
 </Layout>

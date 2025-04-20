@@ -1,6 +1,112 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 
+const WEBHOOK_URL = import.meta.env.FEATURED_DISCORD_WEBHOOK_URL;
+
+let error = "";
+let success = false;
+
+if (Astro.request.method === "POST") {
+	try {
+		const formData = await Astro.request.formData();
+		const trapField = formData.get("trap_field")?.toString() || "";
+
+		if (trapField !== "") {
+			error = "Form submission rejected.";
+			console.warn("Possible bot detected.");
+			return;
+		}
+
+		const name = formData.get("name")?.toString() || "";
+		const email = formData.get("email")?.toString() || "";
+		const toolName = formData.get("tool_name")?.toString() || "";
+		const github = formData.get("github")?.toString() || "";
+		const website = formData.get("website")?.toString() || "";
+		const social = formData.get("social")?.toString() || "";
+		const contactEmail = formData.get("contact_email")?.toString() || "";
+		const objective = formData.get("objective")?.toString() || "";
+		const category = formData.get("category")?.toString() || "";
+		const audience = formData.get("audience")?.toString() || "";
+		const metrics = formData.get("metrics")?.toString() || "";
+		const tags = formData.get("tags")?.toString() || "";
+		const testimonials = formData.get("testimonials")?.toString() || "";
+		const reason = formData.get("reason")?.toString() || "";
+		const financialInterest =
+			formData.get("financial_interest")?.toString() || "no";
+		const updates = formData.get("updates")?.toString() || "no";
+
+		if (
+			!name ||
+			!email ||
+			!toolName ||
+			!github ||
+			!objective ||
+			!category ||
+			!audience ||
+			!metrics
+		) {
+			error = "Required fields are missing";
+		} else {
+			const webhookBody = {
+				embeds: [
+					{
+						title: "New Featured Tool Submission",
+						color: 0xbcb1e7,
+						fields: [
+							{ name: "Submitter Name", value: name, inline: true },
+							{ name: "Submitter Email", value: email, inline: true },
+							{ name: "Tool Name", value: toolName, inline: true },
+							{ name: "GitHub URL", value: github, inline: true },
+							{ name: "Website", value: website || "N/A", inline: true },
+							{
+								name: "Contact Email",
+								value: contactEmail || "N/A",
+								inline: true,
+							},
+							{ name: "Social Media", value: social || "N/A", inline: true },
+							{ name: "Category", value: category, inline: true },
+							{ name: "Target Audience", value: audience, inline: true },
+							{ name: "Monthly Metrics", value: metrics, inline: true },
+							{ name: "Tool Objective", value: objective },
+							{ name: "Tags", value: tags || "N/A", inline: true },
+							{
+								name: "Financial Interest",
+								value: financialInterest === "yes" ? "Yes" : "No",
+								inline: true,
+							},
+							{
+								name: "Newsletter",
+								value: updates === "yes" ? "Subscribed" : "Not subscribed",
+								inline: true,
+							},
+							{ name: "Testimonials", value: testimonials || "N/A" },
+							{ name: "Why Feature This Tool", value: reason || "N/A" },
+						],
+						timestamp: new Date().toISOString(),
+					},
+				],
+			};
+
+			const response = await fetch(WEBHOOK_URL, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(webhookBody),
+			});
+
+			if (!response.ok) {
+				throw new Error(`Discord webhook error: ${response.statusText}`);
+			}
+
+			success = true;
+			return Astro.redirect("/featured/success");
+		}
+	} catch (e) {
+		console.error("Form submission error:", e);
+		error = "There was an error submitting your request. Please try again.";
+	}
+}
 ---
 
 <Layout title="Feature Your Tool">
@@ -20,14 +126,15 @@ import Layout from "../../layouts/Layout.astro";
         Submit your project for consideration in our featured section. Showcase your tool to thousands of AI developers and enthusiasts.
       </h2>
 
-      <div id="form-error" class="w-full max-w-xl mb-6" style="display:none;">
-        <div class="bg-red-500/10 border border-red-500/20 text-red-200 px-4 py-3 rounded-lg"></div>
-      </div>
-      <div id="form-success" class="w-full max-w-xl mb-6" style="display:none;">
-        <div class="bg-green-500/10 border border-green-500/20 text-green-200 px-4 py-3 rounded-lg">Application submitted successfully! Redirecting...</div>
-      </div>
+      {error && (
+        <div class="w-full max-w-xl mb-6">
+          <div class="bg-red-500/10 border border-red-500/20 text-red-200 px-4 py-3 rounded-lg">
+            {error}
+          </div>
+        </div>
+      )}
 
-      <form id="featured-signup-form" autocomplete="off" class="w-full max-w-xl bg-white/10 backdrop-blur-md rounded-xl p-6 sm:p-8 border border-white/10">
+      <form method="POST" class="w-full max-w-xl bg-white/10 backdrop-blur-md rounded-xl p-6 sm:p-8 border border-white/10">
         <div class="space-y-4">
           <div class="flex gap-4 flex-col sm:flex-row">
             <div class="flex-1">
@@ -264,40 +371,6 @@ import Layout from "../../layouts/Layout.astro";
           </button>
         </div>
       </form>
-
-      <script type="module">
-        const form = document.getElementById('featured-signup-form');
-        const errorDiv = document.getElementById('form-error');
-        const successDiv = document.getElementById('form-success');
-        form.addEventListener('submit', async (e) => {
-          e.preventDefault();
-          errorDiv.style.display = 'none';
-          successDiv.style.display = 'none';
-          const formData = new FormData(form);
-          form.querySelector('[type="submit"]').disabled = true;
-          form.querySelector('[type="submit"]').innerText = 'Sending...';
-          try {
-            const res = await fetch('/api/featured-signup', { method: 'POST', body: formData });
-            const data = await res.json();
-            if (!res.ok) {
-              errorDiv.style.display = '';
-              errorDiv.querySelector('div').textContent = data.error || 'There was an error submitting your request.';
-              form.querySelector('[type="submit"]').disabled = false;
-              form.querySelector('[type="submit"]').innerText = 'Submit for Featuring';
-              return;
-            }
-            successDiv.style.display = '';
-            setTimeout(() => {
-              window.location.href = '/featured/success';
-            }, 1200);
-          } catch (err) {
-            errorDiv.style.display = '';
-            errorDiv.querySelector('div').textContent = 'There was an error submitting your request.';
-            form.querySelector('[type="submit"]').disabled = false;
-            form.querySelector('[type="submit"]').innerText = 'Submit for Featuring';
-          }
-        });
-      </script>
     </div>
   </main>
 </Layout>
