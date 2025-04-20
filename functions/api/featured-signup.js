@@ -1,24 +1,25 @@
-interface Env {
-  FEATURED_DISCORD_WEBHOOK_URL: string;
-}
-
-
-export async function onRequestPost({request, env}: {request: Request, env: Env}) {
+export async function onRequestPost(request, env) {
   const WEBHOOK_URL = env.FEATURED_DISCORD_WEBHOOK_URL;
   if (!WEBHOOK_URL) {
-    return new Response(JSON.stringify({ error: `Webhook URL not configured. ENV: ${env}` }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    return new Response(
+      JSON.stringify({ error: `Webhook URL not configured. ENV: ${env}` }),
+      {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      }
+    );
   }
   try {
     const formData = await request.formData();
     const trapField = formData.get('trap_field')?.toString() || '';
     if (trapField !== '') {
-      return new Response(JSON.stringify({ error: 'Form submission rejected.' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' }
-      });
+      return new Response(
+        JSON.stringify({ error: 'Form submission rejected.' }),
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' }
+        }
+      );
     }
     const name = formData.get('name')?.toString() || '';
     const email = formData.get('email')?.toString() || '';
@@ -38,10 +39,13 @@ export async function onRequestPost({request, env}: {request: Request, env: Env}
     const updates = formData.get('updates')?.toString() || 'no';
 
     if (!name || !email || !toolName) {
-      return new Response(JSON.stringify({ error: 'Name, email, and tool name are required.' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' }
-      });
+      return new Response(
+        JSON.stringify({ error: 'Name, email, and tool name are required.' }),
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' }
+        }
+      );
     }
 
     const webhookBody = {
@@ -82,15 +86,21 @@ export async function onRequestPost({request, env}: {request: Request, env: Env}
       throw new Error(`Discord webhook error: ${response.statusText}`);
     }
 
-    return new Response(JSON.stringify({ success: true }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    return new Response(
+      JSON.stringify({ success: true }),
+      {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      }
+    );
   } catch (e) {
     console.error('Form submission error:', e);
-    return new Response(JSON.stringify({ error: 'There was an error submitting your application. Please try again.' }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    return new Response(
+      JSON.stringify({ error: 'There was an error submitting your application. Please try again.' }),
+      {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      }
+    );
   }
 }

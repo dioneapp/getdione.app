@@ -1,8 +1,4 @@
-interface Env {
-  BETA_DISCORD_WEBHOOK_URL: string;
-}
-
-export async function onRequestPost({request, env}: {request: Request, env: Env}) {
+export async function onRequestPost(request, env) {
   const WEBHOOK_URL = env.BETA_DISCORD_WEBHOOK_URL;
   if (!WEBHOOK_URL) {
     return new Response(JSON.stringify({ error: 'Webhook URL not configured.' }), {
