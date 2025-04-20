@@ -1,7 +1,18 @@
 import type { APIRoute } from 'astro';
 
-export const POST: APIRoute = async ({ request }) => {
-  const WEBHOOK_URL = import.meta.env.FEATURED_DISCORD_WEBHOOK_URL;
+export const POST: APIRoute = async ({ request, locals }) => {
+  let WEBHOOK_URL: string | undefined = undefined;
+  if (typeof import.meta.env !== 'undefined' && import.meta.env.FEATURED_DISCORD_WEBHOOK_URL) {
+    WEBHOOK_URL = import.meta.env.FEATURED_DISCORD_WEBHOOK_URL;
+  } else if (typeof process !== 'undefined' && process.env?.FEATURED_DISCORD_WEBHOOK_URL) {
+    WEBHOOK_URL = process.env.FEATURED_DISCORD_WEBHOOK_URL;
+  }
+  if (!WEBHOOK_URL) {
+    return new Response(JSON.stringify({ error: 'Webhook URL not configured.' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
   try {
     const formData = await request.formData();
     const trapField = formData.get('trap_field')?.toString() || '';
