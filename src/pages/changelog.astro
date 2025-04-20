@@ -11,8 +11,12 @@ const fetchReleases = async () => {
 			"https://api.github.com/repos/withastro/astro/releases",
 		);
 		if (!response.ok) {
+<<<<<<< HEAD
 			console.log(`Failed to fetch releases: ${response.statusText}`);
 			return [];
+=======
+			throw new Error(`Failed to fetch releases: ${response.statusText}`);
+>>>>>>> parent of ff23468 (Add a message when not found a release on `/changelog`)
 		}
 	}
 	return await response.json();
