@@ -6,7 +6,7 @@ interface Env {
 export async function onRequestPost({request, env}: {request: Request, env: Env}) {
   const WEBHOOK_URL = env.FEATURED_DISCORD_WEBHOOK_URL;
   if (!WEBHOOK_URL) {
-    return new Response(JSON.stringify({ error: 'Webhook URL not configured.' }), {
+    return new Response(JSON.stringify({ error: `Webhook URL not configured. ENV: ${env}` }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
     });
