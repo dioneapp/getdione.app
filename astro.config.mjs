@@ -9,5 +9,14 @@ import cloudflare from "@astrojs/cloudflare";
 export default defineConfig({
 	output: "server",
 	integrations: [tailwind()],
-	adapter: cloudflare(),
+	adapter: cloudflare({
+		platformProxy: {
+			enabled: true,
+		},
+	}),
+	vite: {
+		define: {
+			"process.env": import.meta.env,
+		},
+	},
 });

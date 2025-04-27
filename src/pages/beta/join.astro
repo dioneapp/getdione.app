@@ -1,7 +1,10 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 
-const WEBHOOK_URL = import.meta.env.BETA_DISCORD_WEBHOOK_URL;
+const runtimeEnv = Astro.locals.runtime?.env || {};
+const WEBHOOK_URL = runtimeEnv.BETA_DISCORD_WEBHOOK_URL || import.meta.env.BETA_DISCORD_WEBHOOK_URL;
+
+console.log('url', WEBHOOK_URL === undefined ? 'undefined' : 'defined');
 
 let error = "";
 let success = false;
@@ -97,6 +100,7 @@ if (Astro.request.method === "POST") {
 	} catch (e) {
 		console.error("Form submission error:", e);
 		error = "There was an error submitting your application. Please try again.";
+		return new Response(null, { status: 500, headers: { "Content-Type": "application/json" } });
 	}
 }
 ---
