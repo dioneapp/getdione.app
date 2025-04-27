@@ -4,8 +4,6 @@ import Layout from "../../layouts/Layout.astro";
 const runtimeEnv = Astro.locals.runtime?.env || {};
 const WEBHOOK_URL = runtimeEnv.BETA_DISCORD_WEBHOOK_URL || import.meta.env.BETA_DISCORD_WEBHOOK_URL;
 
-console.log('url', WEBHOOK_URL === undefined ? 'undefined' : 'defined');
-
 let error = "";
 let success = false;
 
