@@ -1,7 +1,8 @@
 ---
 title: Installing
-order: 1
+order: 2
 layout: ../../../layouts/DocsLayout.astro
+description: How to install a app via Dione
 ---
 
 # Installing a script

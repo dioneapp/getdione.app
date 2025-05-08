@@ -1,8 +1,8 @@
 ---
 title: Running
-order: 2
+order: 3
 layout: ../../../layouts/DocsLayout.astro
-description: How to launch, monitor and stop a script once it’s installed via Dione
+description: How to launch, monitor and stop a app once it’s installed via Dione
 ---
 
 # Running a Script
