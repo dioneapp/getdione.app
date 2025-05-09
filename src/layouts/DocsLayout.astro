@@ -319,16 +319,35 @@ const pageTitle = isDocsIndex
         </div>
 
         <main class="lg:pl-80 transition-all duration-300 relative z-1">
-            <div class="max-w-4xl mx-auto px-6 sm:px-8 py-16">
-                <div
-                    class="prose prose-invert prose-headings:text-white prose-p:text-white/80 prose-a:text-[#BCB1E7] hover:prose-a:text-white prose-strong:text-white/90 prose-code:text-white/90 prose-code:bg-white/15 prose-code:rounded-md prose-code:px-1.5 prose-code:py-0.5 animate-fade-in"
-                >
-                    <slot />
-                </div>
-            </div>
-        </main>
+    <div class="max-w-4xl mx-auto px-6 sm:px-8 py-16">
+        <div
+            class="prose prose-invert prose-img:rounded-2xl prose-headings:text-white prose-p:text-white/80 prose-a:text-[#BCB1E7] hover:prose-a:text-white prose-strong:text-white/90 prose-pre:p-2 prose-pre:m-0 animate-fade-in"
+        >
+            <slot />
+        </div>
+        <div id="img-zoom-modal" class="img-zoom-modal hidden">
+            <img id="img-zoomed" class="img-zoomed" src="" alt="Zoomed image" />
+        </div>
+    </div>
+</main>
 
-        <style>
+        <style is:global>
+            pre[style*="background-color"] {
+                background-color: rgba(0, 0, 0, 0.3) !important;
+                backdrop-filter: blur(8px);
+                border-radius: 0.1rem;
+            }
+            code .line {
+                background-color: rgba(255, 255, 255, 0.1) !important;
+                display: inline-block;
+                width: 100%;
+                margin-bottom: 0.2rem;
+                border-radius: 0.3rem;
+                user-select: all;
+            }
+            code .line:last-child {
+                margin-top: 0.2rem;
+            }
             .animate-fade-in {
                 animation: fade-in 0.7s cubic-bezier(0.16, 1, 0.3, 1);
             }
@@ -339,6 +358,35 @@ const pageTitle = isDocsIndex
             }
             aside::-webkit-scrollbar {
                 display: none;
+            }
+            .img-zoom-modal {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: fixed;
+                z-index: 1000;
+                left: 0;
+                top: 0;
+                width: 100vw;
+                height: 100vh;
+                background: rgba(0,0,0,0.85);
+                backdrop-filter: blur(2px);
+                transition: opacity 0.2s;
+            }
+            .img-zoom-modal.hidden {
+                display: none;
+            }
+            .img-zoomed {
+                max-width: 90vw;
+                max-height: 85vh;
+                border-radius: 1.5rem;
+                box-shadow: 0 8px 32px 0 rgba(0,0,0,0.35);
+                animation: img-zoom-in 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+                background: #222;
+            }
+            @keyframes img-zoom-in {
+                from { transform: scale(0.7); opacity: 0; }
+                to { transform: scale(1); opacity: 1; }
             }
         </style>
 
@@ -407,10 +455,53 @@ const pageTitle = isDocsIndex
             };
 
             // run the setup function on initial load
-            setupMobileMenu();
+            // setupMobileMenu();
 
-            // run it again whenever the page navigates
+            // // run it again whenever the page navigates
             document.addEventListener("astro:page-load", setupMobileMenu);
+            // run the setup for image zoom
+            function setupImageZoom() {
+                const modal = document.getElementById('img-zoom-modal');
+                const modalImg = document.getElementById('img-zoomed');
+                if (!modal || !modalImg) return;
+                const content = document.querySelector('.prose');
+                if (!content) return;
+                content.querySelectorAll('img').forEach(img => {
+                    img.style.cursor = 'zoom-in';
+                    img.addEventListener('click', function () {
+                        modalImg.src = img.src;
+                        modal.classList.remove('hidden');
+                    });
+                });
+                modal.onclick = (e) => {
+                    if (e.target === modal) {
+                        modal.classList.add('hidden');
+                        modalImg.src = '';
+                    }
+                };
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        modal.classList.add('hidden');
+                        modalImg.src = '';
+                    }
+                });
+            }
+            setupImageZoom();
+            document.addEventListener('astro:page-load', setupImageZoom);
+
+            // scroll to id on load
+            function scrollToHash() {
+                if (window.location.hash) {
+                    setTimeout(() => {
+                        const el = document.getElementById(window.location.hash.substring(1));
+                        if (el) {
+                            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                    }, 60);
+                }
+            }
+            scrollToHash();
+            document.addEventListener('astro:page-load', scrollToHash);
         </script>
     </div>
 </BaseLayout>

@@ -7,6 +7,15 @@ import cloudflare from "@astrojs/cloudflare";
 
 // https://astro.build/config
 export default defineConfig({
+	markdown: {
+		syntaxHighlight: {
+			type: "shiki",
+		},
+		shikiConfig: {
+			theme: "catppuccin-mocha",
+			wrap: false,
+		},
+	},
 	output: "server",
 	integrations: [tailwind()],
 	adapter: cloudflare({
