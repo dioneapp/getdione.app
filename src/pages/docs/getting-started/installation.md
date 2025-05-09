@@ -4,32 +4,12 @@ order: 1
 layout: ../../../layouts/DocsLayout.astro
 ---
 
-# Installation
+# Dione will be available soon
 
-## Prerequisites
+Dione is an ambitious project that requires a lot of work. Our team is making an incredible effort to make it available as soon as possible.
 
-- Node.js (v16 or higher)
-- npm (v8 or higher)
+On **13 May**, testers will be able to install a **first alpha version**.
 
-## Installation
+If you want access to this **initial alpha**, you can become a [**Supporter**](https://applio.org/donate) or wait your turn on the [**waiting list**](https://getdione.app/beta/join).
 
-1. Clone the repository:
-```bash
-    git clone https://github.com/iahispano/applio.git applio
-```
-
-2. Install dependencies:
-```bash
-    cd applio
-    npm install
-```
-
-3. Build the application:
-```bash
-    npm run build
-```
-
-4. Run the application:
-```bash
-    npm run dev
-```
+Thank you for joining us on this journey!
