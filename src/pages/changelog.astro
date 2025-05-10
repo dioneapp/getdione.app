@@ -1,211 +1,225 @@
----
-import { marked } from "marked";
-import Layout from "../layouts/Layout.astro";
+    ---
+    import { marked } from "marked";
+    import Layout from "../layouts/Layout.astro";
 
-const fetchReleases = async () => {
-	let response = await fetch(
-		"https://api.github.com/repos/dioneapp/dione/releases",
-	);
-	if (!response.ok) {
-		response = await fetch(
-			"https://api.github.com/repos/withastro/astro/releases",
-		);
-		if (!response.ok) {
-			console.log(`Failed to fetch releases: ${response.statusText}`);
-			return [];
-		}
-	}
-	return await response.json();
-};
+    const fetchReleases = async () => {
+        let response = await fetch(
+            "https://api.github.com/repos/dioneapp/dioneapp/releases",
+            {
+                headers: {
+                    Authorization: `Bearer ${import.meta.env.GITHUB_TOKEN}`,
+                    Accept: "application/vnd.github+json",
+                },
+            }
+        );
+        if (!response.ok) {
+            console.log(`Failed to fetch releases: ${response.statusText}, do you have a valid GITHUB_TOKEN?`);
+            return [];
+            // response = await fetch(
+            //     "https://api.github.com/repos/withastro/astro/releases",
+            // );
+            // if (!response.ok) {
+            //     console.log(`Failed to fetch releases: ${response.statusText}`);
+            //     return [];
+            // }
+        }
+        const releases = await response.json();
+        return releases;
+    };
 
-const releases = await fetchReleases();
----
+    const releases = await fetchReleases();
+    ---
 
-<Layout title="Changelog">
-    <main>
-        <div
-            class="fixed inset-0 flex justify-center items-center"
-            aria-hidden="true"
-        >
+    <Layout title="Changelog">
+        <main>
             <div
-                class="bg-[#BCB1E7]/30 h-[70vh] w-[70vh] rounded-full blur-[150px]"
-            >
-            </div>
-        </div>
-
-        <div
-            class="relative flex flex-col items-center justify-center min-h-[100dvh] px-4 sm:px-8 pt-24 sm:pt-32 pb-16"
-        >
-            <div
-                class="absolute inset-0 bg-gradient-to-b from-transparent to-black/20 pointer-events-none"
+                class="fixed inset-0 flex justify-center items-center"
                 aria-hidden="true"
             >
+                <div
+                    class="bg-[#BCB1E7]/30 h-[70vh] w-[70vh] rounded-full blur-[150px]"
+                >
+                </div>
             </div>
 
-            <h1
-                class="text-5xl font-semibold text-white tracking-tighter mt-6 text-balance text-center"
+            <div
+                class="relative flex flex-col items-center justify-center min-h-[100dvh] px-4 sm:px-8 pt-24 sm:pt-32 pb-16"
             >
-                Changelog
-            </h1>
-            <p
-                class="mt-4 max-w-xl text-center text-base sm:text-lg text-white/80 leading-relaxed text-balance px-4"
-                style="text-rendering: optimizeLegibility"
-            >
-                Latest changes to Dione directly from GitHub.
-            </p>
+                <div
+                    class="absolute inset-0 bg-gradient-to-b from-transparent to-black/20 pointer-events-none"
+                    aria-hidden="true"
+                >
+                </div>
 
-            <section
-                class="grid grid-cols-1 gap-4 sm:gap-6 mt-8 px-4 max-w-4xl w-full"
-                aria-labelledby="features-heading"
-            >
-                {
-                    releases.map((release: { name: unknown; html_url: string | URL | null | undefined; body: string; }) => (
-                        <article class="group p-6 rounded-xl border border-white/10 backdrop-blur-md bg-white/5 hover:bg-white/10 transition-all duration-300 hover:-translate-y-1 shadow-lg">
-                            <div class="flex items-center justify-between mb-4">
-                                <h3 class="text-lg sm:text-xl font-medium text-white">
-                                    {release.name}
-                                </h3>
-                                <a
-                                    href={release.html_url}
-                                    target="_blank"
-                                    rel="noopener"
-                                    class="text-sm text-white/70 hover:text-white/90 transition-colors"
-                                >
-                                    View on GitHub
-                                </a>
-                            </div>
-                            <div
-                                class="text-sm sm:text-base text-white/70 prose"
-                                set:html={marked.parse(release.body)}
-                            />
-                        </article>
-                    ))
+                <h1
+                    class="text-5xl font-semibold text-white tracking-tighter mt-6 text-balance text-center"
+                >
+                    Changelog
+                </h1>
+                <p
+                    class="mt-4 max-w-xl text-center text-base sm:text-lg text-white/80 leading-relaxed text-balance px-4"
+                    style="text-rendering: optimizeLegibility"
+                >
+                    Latest changes to Dione directly from GitHub.
+                </p>
+                {releases.length === 0 && (
+                    <p class="text-center text-sm text-white/70 justify-center items-center mt-auto mb-4">
+                        No releases found.
+                    </p>
+                )}
+
+                <section
+                    class="mt-auto grid grid-cols-1 gap-4 sm:gap-6 px-4 max-w-4xl w-full"
+                    aria-labelledby="features-heading"
+                >
+                    {
+                        releases.map((release: { name: unknown; html_url: string | URL | null | undefined; body: string; }) => (
+                            <article class="group p-6 rounded-xl border border-white/10 backdrop-blur-md bg-white/5 hover:bg-white/10 transition-all duration-300 hover:-translate-y-1 shadow-lg">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h3 class="text-lg sm:text-xl font-medium text-white">
+                                        {release.name}
+                                    </h3>
+                                    <a
+                                        href={release.html_url}
+                                        target="_blank"
+                                        rel="noopener"
+                                        class="text-sm text-white/70 hover:text-white/90 transition-colors"
+                                    >
+                                        View on GitHub
+                                    </a>
+                                </div>
+                                <div
+                                    class="text-sm sm:text-base text-white/70 prose"
+                                    set:html={marked.parse(release.body)}
+                                />
+                            </article>
+                        ))
+                    }
+                </section>
+                <p class="text-center text-sm text-white/70 mt-8 max-md:text-balance">
+                    Check out the <a
+                        href="https://github.com/dioneapp/dione/releases"
+                        target="_blank"
+                        rel="noopener"
+                        class="underline">Dione GitHub repository</a
+                    > for more details.
+                </p>
+            </div>
+        </main>
+        <style>
+            @keyframes float {
+                0%,
+                100% {
+                    transform: translateY(0);
                 }
-            </section>
-            <p class="text-center text-sm text-white/70 mt-8">
-                Check out the <a
-                    href="https://github.com/dioneapp/dione/releases"
-                    target="_blank"
-                    rel="noopener"
-                    class="underline">Dione GitHub repository</a
-                > for more details.
-            </p>
-        </div>
-    </main>
-    <style>
-        @keyframes float {
-            0%,
-            100% {
-                transform: translateY(0);
+                50% {
+                    transform: translateY(-10px);
+                }
             }
-            50% {
-                transform: translateY(-10px);
+
+            .animate-float {
+                animation: float 3s ease-in-out infinite;
             }
-        }
 
-        .animate-float {
-            animation: float 3s ease-in-out infinite;
-        }
-
-        @keyframes fade-in {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
+            @keyframes fade-in {
+                from {
+                    opacity: 0;
+                    transform: translateY(10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
             }
-            to {
-                opacity: 1;
-                transform: translateY(0);
+
+            .animate-fade-in {
+                animation: fade-in 0.6s ease-out;
             }
-        }
 
-        .animate-fade-in {
-            animation: fade-in 0.6s ease-out;
-        }
+            /* add smooth scroll behavior */
+            :global(html) {
+                scroll-behavior: smooth;
+            }
 
-        /* add smooth scroll behavior */
-        :global(html) {
-            scroll-behavior: smooth;
-        }
+            .prose :global(ul),
+            .prose :global(ol) {
+                padding-left: 1.5rem;
+            }
 
-        .prose :global(ul),
-        .prose :global(ol) {
-            padding-left: 1.5rem;
-        }
+            .prose :global(ul) {
+                list-style: disc;
+            }
 
-        .prose :global(ul) {
-            list-style: disc;
-        }
+            .prose :global(ol) {
+                list-style: decimal;
+            }
 
-        .prose :global(ol) {
-            list-style: decimal;
-        }
+            .prose :global(a) {
+                color: #93c5fd;
+                text-decoration: underline;
+                transition: color 0.2s;
+            }
 
-        .prose :global(a) {
-            color: #93c5fd;
-            text-decoration: underline;
-            transition: color 0.2s;
-        }
+            .prose :global(a:hover) {
+                color: #fff;
+            }
 
-        .prose :global(a:hover) {
-            color: #fff;
-        }
+            .prose :global(p),
+            .prose :global(ul),
+            .prose :global(ol) {
+                margin-bottom: 1rem;
+                color: #d1d5db; /* Light text color */
+                line-height: 1.6;
+            }
 
-        .prose :global(p),
-        .prose :global(ul),
-        .prose :global(ol) {
-            margin-bottom: 1rem;
-            color: #d1d5db; /* Light text color */
-            line-height: 1.6;
-        }
+            .prose :global(h1),
+            .prose :global(h2),
+            .prose :global(h3),
+            .prose :global(h4),
+            .prose :global(h5),
+            .prose :global(h6) {
+                color: #fff; /* Heading text color */
+                margin-bottom: 1rem;
+                margin-top: 1.5rem;
+                font-weight: 600;
+                line-height: 1.3;
+            }
 
-        .prose :global(h1),
-        .prose :global(h2),
-        .prose :global(h3),
-        .prose :global(h4),
-        .prose :global(h5),
-        .prose :global(h6) {
-            color: #fff; /* Heading text color */
-            margin-bottom: 1rem;
-            margin-top: 1.5rem;
-            font-weight: 600;
-            line-height: 1.3;
-        }
+            .prose :global(blockquote) {
+                border-left: 4px solid #4b5563;
+                padding-left: 1.5rem;
+                margin-left: 0;
+                font-style: italic;
+                color: #a1a1aa;
+            }
 
-        .prose :global(blockquote) {
-            border-left: 4px solid #4b5563;
-            padding-left: 1.5rem;
-            margin-left: 0;
-            font-style: italic;
-            color: #a1a1aa;
-        }
+            .prose :global(code) {
+                background-color: #1f293780;
+                padding: 0.2rem 0.4rem;
+                border-radius: 0.25rem;
+                font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+                    "Liberation Mono", "Courier New", monospace;
+                color: #a1a1aa;
+            }
 
-        .prose :global(code) {
-            background-color: #1f293780;
-            padding: 0.2rem 0.4rem;
-            border-radius: 0.25rem;
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-                "Liberation Mono", "Courier New", monospace;
-            color: #a1a1aa;
-        }
+            .prose :global(pre) {
+                background-color: #1f293780;
+                padding: 1rem;
+                border-radius: 0.25rem;
+                overflow-x: auto;
+            }
 
-        .prose :global(pre) {
-            background-color: #1f293780;
-            padding: 1rem;
-            border-radius: 0.25rem;
-            overflow-x: auto;
-        }
+            .prose :global(pre > code) {
+                background-color: transparent;
+                padding: 0;
+            }
 
-        .prose :global(pre > code) {
-            background-color: transparent;
-            padding: 0;
-        }
+            .prose :global(hr) {
+                border-color: #4b5563;
+            }
 
-        .prose :global(hr) {
-            border-color: #4b5563;
-        }
-
-        .prose :global(strong) {
-            color: #ffffffc3;
-        }
-    </style>
-</Layout>
+            .prose :global(strong) {
+                color: #ffffffc3;
+            }
+        </style>
+    </Layout>
