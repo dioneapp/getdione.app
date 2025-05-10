@@ -4,9 +4,6 @@ import { defineConfig } from "astro/config";
 import tailwind from "@astrojs/tailwind";
 
 import cloudflare from "@astrojs/cloudflare";
-
-import partytown from '@astrojs/partytown';
-
 // https://astro.build/config
 export default defineConfig({
 	markdown: {
@@ -19,13 +16,7 @@ export default defineConfig({
 		},
 	},
 	output: "server",
-	integrations: [tailwind(),
-		partytown({
-			config: {
-				forward: ["dataLayer.push"]
-			}
-		})
-	],
+	integrations: [tailwind()],
 	adapter: cloudflare({
 		platformProxy: {
 			enabled: true,
