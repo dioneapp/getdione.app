@@ -25,6 +25,7 @@ if (Astro.request.method === "POST") {
 		const experience = formData.get("experience")?.toString() || "";
 		const usage = formData.get("usage")?.toString() || "";
 		const updates = formData.get("updates")?.toString() || "no";
+		const discord = formData.get("discord")?.toString() || "no";
 
 		if (!name || !email || !os || !role || !experience || !usage) {
 			error = "All fields are required";
@@ -74,6 +75,11 @@ if (Astro.request.method === "POST") {
 								name: "Reason for Interest",
 								value: reason,
 							},
+							{
+								name: "Joined Discord",
+								value: discord === "yes" ? "Yes" : "No",
+								inline: true,
+							},
 						],
 						timestamp: new Date().toISOString(),
 					},
@@ -93,6 +99,9 @@ if (Astro.request.method === "POST") {
 			}
 
 			success = true;
+			if (discord === "yes") {
+				return Astro.redirect("/beta/success?joinDiscord=true");
+			}
 			return Astro.redirect("/beta/success");
 		}
 	} catch (e) {
@@ -147,6 +156,7 @@ if (Astro.request.method === "POST") {
       }
 
       <form
+        id="beta-join-form"
         method="POST"
         class="w-full max-w-xl bg-white/10 backdrop-blur-md rounded-xl p-6 sm:p-8 border border-white/10"
       >
@@ -315,6 +325,19 @@ if (Astro.request.method === "POST") {
             />
             <label for="updates" class="text-sm text-white/80">
               Keep me updated about Dione news and releases
+            </label>
+          </div>
+          <div class="flex items-center gap-3">
+            <input
+              type="checkbox"
+              id="discord"
+              name="discord"
+              value="yes"
+              class="w-4 h-4 rounded border-white/20 bg-white/10 text-white focus:ring-2 focus:ring-white/50"
+              checked="checked"
+            />
+            <label for="discord" class="text-sm text-white/80">
+              Want to join the discord to get priority?
             </label>
           </div>
           <input
