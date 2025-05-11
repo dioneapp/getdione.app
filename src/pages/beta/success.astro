@@ -13,23 +13,58 @@ import Layout from "../../layouts/Layout.astro";
       <div class="bg-[#BCB1E7]/30 h-[70vh] w-[70vh] rounded-full blur-[150px]">
       </div>
     </div>
-
-    <div class="relative text-center max-w-xl">
+    <div id="page1" class="relative text-center max-w-xl">
       <h1
         class="text-4xl sm:text-5xl font-semibold text-white tracking-tighter mb-6"
       >
-        Thank You!
+        Jump ahead in line!
       </h1>
       <p class="text-lg sm:text-xl text-white/80 mb-8">
-        Your beta registration has been received. We'll be in touch soon with
-        next steps.
+        Join a community of developers, researchers and those curious about artificial intelligence.
       </p>
-      <a
-        href="/"
+      <div class="flex gap-4 justify-center items-center mx-auto">
+      <a href="https://discord.gg/dione" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center h-11 sm:h-12 px-6 sm:px-8 font-medium text-white bg-white/20 backdrop-blur border border-white/10 shadow-xl hover:shadow-sm rounded-full hover:bg-white/30 transition-all duration-300">
+        Join Discord
+      </a>
+      <button
+        id="next"
         class="inline-flex items-center justify-center h-11 sm:h-12 px-6 sm:px-8 font-medium text-white bg-white/10 backdrop-blur border border-white/10 rounded-full hover:bg-white/20 transition-all duration-300"
       >
-        Return Home
-      </a>
+        Next
+      </button>
     </div>
+    </div>
+    <div id="page2" class="relative text-center max-w-xl" style="display: none;">
+    <h1
+      class="text-4xl sm:text-5xl font-semibold text-white tracking-tighter mb-6"
+    >
+      Thank You!
+    </h1>
+    <p class="text-lg sm:text-xl text-white/80 mb-8">
+      Your beta registration has been received. We'll be in touch soon with
+      next steps.
+    </p>
+    <a
+      href="/"
+      class="inline-flex items-center justify-center h-11 sm:h-12 px-6 sm:px-8 font-medium text-white bg-white/10 backdrop-blur border border-white/10 rounded-full hover:bg-white/20 transition-all duration-300"
+    >
+      Return Home
+    </a>
+  </div>
   </main>
 </Layout>
+
+
+<script>
+  const nextBtn = document.getElementById("next");
+  if (nextBtn) {
+    nextBtn.addEventListener("click", () => {
+      const page1 = document.getElementById("page1");
+      const page2 = document.getElementById("page2");
+      if (page1 && page2) {
+        page1.style.display = "none";
+        page2.style.display = "block";
+      }
+    });
+  }
+</script>
