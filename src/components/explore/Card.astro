@@ -52,7 +52,7 @@ const formattedDate = new Date(created_at).toLocaleDateString();
   <div class="relative z-10 flex flex-col h-full">
     <div class="flex items-center gap-4 mb-4">
       <img
-        src={logo_url}
+        src={logo_url || '/favicon.ico'}
         alt={`${name} logo`}
         class="w-12 h-12 rounded-md object-cover"
       />
