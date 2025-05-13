@@ -2,12 +2,13 @@
     import { marked } from "marked";
     import Layout from "../layouts/Layout.astro";
 
+    const runtimeEnv = Astro.locals.runtime?.env || {};
     const fetchReleases = async () => {
         let response = await fetch(
             "https://api.github.com/repos/dioneapp/dioneapp/releases",
             {
                 headers: {
-                    Authorization: `Bearer ${import.meta.env.GITHUB_TOKEN}`,
+                    Authorization: `Bearer ${runtimeEnv.GITHUB_TOKEN || import.meta.env.GITHUB_TOKEN}`,
                     Accept: "application/vnd.github+json",
                 },
             }
@@ -57,13 +58,13 @@
                     Changelog
                 </h1>
                 <p
-                    class="mt-4 max-w-xl text-center text-base sm:text-lg text-white/80 leading-relaxed text-balance px-4"
+                    class="mt-4 mb-12 max-w-xl text-center text-base sm:text-lg text-white/80 leading-relaxed text-balance px-4"
                     style="text-rendering: optimizeLegibility"
                 >
                     Latest changes to Dione directly from GitHub.
                 </p>
                 {releases.length === 0 && (
-                    <p class="text-center text-sm text-white/70 justify-center items-center mt-auto mb-4">
+                    <p class="text-center text-sm text-white/70 justify-center items-center mt-auto mb-14">
                         No releases found.
                     </p>
                 )}
