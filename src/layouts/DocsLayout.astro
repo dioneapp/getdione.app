@@ -18,7 +18,6 @@ type Props = {
 
 const { frontmatter } = Astro.props;
 
-// get all documentation pages
 const docs = import.meta.glob<DocModule>("/src/pages/docs/**/*.md", {
 	eager: true,
 });
@@ -38,7 +37,7 @@ const sections = Object.entries(docs).reduce(
 
 		const pageData = {
 			title: doc.frontmatter.title,
-			order: doc.frontmatter.order || 99,
+			order: doc.frontmatter.order ?? 99,
 			url: `/docs/${file.split("/docs/")[1].replace(/\.md$/, "")}`,
 		};
 
@@ -65,23 +64,44 @@ const sections = Object.entries(docs).reduce(
 	>,
 );
 
-// sort sections, subsections and their pages
-for (const section of Object.keys(sections)) {
-	sections[section].pages.sort((a, b) => a.order - b.order);
-	for (const subsection of Object.keys(sections[section].subsections)) {
-		sections[section].subsections[subsection].sort((a, b) => a.order - b.order);
+// lower number = higher priority
+const sectionPriority: Record<string, number> = {
+	developers: 99,
+	troubleshooting: 100,
+};
+
+// order foldersr
+const sectionEntries = Object.entries(sections);
+sectionEntries.sort(([a], [b]) => {
+	const priorityA = sectionPriority[a] ?? 0;
+	const priorityB = sectionPriority[b] ?? 0;
+
+	if (priorityA !== priorityB) {
+		return priorityA - priorityB;
 	}
+
+	return a.localeCompare(b);
+});
+
+const orderedSections: typeof sections = {};
+for (const [section, data] of sectionEntries) {
+	data.pages.sort((a, b) => a.order - b.order);
+
+	for (const subsection of Object.keys(data.subsections)) {
+		data.subsections[subsection].sort((a, b) => a.order - b.order);
+	}
+
+	orderedSections[section] = data;
 }
 
-// determine if this is the docs index page
 const isDocsIndex =
 	Astro.url.pathname === "/docs" || Astro.url.pathname === "/docs/";
 
-// set the page title
 const pageTitle = isDocsIndex
 	? "Documentation"
 	: `Documentation · ${frontmatter?.title}`;
 ---
+
 
 <BaseLayout title={pageTitle}>
     <div class="min-h-screen bg-[#080808] pt-10 relative">
@@ -233,7 +253,7 @@ const pageTitle = isDocsIndex
             <nav class="pt-0 px-6">
                 <div class="space-y-6">
                     {
-                        Object.entries(sections).map(
+                        Object.entries(orderedSections).map(
                             ([section, { pages, subsections }]) => (
                                 <div class="animate-fade-in">
                                     <h2 class="px-4 text-sm font-semibold text-white uppercase tracking-wider mb-3">
@@ -319,34 +339,36 @@ const pageTitle = isDocsIndex
         </div>
 
         <main class="lg:pl-80 transition-all duration-300 relative z-1">
-    <div class="max-w-4xl mx-auto px-6 sm:px-8 py-16">
-        <div
-            class="prose prose-invert prose-img:rounded-2xl prose-headings:text-white prose-p:text-white/80 prose-a:text-[#BCB1E7] hover:prose-a:text-white prose-strong:text-white/90 prose-pre:p-2 prose-pre:m-0 animate-fade-in"
-        >
-            <slot />
+        <div class="max-w-4xl mx-auto px-6 sm:px-8 py-16">
+            <div
+                class="prose prose-invert prose-img:rounded-2xl prose-headings:text-white prose-p:text-white/80 prose-a:text-[#BCB1E7] hover:prose-a:text-white prose-strong:text-white/90 prose-pre:p-2 prose-pre:m-0 animate-fade-in"
+            >
+                <slot />
+            </div>
+            <div id="img-zoom-modal" class="img-zoom-modal hidden">
+                <img id="img-zoomed" class="img-zoomed" src="" alt="Zoomed image" />
+            </div>
         </div>
-        <div id="img-zoom-modal" class="img-zoom-modal hidden">
-            <img id="img-zoomed" class="img-zoomed" src="" alt="Zoomed image" />
-        </div>
-    </div>
-</main>
+    </main>
 
         <style is:global>
+            hr {
+                border: none;
+                border-top: 1px solid #ffffff;
+            }
+            code {
+                background-color: rgba(0, 0, 0, 0.3) !important;
+                padding: 0.2rem;
+                user-select: all;
+            }
+            pre > code {
+                background-color: transparent !important;
+            }
             pre[style*="background-color"] {
                 background-color: rgba(0, 0, 0, 0.3) !important;
                 backdrop-filter: blur(8px);
-                border-radius: 0.1rem;
-            }
-            code .line {
-                background-color: rgba(255, 255, 255, 0.1) !important;
-                display: inline-block;
-                width: 100%;
-                margin-bottom: 0.2rem;
-                border-radius: 0.3rem;
-                user-select: all;
-            }
-            code .line:last-child {
-                margin-top: 0.2rem;
+                border-radius: 1rem;
+                padding: 3rem;
             }
             .animate-fade-in {
                 animation: fade-in 0.7s cubic-bezier(0.16, 1, 0.3, 1);
