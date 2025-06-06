@@ -11,7 +11,7 @@ import Layout from "../../layouts/Layout.astro";
 
     window.handleRedirect = function () {
       if (accessToken) {
-        const redirectUrl = `dione://auth=${accessToken}&refresh=${refreshToken}`;
+        const redirectUrl = `dione://auth=${encodeURIComponent(accessToken)}&refresh=${encodeURIComponent(refreshToken)}`;
         window.location.href = redirectUrl;
       }
     };
