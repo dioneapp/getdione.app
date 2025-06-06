@@ -9,6 +9,9 @@
 		"astro": "astro",
 		"check": "pnpm biome check --write ."
 	},
+	"engines": {
+		"node": ">=18.20.8"
+	},
 	"dependencies": {
 		"@astrojs/cloudflare": "^12.5.1",
 		"@astrojs/tailwind": "^6.0.2",
