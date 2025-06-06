@@ -3,7 +3,7 @@ import Layout from "../../layouts/Layout.astro";
 ---
 
 <Layout title="Login">
-  <script is:inline type="module">
+  <script type="module" client:load>
     const hash = window.location.hash.substring(1);
     const urlParams = new URLSearchParams(hash);
     const accessToken = urlParams.get("access_token");
