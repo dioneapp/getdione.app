@@ -2,7 +2,7 @@
 import Layout from "../../layouts/Layout.astro";
 
 const url = new URL(Astro.request.url);
-const joinDiscord = url.searchParams.get('joinDiscord') === 'true';
+const joinDiscord = url.searchParams.get("joinDiscord") === "true";
 ---
 
 <Layout title="Success Beta Join">

@@ -3,17 +3,22 @@ import Layout from "../layouts/Layout.astro";
 import { supabase } from "../utils/database";
 
 // check if user is authenticated
-const { data: { session } } = await supabase.auth.getSession();
+const {
+	data: { session },
+} = await supabase.auth.getSession();
 
 if (!session) {
-  return Astro.redirect("/auth/login");
+	return Astro.redirect("/auth/login");
 }
 
 // get user data
-const { data: { user }, error } = await supabase.auth.getUser();
+const {
+	data: { user },
+	error,
+} = await supabase.auth.getUser();
 
 if (error || !user) {
-  return Astro.redirect("/auth/login");
+	return Astro.redirect("/auth/login");
 }
 
 // get user metadata

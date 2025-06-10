@@ -3,15 +3,17 @@ import Layout from "../../layouts/Layout.astro";
 import { supabase } from "../../utils/database";
 
 // check if user is already authenticated
-const { data: { session } } = await supabase.auth.getSession();
+const {
+	data: { session },
+} = await supabase.auth.getSession();
 
 if (session) {
-  return Astro.redirect("/profile");
+	return Astro.redirect("/profile");
 }
 
 // check if this is an app login
 const url = new URL(Astro.request.url);
-const isAppLogin = url.searchParams.get('app') === 'true';
+const isAppLogin = url.searchParams.get("app") === "true";
 ---
 
 <Layout title="Login">

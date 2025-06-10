@@ -4,14 +4,16 @@ import { supabase } from "../../utils/database";
 
 // check if this is an app login
 const url = new URL(Astro.request.url);
-const isAppLogin = url.searchParams.get('app') === 'true';
+const isAppLogin = url.searchParams.get("app") === "true";
 
 // get the session
-const { data: { session } } = await supabase.auth.getSession();
+const {
+	data: { session },
+} = await supabase.auth.getSession();
 
 // if no session, redirect to login
 if (!session) {
-  return Astro.redirect("/auth/login");
+	return Astro.redirect("/auth/login");
 }
 ---
 
