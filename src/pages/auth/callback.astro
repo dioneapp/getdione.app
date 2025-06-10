@@ -1,5 +1,18 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import { supabase } from "../../utils/database";
+
+// check if this is an app login
+const url = new URL(Astro.request.url);
+const isAppLogin = url.searchParams.get('app') === 'true';
+
+// get the session
+const { data: { session } } = await supabase.auth.getSession();
+
+// if no session, redirect to login
+if (!session) {
+  return Astro.redirect("/auth/login");
+}
 ---
 
 <Layout title="Login">
@@ -11,7 +24,7 @@ import Layout from "../../layouts/Layout.astro";
       <div class="backdrop-blur-md bg-white/[0.02] border border-white/[0.05] rounded-xl p-12 flex flex-col items-start justify-start shadow-lg shadow-black/10 w-full h-full">
         <h1 class="text-white text-3xl font-semibold">Redirecting...</h1>
         <h2 class="mt-2 text-white/70">
-          We are redirecting you to Dione app in a few seconds.
+          {isAppLogin ? "We are redirecting you to Dione app in a few seconds." : "We are redirecting you to your profile page."}
         </h2>
         <div id="error-message" class="mt-4 text-red-400 text-sm hidden"></div>
         <div id="redirect-link" class="mt-4 text-xs text-white/40 hidden">
@@ -22,7 +35,7 @@ import Layout from "../../layouts/Layout.astro";
   </div>
 
   <script is:inline>
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
       try {
         const hash = window.location.hash.substring(1);
         const params = new URLSearchParams(hash);
@@ -33,11 +46,33 @@ import Layout from "../../layouts/Layout.astro";
           throw new Error('No access token found in URL');
         }
 
+        // set the session in supabase
+        const { error: sessionError } = await window.supabase.auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken || '',
+        });
+
+        if (sessionError) {
+          throw sessionError;
+        }
+
         // encode tokens
         const encodedAccessToken = encodeURIComponent(accessToken);
         const encodedRefreshToken = refreshToken ? encodeURIComponent(refreshToken) : '';
         
-        const redirectUrl = `dione://auth=${encodedAccessToken}${encodedRefreshToken ? `&refresh=${encodedRefreshToken}` : ''}`;
+        // check if this is an app login
+        const urlParams = new URLSearchParams(window.location.search);
+        const isAppLogin = urlParams.get('app') === 'true';
+        
+        let redirectUrl;
+        if (isAppLogin) {
+          // app login - redirect to dione:// protocol
+          redirectUrl = `dione://auth=${encodedAccessToken}${encodedRefreshToken ? `&refresh=${encodedRefreshToken}` : ''}`;
+        } else {
+          // web login - redirect to profile page
+          redirectUrl = '/profile';
+        }
+
         const redirectLink = document.querySelector('#redirect-link a');
         if (redirectLink) {
           redirectLink.href = redirectUrl;
