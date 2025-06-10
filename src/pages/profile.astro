@@ -51,7 +51,7 @@ const avatarUrl = user.user_metadata?.avatar_url;
             <div class="p-4 rounded-lg bg-white/5 border border-white/10">
               <h2 class="text-white text-lg font-medium">Account Information</h2>
               <div class="mt-2 text-white/70 text-sm">
-                <p>Last Sign In: {new Date(user.last_sign_in_at || '').toLocaleString()}</p>
+                <p>Last Log In: {new Date(user.last_sign_in_at || '').toLocaleString()}</p>
                 <p>Account Created: {new Date(user.created_at).toLocaleString()}</p>
               </div>
             </div>
