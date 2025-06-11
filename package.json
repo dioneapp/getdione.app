@@ -7,7 +7,8 @@
 		"build": "astro build",
 		"preview": "astro preview",
 		"astro": "astro",
-		"check": "pnpm biome check --write ."
+		"check": "pnpm biome check --write .",
+		"deploy": "astro build && wrangler deploy"
 	},
 	"engines": {
 		"node": ">=18.20.8"

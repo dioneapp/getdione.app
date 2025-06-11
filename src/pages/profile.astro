@@ -2,28 +2,41 @@
 import Layout from "../layouts/Layout.astro";
 import { supabase } from "../utils/database";
 
-// check if user is authenticated
-const {
-	data: { session },
-} = await supabase.auth.getSession();
+const accessToken = Astro.cookies.get("sb-access-token");
+const refreshToken = Astro.cookies.get("sb-refresh-token");
 
-if (!session) {
-	return Astro.redirect("/auth/login");
+if (!accessToken || !refreshToken) {
+  return Astro.redirect("/auth/login");
 }
 
-// get user data
-const {
-	data: { user },
-	error,
-} = await supabase.auth.getUser();
-
-if (error || !user) {
-	return Astro.redirect("/auth/login");
+let session;
+try {
+  session = await supabase.auth.setSession({
+    refresh_token: refreshToken.value,
+    access_token: accessToken.value,
+  });
+  if (session.error) {
+    Astro.cookies.delete("sb-access-token", {
+      path: "/",
+    });
+    Astro.cookies.delete("sb-refresh-token", {
+      path: "/",
+    });
+    return Astro.redirect("/auth/login");
+  }
+} catch (error) {
+  Astro.cookies.delete("sb-access-token", {
+    path: "/",
+  });
+  Astro.cookies.delete("sb-refresh-token", {
+    path: "/",
+  });
+  return Astro.redirect("/auth/login");
 }
 
-// get user metadata
-const fullName = user.user_metadata?.full_name || user.email;
-const avatarUrl = user.user_metadata?.avatar_url;
+const fullName = session?.data.user?.user_metadata?.full_name;
+const avatarUrl = session?.data.user?.user_metadata?.avatar_url;
+const user = session?.data.user;
 ---
 
 <Layout title="Profile">
@@ -43,7 +56,7 @@ const avatarUrl = user.user_metadata?.avatar_url;
           )}
           <div class="flex flex-col">
             <h1 class="text-white text-3xl font-semibold">{fullName}</h1>
-            <p class="text-white/70">{user.email}</p>
+            <p class="text-white/70">{user?.email}</p>
           </div>
         </div>
         <div class="mt-8 w-full">
@@ -51,34 +64,21 @@ const avatarUrl = user.user_metadata?.avatar_url;
             <div class="p-4 rounded-lg bg-white/5 border border-white/10">
               <h2 class="text-white text-lg font-medium">Account Information</h2>
               <div class="mt-2 text-white/70 text-sm">
-                <p>Last Log In: {new Date(user.last_sign_in_at || '').toLocaleString()}</p>
-                <p>Account Created: {new Date(user.created_at).toLocaleString()}</p>
+                <p>Last Log In: {new Date(user?.last_sign_in_at || '').toLocaleString()}</p>
+                <p>Account Created: {new Date(user?.created_at || '').toLocaleString()}</p>
               </div>
             </div>
+            <form action="/api/auth/signout" method="get">
             <button
               id="logout-button"
               class="mt-4 px-4 py-2 rounded-lg bg-white/10 text-white hover:bg-white/20 transition-colors"
             >
               Sign Out
             </button>
+          </form>
           </div>
         </div>
       </div>
     </div>
   </div>
 </Layout>
-
-<script>
-  import { supabase } from "../utils/database";
-
-  // handle logout
-  document.getElementById('logout-button')?.addEventListener('click', async () => {
-    try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-      window.location.href = '/auth/login';
-    } catch (error) {
-      console.error('Error signing out:', error);
-    }
-  });
-</script> 

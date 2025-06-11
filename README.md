@@ -33,6 +33,7 @@ The site will be available at `http://localhost:4321`
 - `pnpm build` - Build for production
 - `pnpm preview` - Preview production build
 - `pnpm check` - Run type checking and linting
+- `pnpm deploy` - Deploy to Cloudflare Workers
 
 
 ## License
