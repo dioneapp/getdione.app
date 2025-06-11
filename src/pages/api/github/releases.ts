@@ -19,8 +19,6 @@ export const GET: APIRoute = async ({ locals }) => {
     },
   });
 
-  console.log('res', res.headers.get('X-RateLimit-Remaining'));
-
   if (!res.ok) {
     console.log('error', res.statusText);
     return new Response(JSON.stringify({ error: "Failed to fetch releases" }), {
@@ -29,7 +27,6 @@ export const GET: APIRoute = async ({ locals }) => {
   }
 
   const releases = await res.json();
-  console.log('releases', releases);
   return new Response(JSON.stringify(releases), {
     headers: { "Content-Type": "application/json" },
   });
