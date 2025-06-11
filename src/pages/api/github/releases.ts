@@ -1,0 +1,31 @@
+import type { APIRoute } from "astro";
+
+export const GET: APIRoute = async ({ locals }) => {
+  const token = locals.GITHUB_TOKEN;
+
+  console.log('token', token);
+
+  if (!token) {
+    return new Response(JSON.stringify({ error: "GitHub token missing" }), {
+      status: 500,
+    });
+  }
+
+  const res = await fetch("https://api.github.com/repos/dioneapp/dioneapp/releases", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });
+
+  if (!res.ok) {
+    return new Response(JSON.stringify({ error: "Failed to fetch releases" }), {
+      status: 500,
+    });
+  }
+
+  const releases = await res.json();
+  return new Response(JSON.stringify(releases), {
+    headers: { "Content-Type": "application/json" },
+  });
+};

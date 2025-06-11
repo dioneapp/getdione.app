@@ -1,21 +1,16 @@
 ---
 import AppCard from "../components/explore/Card.astro";
 import Layout from "../layouts/Layout.astro";
-import { supabase } from "../utils/database";
+
+const { request } = Astro;
 
 let scripts = [];
 
 async function fetchScripts() {
-	const { data, error } = await supabase
-		.from("scripts")
-		.select("*")
-		.order("created_at", { ascending: false })
-		.limit(24);
-	if (error) {
-		console.error("Error fetching scripts:", error);
-		return [];
-	}
-	return data;
+    const origin = request?.url ? new URL(request.url).origin : '';
+    const res = await fetch(`${origin}/api/db/scripts`);
+    const scripts = res.ok ? await res.json() : [];
+    return scripts;
 }
 
 scripts = await fetchScripts();
