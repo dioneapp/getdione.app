@@ -17,5 +17,6 @@ export default defineConfig({
 			"process.env": import.meta.env,
 		},
 	},
-  output: "server"
+  output: "server",
+  site: "https://getdione.app",
 });
