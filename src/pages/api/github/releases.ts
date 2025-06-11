@@ -3,8 +3,6 @@ import type { APIRoute } from "astro";
 export const GET: APIRoute = async ({ locals }) => {
   const token = locals.GITHUB_TOKEN || process.env.GITHUB_TOKEN;
 
-  console.log('token', token);
-
   if (!token) {
     return new Response(JSON.stringify({ error: "GitHub token missing" }), {
       status: 500,
@@ -19,6 +17,8 @@ export const GET: APIRoute = async ({ locals }) => {
       'X-GitHub-Api-Version': '2022-11-28'
     },
   });
+
+  console.log('res', res.headers);
 
   if (!res.ok) {
     console.log('error', res.statusText);
