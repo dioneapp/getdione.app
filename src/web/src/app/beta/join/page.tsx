@@ -53,14 +53,14 @@ async function submitForm(formData: FormData) {
 		],
 	};
 
-	const response = await fetch('/api/beta', {
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
+	const response = await fetch("/api/beta", {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify(webhookBody),
 	});
 
 	if (!response.ok) {
-		throw new Error('Failed to submit application');
+		throw new Error("Failed to submit application");
 	}
 
 	return discord === "yes";
