@@ -1,0 +1,57 @@
+name: Format Code with Biome
+on:
+  push:
+    branches: ["**"]
+  workflow_dispatch:
+
+jobs:
+  biome-format:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup Biome
+        uses: biomejs/setup-biome@v2
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Biome format and lint
+        run: biome check --write ./src || true
+
+      - name: Commit changes
+        id: commitback
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          if [[ -n "$(git status --porcelain)" ]]; then
+            git add .
+            git commit -m "chore(format): run biome on ${{github.ref_name}}"
+            echo "committed=true" >> $GITHUB_OUTPUT
+            echo "Files formatted and committed"
+          else
+            echo "committed=false" >> $GITHUB_OUTPUT
+            echo "No formatting changes needed"
+          fi
+
+      - name: Create Pull Request
+        if: steps.commitback.outputs.committed == 'true'
+        continue-on-error: true
+        uses: peter-evans/create-pull-request@v6
+        with:
+          delete-branch: true
+          body: "🤖 Automatically apply Biome code formatter changes"
+          title: "chore(format): run biome on ${{github.ref_name}}"
+          commit-message: "chore(format): run biome on ${{github.ref_name}}"
+          branch: formatter/${{github.ref_name}}
