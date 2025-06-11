@@ -1,7 +1,9 @@
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = import.meta.env.SUPABASE_URL as string || process.env.SUPABASE_URL;
-const supabaseKey = import.meta.env.SUPABASE_KEY as string || process.env.SUPABASE_KEY;
+const supabaseUrl =
+	(import.meta.env.SUPABASE_URL as string) || process.env.SUPABASE_URL;
+const supabaseKey =
+	(import.meta.env.SUPABASE_KEY as string) || process.env.SUPABASE_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
 	throw new Error(
