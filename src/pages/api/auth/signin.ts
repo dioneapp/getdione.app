@@ -12,7 +12,7 @@ export const POST: APIRoute = async ({ request, redirect }) => {
   const validProviders = ["google", "github", "discord"];
 
   if (provider && validProviders.includes(provider)) {
-    const redirectUrl = isAppLogin ? `${new URL(request.url).origin}/api/auth/callback?app=true` : `${new URL(request.url).origin}/api/auth/callback`;
+    const redirectUrl = isAppLogin ? `${new URL(request.url || "https://getdione.app").origin}/api/auth/callback?app=true` : `${new URL(request.url || "https://getdione.app").origin}/api/auth/callback`;
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: provider as Provider,
       options: {

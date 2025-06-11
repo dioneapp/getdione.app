@@ -12,7 +12,7 @@ let user: any;
 if (session) {
   try {
     // Build the absolute URL using the request object
-    const origin = request?.url ? new URL(request.url).origin : '';
+    const origin = request?.url ? new URL(request.url).origin : 'https://getdione.app';
     const apiUrl = `${origin}/api/auth/user`;
     const res = await fetch(apiUrl, {
       headers: {

@@ -7,7 +7,7 @@ const { request } = Astro;
 let scripts = [];
 
 async function fetchScripts() {
-    const origin = request?.url ? new URL(request.url).origin : '';
+    const origin = request?.url ? new URL(request.url).origin : 'https://getdione.app';
     const res = await fetch(`${origin}/api/db/scripts`);
     const scripts = res.ok ? await res.json() : [];
     return scripts;
