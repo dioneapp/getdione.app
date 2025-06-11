@@ -294,42 +294,83 @@ export default function ProfilePage() {
 											user?.first_name || "No name set"
 										)}
 									</div>
-									<div className="text-white/50 text-sm truncate max-w-[300px]">
-										{isEditing ? (
-											<div className="flex flex-col gap-1">
-												<div className="flex items-center">
-													<span>@</span>
-													<input
-														type="text"
-														value={editedFields.username}
-														onChange={(
-															e: React.ChangeEvent<HTMLInputElement>,
-														) => {
-															setEditedFields((prev) => ({
-																...prev,
-																username: e.target.value,
-															}));
-															setFieldErrors((prev) => ({
-																...prev,
-																username: "",
-															}));
-														}}
-														maxLength={CHAR_LIMITS.username}
-														className={`bg-transparent border-b ${fieldErrors.username ? "border-red-500/50" : "border-white/20"} px-1 py-0.5 text-white w-full focus:outline-none`}
-														placeholder="username"
-													/>
-												</div>
-												{fieldErrors.username && (
-													<div className="text-red-400 text-sm">
-														{fieldErrors.username}
+									<div className="flex items-center gap-2 text-white/50 text-sm truncate max-w-[300px]">
+										<span className="flex items-center">
+											<span>@</span>
+											{isEditing ? (
+												<div className="flex flex-col gap-1">
+													<div className="flex items-center">
+														<input
+															type="text"
+															value={editedFields.username}
+															onChange={(
+																e: React.ChangeEvent<HTMLInputElement>,
+															) => {
+																setEditedFields((prev) => ({
+																	...prev,
+																	username: e.target.value,
+																}));
+																setFieldErrors((prev) => ({
+																	...prev,
+																	username: "",
+																}));
+															}}
+															maxLength={CHAR_LIMITS.username}
+															className={`bg-transparent border-b ${fieldErrors.username ? "border-red-500/50" : "border-white/20"} px-1 py-0.5 text-white w-full focus:outline-none`}
+															placeholder="username"
+														/>
 													</div>
-												)}
-											</div>
-										) : (
-											<span className="flex items-center">
-												<span>@</span>
-												{user?.username || "anonymous"}
-											</span>
+													{fieldErrors.username && (
+														<div className="text-red-400 text-sm">
+															{fieldErrors.username}
+														</div>
+													)}
+												</div>
+											) : (
+												user?.username || "anonymous"
+											)}
+										</span>
+										{/* location display */}
+										{user?.location && (
+											<>
+												<span className="text-white/20">•</span>
+												<div className="flex items-center gap-1">
+													<svg
+														xmlns="http://www.w3.org/2000/svg"
+														className="h-3.5 w-3.5"
+														viewBox="0 0 20 20"
+														fill="currentColor"
+													>
+														<path
+															fillRule="evenodd"
+															d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+															clipRule="evenodd"
+														/>
+													</svg>
+													{isEditing ? (
+														<motion.input
+															initial={{ opacity: 0 }}
+															animate={{ opacity: 1 }}
+															exit={{ opacity: 0 }}
+															type="text"
+															value={editedFields.location}
+															onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+																setEditedFields((prev) => ({
+																	...prev,
+																	location: e.target.value,
+																}))
+															}
+															maxLength={CHAR_LIMITS.location}
+															className="bg-transparent border-b border-white/20 px-1 py-0.5 text-white w-full focus:outline-none"
+															placeholder="Where are you from?"
+														/>
+													) : (
+														<span className="text-white/70">
+															{user?.location}
+														</span>
+													)}
+												</div>
+											</>
 										)}
 									</div>
 								</div>
@@ -363,44 +404,6 @@ export default function ProfilePage() {
 											<p className="text-white/70 whitespace-pre-wrap line-clamp-4">
 												{user?.bio || "No bio yet"}
 											</p>
-										)}
-									</div>
-
-									{/* location section */}
-									<div className="flex items-center gap-2 text-white/50 pt-4 border-t border-white/10">
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											className="h-4 w-4"
-											viewBox="0 0 20 20"
-											fill="currentColor"
-										>
-											<path
-												fillRule="evenodd"
-												d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-												clipRule="evenodd"
-											/>
-										</svg>
-										{isEditing ? (
-											<motion.input
-												initial={{ opacity: 0 }}
-												animate={{ opacity: 1 }}
-												exit={{ opacity: 0 }}
-												type="text"
-												value={editedFields.location}
-												onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-													setEditedFields((prev) => ({
-														...prev,
-														location: e.target.value,
-													}))
-												}
-												maxLength={CHAR_LIMITS.location}
-												className="bg-transparent border-b border-white/20 px-1 py-0.5 text-white w-full focus:outline-none"
-												placeholder="Where are you from?"
-											/>
-										) : (
-											<span className="text-white/70">
-												{user?.location || "No location set"}
-											</span>
 										)}
 									</div>
 
