@@ -6,8 +6,7 @@
 		"dev": "next dev --turbopack",
 		"build": "next build",
 		"start": "next start",
-		"lint": "next lint",
-		"deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy"
+		"lint": "next lint"
 	},
 	"dependencies": {
 		"@supabase/supabase-js": "^2.50.0",
