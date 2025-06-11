@@ -1,28 +1,31 @@
 {
-	"name": "getdione.app",
-	"type": "module",
-	"version": "0.0.1",
+	"name": "flat-dew-5719",
+	"version": "0.1.0",
+	"private": true,
 	"scripts": {
-		"dev": "astro dev",
-		"build": "astro build",
-		"preview": "astro preview",
-		"astro": "astro",
-		"check": "pnpm biome check --write .",
-		"deploy": "astro build && wrangler deploy"
-	},
-	"engines": {
-		"node": ">=18.20.8"
+		"dev": "next dev --turbopack",
+		"build": "next build",
+		"start": "next start",
+		"lint": "biome lint --write .",
+		"format": "biome format --write .",
+		"deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+		"preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+		"cf-typegen": "wrangler types --env-interface CloudflareEnv ./cloudflare-env.d.ts"
 	},
 	"dependencies": {
-		"@astrojs/cloudflare": "^12.5.1",
-		"@astrojs/tailwind": "^6.0.2",
-		"@supabase/supabase-js": "^2.49.4",
-		"@tailwindcss/typography": "^0.5.16",
-		"astro": "^5.7.5",
-		"marked": "^15.0.11",
-		"tailwindcss": "^3.4.17"
+		"@opennextjs/cloudflare": "^1.2.1",
+		"next": "15.3.3",
+		"react": "^19.0.0",
+		"react-dom": "^19.0.0"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "1.9.4"
+		"@biomejs/biome": "1.9.4",
+		"@tailwindcss/postcss": "^4",
+		"@types/node": "^20.19.0",
+		"@types/react": "^19",
+		"@types/react-dom": "^19",
+		"tailwindcss": "^4",
+		"typescript": "^5",
+		"wrangler": "^4.19.2"
 	}
 }
