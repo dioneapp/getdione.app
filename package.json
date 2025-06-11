@@ -2,6 +2,8 @@
 	"name": "flat-dew-5719",
 	"version": "0.1.0",
 	"private": true,
+	"packageManager": "npm@11.4.1",
+	"workspaces": ["src/*"],
 	"scripts": {
 		"dev": "next dev --turbopack",
 		"build": "next build",
