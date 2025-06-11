@@ -23,7 +23,7 @@ export const GET: APIRoute = async ({ locals }) => {
   if (!res.ok) {
     console.log('error', res.statusText);
     return new Response(JSON.stringify({ error: "Failed to fetch releases" }), {
-      status: 500,
+      status: res.status,
     });
   }
 
