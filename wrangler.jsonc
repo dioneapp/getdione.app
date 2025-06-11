@@ -4,7 +4,7 @@
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "web-workers",
+	"name": "getdione-app-workers",
 	"main": "./dist/_worker.js/index.js",
 	"compatibility_date": "2025-06-10",
 	"compatibility_flags": [
