@@ -10,9 +10,9 @@ import { useEffect, useState } from "react";
 // character limits
 const CHAR_LIMITS = {
 	username: 15,
-	first_name: 20,
+	first_name: 15,
 	bio: 200,
-	location: 30,
+	location: 10,
 };
 
 export default function ProfilePage() {
@@ -432,9 +432,10 @@ export default function ProfilePage() {
 									{isEditing && (
 										<AnimatePresence>
 											<motion.div
-												initial={{ opacity: 0 }}
-												animate={{ opacity: 1 }}
-												exit={{ opacity: 0 }}
+												initial={{ opacity: 0, y: 10 }}
+												animate={{ opacity: 1, y: 0 }}
+												exit={{ opacity: 0, y: -10 }}
+												transition={{ duration: 0.2 }}
 												className="flex justify-end gap-2 pt-4"
 											>
 												<button
@@ -501,19 +502,49 @@ export default function ProfilePage() {
 							</div>
 							<div>
 								<p className="text-white/50 text-sm">Member Since</p>
-								<p className="text-white">
-									{user?.created_at
-										? new Date(user.created_at).toLocaleDateString()
-										: "N/A"}
-								</p>
+								<div className="relative inline-block cursor-pointer">
+									<div className="peer">
+										<p className="text-white">
+											{user?.created_at
+												? new Date(user.created_at).toLocaleDateString()
+												: "N/A"}
+										</p>
+									</div>
+									<div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-black/90 text-white text-xs rounded opacity-0 peer-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+										{user?.created_at
+											? new Date(user.created_at).toLocaleDateString('en-US', {
+													weekday: 'long',
+													year: 'numeric',
+													month: 'long',
+													day: 'numeric',
+											  })
+											: "N/A"}
+									</div>
+								</div>
 							</div>
 							<div>
 								<p className="text-white/50 text-sm">Last Sign In</p>
-								<p className="text-white">
-									{user?.last_sign_in_at
-										? new Date(user.last_sign_in_at).toLocaleString()
-										: "N/A"}
-								</p>
+								<div className="relative inline-block cursor-pointer">
+									<div className="peer">
+										<p className="text-white">
+											{user?.last_sign_in_at
+												? new Date(user.last_sign_in_at).toLocaleDateString()
+												: "N/A"}
+										</p>
+									</div>
+									<div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-black/90 text-white text-xs rounded opacity-0 peer-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+										{user?.last_sign_in_at
+											? new Date(user.last_sign_in_at).toLocaleDateString('en-US', {
+													weekday: 'long',
+													year: 'numeric',
+													month: 'long',
+													day: 'numeric',
+													hour: '2-digit',
+													minute: '2-digit',
+											  })
+											: "N/A"}
+									</div>
+								</div>
 							</div>
 							<div>
 								<p className="text-white/50 text-sm">Badges</p>
