@@ -26,7 +26,9 @@ export default function LoginPage() {
 
 				if (!profileError && profileData) {
 					// if avatar_url in db doesn't match user_metadata, update it
-					if (profileData.avatar_url !== session.user.user_metadata?.avatar_url) {
+					if (
+						profileData.avatar_url !== session.user.user_metadata?.avatar_url
+					) {
 						const { error: updateError } = await supabase
 							.from("users")
 							.update({ avatar_url: session.user.user_metadata?.avatar_url })
