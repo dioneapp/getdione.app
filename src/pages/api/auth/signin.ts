@@ -1,5 +1,3 @@
-export const prerender = false;
-
 import type { Provider } from "@supabase/supabase-js";
 import type { APIRoute } from "astro";
 import { supabase } from "../../../utils/database";
