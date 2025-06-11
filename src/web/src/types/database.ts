@@ -14,6 +14,8 @@ export interface User {
 	is_verified: boolean;
 	subscription_level: string | null;
 	tester: boolean;
+	publisher: boolean;
+	moderator: boolean;
 }
 
 // extended user type that includes auth metadata

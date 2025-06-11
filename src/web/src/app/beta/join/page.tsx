@@ -53,17 +53,14 @@ async function submitForm(formData: FormData) {
 		],
 	};
 
-	const response = await fetch(
-		process.env.NEXT_PUBLIC_BETA_DISCORD_WEBHOOK_URL!,
-		{
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify(webhookBody),
-		},
-	);
+	const response = await fetch("/api/beta", {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify(webhookBody),
+	});
 
 	if (!response.ok) {
-		throw new Error(`Discord webhook error: ${response.statusText}`);
+		throw new Error("Failed to submit application");
 	}
 
 	return discord === "yes";

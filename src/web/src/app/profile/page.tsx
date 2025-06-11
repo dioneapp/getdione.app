@@ -10,9 +10,9 @@ import { useEffect, useState } from "react";
 // character limits
 const CHAR_LIMITS = {
 	username: 15,
-	first_name: 20,
+	first_name: 15,
 	bio: 200,
-	location: 30,
+	location: 10,
 };
 
 export default function ProfilePage() {
@@ -294,42 +294,85 @@ export default function ProfilePage() {
 											user?.first_name || "No name set"
 										)}
 									</div>
-									<div className="text-white/50 text-sm truncate max-w-[300px]">
-										{isEditing ? (
-											<div className="flex flex-col gap-1">
-												<div className="flex items-center">
-													<span>@</span>
-													<input
-														type="text"
-														value={editedFields.username}
-														onChange={(
-															e: React.ChangeEvent<HTMLInputElement>,
-														) => {
-															setEditedFields((prev) => ({
-																...prev,
-																username: e.target.value,
-															}));
-															setFieldErrors((prev) => ({
-																...prev,
-																username: "",
-															}));
-														}}
-														maxLength={CHAR_LIMITS.username}
-														className={`bg-transparent border-b ${fieldErrors.username ? "border-red-500/50" : "border-white/20"} px-1 py-0.5 text-white w-full focus:outline-none`}
-														placeholder="username"
-													/>
-												</div>
-												{fieldErrors.username && (
-													<div className="text-red-400 text-sm">
-														{fieldErrors.username}
+									<div className="flex items-center gap-2 text-white/50 text-sm truncate max-w-[300px]">
+										<span className="flex items-center">
+											<span>@</span>
+											{isEditing ? (
+												<div className="flex flex-col gap-1">
+													<div className="flex items-center">
+														<input
+															type="text"
+															value={editedFields.username}
+															onChange={(
+																e: React.ChangeEvent<HTMLInputElement>,
+															) => {
+																setEditedFields((prev) => ({
+																	...prev,
+																	username: e.target.value,
+																}));
+																setFieldErrors((prev) => ({
+																	...prev,
+																	username: "",
+																}));
+															}}
+															maxLength={CHAR_LIMITS.username}
+															className={`bg-transparent border-b ${fieldErrors.username ? "border-red-500/50" : "border-white/20"} px-1 py-0.5 text-white w-full focus:outline-none`}
+															placeholder="username"
+														/>
 													</div>
-												)}
-											</div>
-										) : (
-											<span className="flex items-center">
-												<span>@</span>
-												{user?.username || "anonymous"}
-											</span>
+													{fieldErrors.username && (
+														<div className="text-red-400 text-sm">
+															{fieldErrors.username}
+														</div>
+													)}
+												</div>
+											) : (
+												user?.username || "anonymous"
+											)}
+										</span>
+										{/* location display */}
+										{user?.location && (
+											<>
+												<span className="text-white/20">•</span>
+												<div className="flex items-center gap-1">
+													<svg
+														xmlns="http://www.w3.org/2000/svg"
+														className="h-3.5 w-3.5"
+														viewBox="0 0 20 20"
+														fill="currentColor"
+													>
+														<path
+															fillRule="evenodd"
+															d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+															clipRule="evenodd"
+														/>
+													</svg>
+													{isEditing ? (
+														<motion.input
+															initial={{ opacity: 0 }}
+															animate={{ opacity: 1 }}
+															exit={{ opacity: 0 }}
+															type="text"
+															value={editedFields.location}
+															onChange={(
+																e: React.ChangeEvent<HTMLInputElement>,
+															) =>
+																setEditedFields((prev) => ({
+																	...prev,
+																	location: e.target.value,
+																}))
+															}
+															maxLength={CHAR_LIMITS.location}
+															className="bg-transparent border-b border-white/20 px-1 py-0.5 text-white w-full focus:outline-none"
+															placeholder="Where are you from?"
+														/>
+													) : (
+														<span className="text-white/70">
+															{user?.location}
+														</span>
+													)}
+												</div>
+											</>
 										)}
 									</div>
 								</div>
@@ -360,56 +403,18 @@ export default function ProfilePage() {
 												placeholder="Tell us about yourself..."
 											/>
 										) : (
-											<p className="text-white/70 whitespace-pre-wrap line-clamp-4">
+											<p className="text-white whitespace-pre-wrap line-clamp-4">
 												{user?.bio || "No bio yet"}
 											</p>
 										)}
 									</div>
 
-									{/* location section */}
-									<div className="flex items-center gap-2 text-white/50 pt-4 border-t border-white/10">
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											className="h-4 w-4"
-											viewBox="0 0 20 20"
-											fill="currentColor"
-										>
-											<path
-												fillRule="evenodd"
-												d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-												clipRule="evenodd"
-											/>
-										</svg>
-										{isEditing ? (
-											<motion.input
-												initial={{ opacity: 0 }}
-												animate={{ opacity: 1 }}
-												exit={{ opacity: 0 }}
-												type="text"
-												value={editedFields.location}
-												onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-													setEditedFields((prev) => ({
-														...prev,
-														location: e.target.value,
-													}))
-												}
-												maxLength={CHAR_LIMITS.location}
-												className="bg-transparent border-b border-white/20 px-1 py-0.5 text-white w-full focus:outline-none"
-												placeholder="Where are you from?"
-											/>
-										) : (
-											<span className="text-white/70">
-												{user?.location || "No location set"}
-											</span>
-										)}
-									</div>
-
 									{/* edit profile button */}
 									{!isEditing && (
-										<div className="flex justify-end pt-4 border-t border-white/10">
+										<div className="flex justify-end pt-4">
 											<button
 												onClick={() => setIsEditing(true)}
-												className="px-3 py-1.5 bg-gradient-to-r from-white/10 to-white/5 text-white rounded-lg hover:from-white/20 hover:to-white/10 transition-all duration-300 flex items-center gap-2 cursor-pointer"
+												className="shrink-0 px-3 py-1.5 gap-2 flex items-center justify-center bg-white/10 backdrop-blur border border-white/10 text-white text-sm rounded-lg hover:bg-white/20 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/50 cursor-pointer"
 											>
 												<svg
 													xmlns="http://www.w3.org/2000/svg"
@@ -429,10 +434,11 @@ export default function ProfilePage() {
 									{isEditing && (
 										<AnimatePresence>
 											<motion.div
-												initial={{ opacity: 0 }}
-												animate={{ opacity: 1 }}
-												exit={{ opacity: 0 }}
-												className="flex justify-end gap-2 pt-4 border-t border-white/10"
+												initial={{ opacity: 0, y: 10 }}
+												animate={{ opacity: 1, y: 0 }}
+												exit={{ opacity: 0, y: -10 }}
+												transition={{ duration: 0.2 }}
+												className="flex justify-end gap-2 pt-4"
 											>
 												<button
 													onClick={handleUpdateProfile}
@@ -492,29 +498,119 @@ export default function ProfilePage() {
 						<div className="grid grid-cols-2 gap-4 mt-4">
 							<div>
 								<p className="text-white/50 text-sm">Email</p>
-								<p className="text-white blur-sm hover:blur-none transition-all duration-300">
+								<p className="text-white truncate max-w-[200px] md:blur-sm md:hover:blur-none transition-all duration-300">
 									{user?.email}
 								</p>
 							</div>
 							<div>
 								<p className="text-white/50 text-sm">Member Since</p>
-								<p className="text-white">
-									{user?.created_at
-										? new Date(user.created_at).toLocaleDateString()
-										: "N/A"}
-								</p>
+								<div className="relative inline-block cursor-pointer">
+									<div className="peer">
+										<p className="text-white">
+											{user?.created_at
+												? new Date(user.created_at).toLocaleDateString()
+												: "N/A"}
+										</p>
+									</div>
+									<div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-black/90 text-white text-xs rounded opacity-0 peer-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+										{user?.created_at
+											? new Date(user.created_at).toLocaleDateString("en-US", {
+													weekday: "long",
+													year: "numeric",
+													month: "long",
+													day: "numeric",
+													hour: "2-digit",
+													minute: "2-digit",
+												})
+											: "N/A"}
+									</div>
+								</div>
 							</div>
 							<div>
 								<p className="text-white/50 text-sm">Last Sign In</p>
-								<p className="text-white">
-									{user?.last_sign_in_at
-										? new Date(user.last_sign_in_at).toLocaleString()
-										: "N/A"}
-								</p>
+								<div className="relative inline-block cursor-pointer">
+									<div className="peer">
+										<p className="text-white">
+											{user?.last_sign_in_at
+												? new Date(user.last_sign_in_at).toLocaleDateString()
+												: "N/A"}
+										</p>
+									</div>
+									<div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-black/90 text-white text-xs rounded opacity-0 peer-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+										{user?.last_sign_in_at
+											? new Date(user.last_sign_in_at).toLocaleDateString(
+													"en-US",
+													{
+														weekday: "long",
+														year: "numeric",
+														month: "long",
+														day: "numeric",
+														hour: "2-digit",
+														minute: "2-digit",
+													},
+												)
+											: "N/A"}
+									</div>
+								</div>
 							</div>
 							<div>
-								<p className="text-white/50 text-sm">Tester Status</p>
-								<p className="text-white">{user?.tester ? "Yes" : "No"}</p>
+								<p className="text-white/50 text-sm">Badges</p>
+								<div className="flex gap-2 mt-1">
+									{user?.tester && (
+										<div className="relative inline-block cursor-pointer">
+											<div className="peer">
+												<svg
+													xmlns="http://www.w3.org/2000/svg"
+													height="24px"
+													viewBox="0 -960 960 960"
+													width="24px"
+													fill="#e3e3e3"
+												>
+													<path d="M200-120q-51 0-72.5-45.5T138-250l222-270v-240h-40q-17 0-28.5-11.5T280-800q0-17 11.5-28.5T320-840h320q17 0 28.5 11.5T680-800q0 17-11.5 28.5T640-760h-40v240l222 270q32 39 10.5 84.5T760-120H200Z" />
+												</svg>
+											</div>
+											<div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-black/90 text-white text-xs rounded opacity-0 peer-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+												Tester
+											</div>
+										</div>
+									)}
+									{user?.publisher && (
+										<div className="relative inline-block cursor-pointer">
+											<div className="peer">
+												<svg
+													xmlns="http://www.w3.org/2000/svg"
+													height="24px"
+													viewBox="0 -960 960 960"
+													width="24px"
+													fill="#e3e3e3"
+												>
+													<path d="M440-91 160-252q-19-11-29.5-29T120-321v-318q0-22 10.5-40t29.5-29l280-161q19-11 40-11t40 11l280 161q19 11 29.5 29t10.5 40v318q0 22-10.5 40T800-252L520-91q-19 11-40 11t-40-11Zm0-366v274l40 23 40-23v-274l240-139v-42l-43-25-237 137-237-137-43 25v42l240 139Z" />
+												</svg>
+											</div>
+											<div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-black/90 text-white text-xs rounded opacity-0 peer-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+												Publisher
+											</div>
+										</div>
+									)}
+									{user?.moderator && (
+										<div className="relative inline-block cursor-pointer">
+											<div className="peer">
+												<svg
+													xmlns="http://www.w3.org/2000/svg"
+													height="24px"
+													viewBox="0 -960 960 960"
+													width="24px"
+													fill="#e3e3e3"
+												>
+													<path d="M714-162 537-339l84-84 177 177q17 17 17 42t-17 42q-17 17-42 17t-42-17Zm-552 0q-17-17-17-42t17-42l234-234-68-68q-11 11-28 11t-28-11l-23-23v90q0 14-12 19t-22-5L106-576q-10-10-5-22t19-12h90l-22-22q-12-12-12-28t12-28l114-114q20-20 43-29t47-9q20 0 37.5 6t34.5 18q8 5 8.5 14t-6.5 16l-76 76 22 22q11 11 11 28t-11 28l68 68 90-90q-4-11-6.5-23t-2.5-24q0-59 40.5-99.5T701-841q8 0 15 .5t14 2.5q9 3 11.5 12.5T737-809l-65 65q-6 6-6 14t6 14l44 44q6 6 14 6t14-6l65-65q7-7 16.5-5t12.5 12q2 7 2.5 14t.5 15q0 59-40.5 99.5T701-561q-12 0-24-2t-23-7L246-162q-17 17-42 17t-42-17Z" />
+												</svg>
+											</div>
+											<div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-black/90 text-white text-xs rounded opacity-0 peer-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+												Moderator
+											</div>
+										</div>
+									)}
+								</div>
 							</div>
 						</div>
 					</div>
@@ -523,7 +619,7 @@ export default function ProfilePage() {
 					<div className="mt-6 flex items-center justify-between">
 						<button
 							onClick={handleSignOut}
-							className="px-4 py-2 bg-gradient-to-r from-white/10 to-white/5 text-white rounded-lg hover:from-white/20 hover:to-white/10 transition-all duration-300 flex items-center gap-2 cursor-pointer"
+							className="shrink-0 py-1 px-5 flex items-center justify-center gap-2 rounded-full bg-white font-semibold text-[#080808] cursor-pointer hover:bg-white/90 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/50 shadow-lg border border-black/10"
 						>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
