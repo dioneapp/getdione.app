@@ -6,32 +6,32 @@ const accessToken = Astro.cookies.get("sb-access-token");
 const refreshToken = Astro.cookies.get("sb-refresh-token");
 
 if (!accessToken || !refreshToken) {
-  return Astro.redirect("/auth/login");
+	return Astro.redirect("/auth/login");
 }
 
 let session;
 try {
-  session = await supabase.auth.setSession({
-    refresh_token: refreshToken.value,
-    access_token: accessToken.value,
-  });
-  if (session.error) {
-    Astro.cookies.delete("sb-access-token", {
-      path: "/",
-    });
-    Astro.cookies.delete("sb-refresh-token", {
-      path: "/",
-    });
-    return Astro.redirect("/auth/login");
-  }
+	session = await supabase.auth.setSession({
+		refresh_token: refreshToken.value,
+		access_token: accessToken.value,
+	});
+	if (session.error) {
+		Astro.cookies.delete("sb-access-token", {
+			path: "/",
+		});
+		Astro.cookies.delete("sb-refresh-token", {
+			path: "/",
+		});
+		return Astro.redirect("/auth/login");
+	}
 } catch (error) {
-  Astro.cookies.delete("sb-access-token", {
-    path: "/",
-  });
-  Astro.cookies.delete("sb-refresh-token", {
-    path: "/",
-  });
-  return Astro.redirect("/auth/login");
+	Astro.cookies.delete("sb-access-token", {
+		path: "/",
+	});
+	Astro.cookies.delete("sb-refresh-token", {
+		path: "/",
+	});
+	return Astro.redirect("/auth/login");
 }
 
 const fullName = session?.data.user?.user_metadata?.full_name;

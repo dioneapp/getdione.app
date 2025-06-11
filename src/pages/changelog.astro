@@ -5,10 +5,10 @@ import Layout from "../layouts/Layout.astro";
 const { request } = Astro;
 
 const fetchReleases = async () => {
-    const origin = request?.url ? new URL(request.url).origin : '';
-    const res = await fetch(`${origin}/api/github/releases`);
-    const releases = res.ok ? await res.json() : [];
-    return releases;
+	const origin = request?.url ? new URL(request.url).origin : "";
+	const res = await fetch(`${origin}/api/github/releases`);
+	const releases = res.ok ? await res.json() : [];
+	return releases;
 };
 
 const releases = await fetchReleases();
