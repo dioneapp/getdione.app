@@ -11,6 +11,7 @@ const { title = "Dione" } = Astro.props;
 
 <!doctype html>
 <html lang="en">
+    <head>
     <meta />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
@@ -67,42 +68,41 @@ const { title = "Dione" } = Astro.props;
         content="https://getdione.app/opengraph-image.png"
     />
     <title>{title !== "" ? `Dione – ${title}` : "Dione"}</title>
-    <head>
-        <script
-        async
-        src="https://www.googletagmanager.com/gtag/js?id=G-YJKEH2QD9S"
-      ></script>
-      <script is:inline>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() {
-          dataLayer.push(arguments);
-        }
-        gtag("js", new Date());
-      
-        gtag("config", "G-YJKEH2QD9S");
-      </script>
-      <script is:inline>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() {
-          dataLayer.push(arguments);
-        }
-      </script>
-      <!-- Google Tag Manager -->
-        <script is:inline>
-            (function (w, d, s, l, i) {
-            console.log("GTM");
-            w[l] = w[l] || [];
-            w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
-            var f = d.getElementsByTagName(s)[0],
-                j = d.createElement(s),
-                dl = l != "dataLayer" ? "&l=" + l : "";
-            j.async = true;
-            j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
-            f.parentNode.insertBefore(j, f);
-            })(window, document, "script", "dataLayer", "GTM-NP7VRXHK");
-        </script>
-        <!-- End Google Tag Manager -->
     </head>
+    <script
+    async
+    src="https://www.googletagmanager.com/gtag/js?id=G-YJKEH2QD9S"
+    ></script>
+    <script is:inline>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+    gtag("js", new Date());
+    
+    gtag("config", "G-YJKEH2QD9S");
+    </script>
+    <script is:inline>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+    </script>
+    <!-- Google Tag Manager -->
+    <script is:inline>
+        (function (w, d, s, l, i) {
+        console.log("GTM");
+        w[l] = w[l] || [];
+        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+        var f = d.getElementsByTagName(s)[0],
+            j = d.createElement(s),
+            dl = l != "dataLayer" ? "&l=" + l : "";
+        j.async = true;
+        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+        f.parentNode.insertBefore(j, f);
+        })(window, document, "script", "dataLayer", "GTM-NP7VRXHK");
+    </script>
+    <!-- End Google Tag Manager -->
     <body>
         <!-- Google Tag Manager (noscript) -->
         <noscript>
