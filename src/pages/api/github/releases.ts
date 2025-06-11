@@ -12,6 +12,7 @@ export const GET: APIRoute = async ({ locals }) => {
   }
 
   const res = await fetch("https://api.github.com/repos/dioneapp/dioneapp/releases", {
+    method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
       Accept: "application/vnd.github+json",
