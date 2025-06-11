@@ -8,7 +8,6 @@ const fetchReleases = async () => {
     const origin = request?.url ? new URL(request.url).origin : '';
     const res = await fetch(`${origin}/api/github/releases`);
     const releases = res.ok ? await res.json() : [];
-    console.log(releases);
     return releases;
 };
 
