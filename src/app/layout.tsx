@@ -64,7 +64,7 @@ export default function RootLayout({
           content="Discover and install open-source AI apps effortlessly with Dione. Explore powerful tools, manage downloads, and enjoy 1-click installations—all in one intuitive platform."
       />
       <meta
-      http-equiv="Content-Security-Policy"
+      httpEquiv="Content-Security-Policy"
       content="style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com;"
       />
       <meta
