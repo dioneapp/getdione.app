@@ -1,34 +1,34 @@
-    ---
-    import { marked } from "marked";
-    import Layout from "../layouts/Layout.astro";
+---
+import { marked } from "marked";
+import Layout from "../layouts/Layout.astro";
 
-    const runtimeEnv = Astro.locals.runtime?.env || {};
-    const fetchReleases = async () => {
-        let response = await fetch(
-            "https://api.github.com/repos/dioneapp/dioneapp/releases",
-            {
-                headers: {
-                    Authorization: `Bearer ${runtimeEnv.GITHUB_TOKEN || import.meta.env.GITHUB_TOKEN}`,
-                },
-            }
-        );
-        if (!response.ok) {
-            console.log(`Failed to fetch releases: ${response.statusText}, do you have a valid GITHUB_TOKEN?`);
-            return [];
-            // response = await fetch(
-            //     "https://api.github.com/repos/withastro/astro/releases",
-            // );
-            // if (!response.ok) {
-            //     console.log(`Failed to fetch releases: ${response.statusText}`);
-            //     return [];
-            // }
+const runtimeEnv = Astro.locals.runtime?.env || {};
+const fetchReleases = async () => {
+    let response = await fetch(
+        "https://api.github.com/repos/dioneapp/dioneapp/releases",
+        {
+            headers: {
+                Authorization: `Bearer ${runtimeEnv.GITHUB_TOKEN || import.meta.env.GITHUB_TOKEN}`,
+            },
         }
-        const releases = await response.json();
-        return releases;
-    };
+    );
+    if (!response.ok) {
+        console.log(`Failed to fetch releases: ${response.statusText}, do you have a valid GITHUB_TOKEN?`);
+        return [];
+        // response = await fetch(
+        //     "https://api.github.com/repos/withastro/astro/releases",
+        // );
+        // if (!response.ok) {
+        //     console.log(`Failed to fetch releases: ${response.statusText}`);
+        //     return [];
+        // }
+    }
+    const releases = await response.json();
+    return releases;
+};
 
-    const releases = await fetchReleases();
-    ---
+const releases = await fetchReleases();
+---
 
     <Layout title="Changelog">
         <main>
