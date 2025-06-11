@@ -1,7 +1,5 @@
 ---
-import { supabase } from "../utils/database";
-
-const { cookies } = Astro;
+const { cookies, request } = Astro;
 
 const accessToken = cookies.get("sb-access-token");
 const refreshToken = cookies.get("sb-refresh-token");
@@ -9,12 +7,26 @@ const session = accessToken && refreshToken;
 
 let fullName;
 let avatarUrl;
+let user: any;
 
 if (session) {
-  const user = await supabase.auth.getUser();
-
-  fullName = user?.data.user?.user_metadata?.full_name;
-  avatarUrl = user?.data.user?.user_metadata?.avatar_url;
+  try {
+    // Build the absolute URL using the request object
+    const origin = request?.url ? new URL(request.url).origin : '';
+    const apiUrl = `${origin}/api/auth/user`;
+    const res = await fetch(apiUrl, {
+      headers: {
+        cookie: `sb-access-token=${accessToken?.value ?? ""}; sb-refresh-token=${refreshToken?.value ?? ""};`
+      }
+    });
+    if (res.ok) {
+      user = await res.json();
+      fullName = user?.user_metadata?.full_name;
+      avatarUrl = user?.user_metadata?.avatar_url;
+    }
+  } catch (error) {
+    console.error("Error getting user data:", error);
+  }
 }
 
 const links = [
