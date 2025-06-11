@@ -17,6 +17,26 @@ export default function LoginPage() {
 				data: { session },
 			} = await supabase.auth.getSession();
 			if (session) {
+				// check if avatar needs to be synced
+				const { data: profileData, error: profileError } = await supabase
+					.from("users")
+					.select("avatar_url")
+					.eq("id", session.user.id)
+					.single();
+
+				if (!profileError && profileData) {
+					// if avatar_url in db doesn't match user_metadata, update it
+					if (profileData.avatar_url !== session.user.user_metadata?.avatar_url) {
+						const { error: updateError } = await supabase
+							.from("users")
+							.update({ avatar_url: session.user.user_metadata?.avatar_url })
+							.eq("id", session.user.id);
+
+						if (updateError) {
+							console.error("Avatar sync error:", updateError);
+						}
+					}
+				}
 				router.push("/profile");
 			}
 		};
