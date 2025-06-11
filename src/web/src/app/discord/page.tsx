@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
 
 export default function DiscordPage() {
-  redirect("https://discord.gg/JSAszyCEW5");
-} 
+	redirect("https://discord.gg/JSAszyCEW5");
+}
