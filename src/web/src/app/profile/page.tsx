@@ -492,7 +492,7 @@ export default function ProfilePage() {
 						<div className="grid grid-cols-2 gap-4 mt-4">
 							<div>
 								<p className="text-white/50 text-sm">Email</p>
-								<p className="text-white blur-sm hover:blur-none transition-all duration-300">
+								<p className="text-white truncate max-w-[200px] md:blur-sm md:hover:blur-none transition-all duration-300">
 									{user?.email}
 								</p>
 							</div>
