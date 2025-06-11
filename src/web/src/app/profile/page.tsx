@@ -401,7 +401,7 @@ export default function ProfilePage() {
 												placeholder="Tell us about yourself..."
 											/>
 										) : (
-											<p className="text-white/70 whitespace-pre-wrap line-clamp-4">
+											<p className="text-white whitespace-pre-wrap line-clamp-4">
 												{user?.bio || "No bio yet"}
 											</p>
 										)}
@@ -409,7 +409,7 @@ export default function ProfilePage() {
 
 									{/* edit profile button */}
 									{!isEditing && (
-										<div className="flex justify-end pt-4 border-t border-white/10">
+										<div className="flex justify-end pt-4">
 											<button
 												onClick={() => setIsEditing(true)}
 												className="px-3 py-1.5 bg-gradient-to-r from-white/10 to-white/5 text-white rounded-lg hover:from-white/20 hover:to-white/10 transition-all duration-300 flex items-center gap-2 cursor-pointer"
@@ -435,7 +435,7 @@ export default function ProfilePage() {
 												initial={{ opacity: 0 }}
 												animate={{ opacity: 1 }}
 												exit={{ opacity: 0 }}
-												className="flex justify-end gap-2 pt-4 border-t border-white/10"
+												className="flex justify-end gap-2 pt-4"
 											>
 												<button
 													onClick={handleUpdateProfile}
