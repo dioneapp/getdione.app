@@ -412,7 +412,7 @@ export default function ProfilePage() {
 										<div className="flex justify-end pt-4">
 											<button
 												onClick={() => setIsEditing(true)}
-												className="px-3 py-1.5 bg-gradient-to-r from-white/10 to-white/5 text-white rounded-lg hover:from-white/20 hover:to-white/10 transition-all duration-300 flex items-center gap-2 cursor-pointer"
+												className="shrink-0 px-3 py-1.5 gap-2 flex items-center justify-center bg-white/10 backdrop-blur border border-white/10 text-white text-sm rounded-lg hover:bg-white/20 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/50 cursor-pointer"
 											>
 												<svg
 													xmlns="http://www.w3.org/2000/svg"
@@ -595,7 +595,7 @@ export default function ProfilePage() {
 					<div className="mt-6 flex items-center justify-between">
 						<button
 							onClick={handleSignOut}
-							className="px-4 py-2 bg-gradient-to-r from-white/10 to-white/5 text-white rounded-lg hover:from-white/20 hover:to-white/10 transition-all duration-300 flex items-center gap-2 cursor-pointer"
+							className="shrink-0 py-1 px-5 flex items-center justify-center gap-2 rounded-full bg-white font-semibold text-[#080808] cursor-pointer hover:bg-white/90 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/50 shadow-lg border border-black/10"
 						>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
