@@ -9,7 +9,6 @@
             {
                 headers: {
                     Authorization: `Bearer ${runtimeEnv.GITHUB_TOKEN || import.meta.env.GITHUB_TOKEN}`,
-                    Accept: "application/vnd.github+json",
                 },
             }
         );
