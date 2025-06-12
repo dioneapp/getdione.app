@@ -445,7 +445,7 @@ export default function ProfilePage() {
 								<div className="space-y-4">
 									{/* bio section */}
 									<div>
-										<h2 className="text-white/50 text-sm mb-2">About</h2>
+										<h2 className="text-white/50 text-sm">About</h2>
 										{isEditing ? (
 											<motion.textarea
 												initial={{ opacity: 0 }}
@@ -554,8 +554,7 @@ export default function ProfilePage() {
 
 					{/* account info section */}
 					<div className="mt-6 p-4 rounded-lg bg-white/5 border border-white/10">
-						<h2 className="text-white text-lg font-semibold">Information</h2>
-						<div className="grid grid-cols-2 gap-4 mt-4">
+						<div className="grid grid-cols-2 gap-4">
 							<div>
 								<p className="text-white/50 text-sm">Email</p>
 								<p className="text-white truncate max-w-[200px] md:blur-sm md:hover:blur-none transition-all duration-300">
