@@ -1,62 +1,19 @@
 "use client";
 
-import { supabase } from "@/utils/database";
 import type { Provider } from "@supabase/supabase-js";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useEffect } from "react";
+import { startTransition, Suspense, useEffect } from "react";
+import { loginWithOAuth } from "./actions";
 
 function LoginHandler() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const isAppLogin = searchParams.get("app") === "true";
 
-  useEffect(() => {
-    const checkSession = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      if (session) {
-        const { data: profileData, error: profileError } = await supabase
-          .from("users")
-          .select("avatar_url")
-          .eq("id", session.user.id)
-          .single();
-
-        if (!profileError && profileData) {
-          if (
-            profileData.avatar_url !== session.user.user_metadata?.avatar_url
-          ) {
-            const { error: updateError } = await supabase
-              .from("users")
-              .update({ avatar_url: session.user.user_metadata?.avatar_url })
-              .eq("id", session.user.id);
-
-            if (updateError) {
-              console.error("Avatar sync error:", updateError);
-            }
-          }
-        }
-        router.push("/profile");
-      }
-    };
-    checkSession();
-  }, [router]);
-
-  const login = async (provider: Provider) => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider,
-        options: {
-          redirectTo: isAppLogin
-            ? "https://getdione.app/auth/callback?app=true"
-            : "http://getdione.app/auth/callback",
-        },
-      });
-
-      if (error) throw error;
-    } catch (err) {
-      console.error("Error during login:", err);
-    }
+  const handleLogin = (provider: Provider) => {
+    startTransition(() => {
+      loginWithOAuth(provider, isAppLogin);
+    });
   };
 
   return (
@@ -90,7 +47,7 @@ function LoginHandler() {
           {/* login options */}
           <div className="mt-6 w-full h-10 flex gap-2">
             <button
-              onClick={() => login("google")}
+              onClick={() => handleLogin("google")}
               className="rounded-full bg-white/10 w-full p-4 flex items-center justify-center text-white hover:bg-white/20 cursor-pointer"
             >
               <svg
@@ -120,7 +77,7 @@ function LoginHandler() {
             </button>
 
             <button
-              onClick={() => login("discord")}
+              onClick={() => handleLogin("discord")}
               className="rounded-full bg-white/10 w-full p-4 flex items-center justify-center text-white hover:bg-white/20 cursor-pointer"
             >
               <svg
@@ -137,7 +94,7 @@ function LoginHandler() {
             </button>
 
             <button
-              onClick={() => login("github")}
+              onClick={() => handleLogin("github")}
               className="rounded-full bg-white/10 w-full p-4 flex items-center justify-center text-white hover:bg-white/20 cursor-pointer"
             >
               <svg
