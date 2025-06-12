@@ -86,7 +86,8 @@ export default function RootLayout({
 		<html lang="en" className="dark">
 			<head>
 				<link rel="icon" type="image/svg+xml" href="/favicon.ico" />
-			</head>
+				<link rel="shortcut icon" href="/favicon.ico" />
+				<link rel="apple-touch-icon" href="/favicon.ico" />			</head>
 			<body className={`${poppins.className} font-sans bg-[#080808]`}>
 				{/* google tag manager */}
 				<Script id="gtm-script" strategy="afterInteractive">
