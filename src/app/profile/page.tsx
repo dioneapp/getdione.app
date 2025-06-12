@@ -82,7 +82,9 @@ export default function ProfilePage() {
 							.single();
 
 						if (createError) {
-							throw new Error("Unable to create profile. Please try again later.");
+							throw new Error(
+								"Unable to create profile. Please try again later.",
+							);
 						}
 
 						setUser({ ...session.user, ...newProfile });
@@ -148,14 +150,15 @@ export default function ProfilePage() {
 					.neq("id", user.id)
 					.single();
 
-				if (checkError && checkError.code !== "PGRST116") { // PGRST116 : "no rows returned" 
+				if (checkError && checkError.code !== "PGRST116") {
+					// PGRST116 : "no rows returned"
 					throw checkError;
 				}
 
 				if (existingUser) {
-					setFieldErrors(prev => ({
+					setFieldErrors((prev) => ({
 						...prev,
-						username: "This username is already taken"
+						username: "This username is already taken",
 					}));
 					return;
 				}
