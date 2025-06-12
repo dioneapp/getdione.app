@@ -194,7 +194,7 @@ export default function UserProfilePage({
 							<div className="p-4 rounded-lg bg-white/5 border border-white/10">
 								<div className="space-y-4">
 									<div>
-										<h2 className="text-white/50 text-sm mb-2">About</h2>
+										<h2 className="text-white/50 text-sm">About</h2>
 										<p className="text-white whitespace-pre-wrap line-clamp-4">
 											{user?.bio || "No bio yet"}
 										</p>
@@ -206,8 +206,7 @@ export default function UserProfilePage({
 
 					{/* account info section */}
 					<div className="mt-6 p-4 rounded-lg bg-white/5 border border-white/10">
-						<h2 className="text-white text-lg font-semibold">Information</h2>
-						<div className="grid grid-cols-2 gap-4 mt-4">
+						<div className="grid grid-cols-2 gap-4">
 							<div>
 								<p className="text-white/50 text-sm">Member Since</p>
 								<div className="relative inline-block cursor-pointer">
