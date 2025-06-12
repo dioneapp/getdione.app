@@ -334,7 +334,9 @@ export default function ProfilePage() {
 										{/* location display */}
 										{user?.location && (
 											<>
-												<span className="text-white/20 hidden sm:inline">•</span>
+												<span className="text-white/20 hidden sm:inline">
+													•
+												</span>
 												<div className="flex items-center gap-1 sm:inline-flex">
 													<svg
 														xmlns="http://www.w3.org/2000/svg"
