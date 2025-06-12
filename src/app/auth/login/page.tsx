@@ -1,21 +1,44 @@
 "use client";
 
 import type { Provider } from "@supabase/supabase-js";
-import { useRouter, useSearchParams } from "next/navigation";
-import { startTransition, Suspense } from "react";
+import { redirect, useRouter, useSearchParams } from "next/navigation";
+import { startTransition, Suspense, useEffect } from "react";
 import { loginWithOAuth } from "./actions";
+import { supabase } from "@/utils/database";
 
 function LoginHandler() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const isAppLogin = searchParams.get("app") === "true";
+
+  useEffect(() => {
+    async function checkSession() {
+      const {
+        data: { session },
+        error: sessionError,
+      } = await supabase.auth.getSession();
+
+      if (sessionError) {
+        console.error("Session error:", sessionError);
+        throw new Error(
+          "Unable to verify your session. Please try logging in again.",
+        );
+      }
+
+      if (session) {
+        redirect("/profile");
+      }
+    }
+    checkSession();
+  }, []);
 
   const handleLogin = async (provider: Provider) => {
     startTransition(async () => {
       try {
         const url = await loginWithOAuth(provider, isAppLogin);
         if (url) {
-          window.location.href = url;
+          redirect(url);
+        } else {
+          console.error("No URL received from loginWithOAuth");
         }
       } catch (err) {
         console.error("Error during login:", err);
