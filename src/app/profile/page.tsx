@@ -109,6 +109,28 @@ export default function ProfilePage() {
 		}
 
 		try {
+			// check if username is already taken by another user
+			if (editedFields.username !== user.username) {
+				const { data: existingUser, error: checkError } = await supabase
+					.from("users")
+					.select("username")
+					.eq("username", editedFields.username)
+					.neq("id", user.id)
+					.single();
+
+				if (checkError && checkError.code !== "PGRST116") { // PGRST116 : "no rows returned" 
+					throw checkError;
+				}
+
+				if (existingUser) {
+					setFieldErrors(prev => ({
+						...prev,
+						username: "This username is already taken"
+					}));
+					return;
+				}
+			}
+
 			const { error } = await supabase
 				.from("users")
 				.update(editedFields)
