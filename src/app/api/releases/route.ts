@@ -15,6 +15,14 @@ export async function GET() {
       },
     }
   );
+
+  if (!response.ok) {
+    return NextResponse.json(
+      { error: "Failed to fetch releases" },
+      { status: response.status },
+    );
+  }
+
   const data = await response.json();
   return NextResponse.json(data);
 }
