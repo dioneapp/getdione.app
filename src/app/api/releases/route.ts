@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 
 export async function GET() {
+
+  console.log("GITHUB_TOKEN:", process.env.GITHUB_TOKEN ? "exists" : "missing");
+
   const token = process.env.GITHUB_TOKEN;
   if (!token) {
     return NextResponse.json({ error: "No GitHub token configured" }, { status: 500 });
@@ -12,6 +15,8 @@ export async function GET() {
       headers: {
         Accept: "application/vnd.github+json",
         Authorization: `Bearer ${token}`,
+        "X-GitHub-Api-Version": "2022-11-28",
+        "User-Agent": "dioneapp",
       },
     }
   );
