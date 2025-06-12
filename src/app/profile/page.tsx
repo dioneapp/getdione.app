@@ -307,9 +307,11 @@ export default function ProfilePage() {
 															onChange={(
 																e: React.ChangeEvent<HTMLInputElement>,
 															) => {
+																// only allow alphanumeric chars, underscores
+																const value = e.target.value.replace(/[^a-zA-Z0-9_]/g, '');
 																setEditedFields((prev) => ({
 																	...prev,
-																	username: e.target.value,
+																	username: value,
 																}));
 																setFieldErrors((prev) => ({
 																	...prev,
