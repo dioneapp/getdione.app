@@ -1,13 +1,17 @@
+"use client";
+
 import { marked } from "marked";
+import { useEffect, useState } from "react";
 
-async function getReleases() {
-	const response = await fetch(`/api/releases`);
-	if (!response.ok) return [];
-	return response.json();
-}
+export default function ChangelogPage() {
+	const [releases, setReleases] = useState([]);
 
-export default async function ChangelogPage() {
-	const releases = await getReleases();
+	useEffect(() => {
+		fetch("/api/releases")
+			.then((res) => res.json())
+			.then(setReleases)
+			.catch(() => setReleases([]));
+	}, []);
 
 	return (
 		<main>
