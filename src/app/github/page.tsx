@@ -1,7 +1,11 @@
 "use client";
 
-import { redirect } from "next/navigation";
+import { useEffect } from "react";
 
 export default function GitHubPage() {
-	redirect("https://github.com/dioneapp");
+	useEffect(() => {
+		window.location.href = "https://github.com/dioneapp";
+	}, []);
+
+	return null;
 }
