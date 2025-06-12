@@ -1,8 +1,8 @@
 "use client";
 
+import type { ExtendedUser } from "@/types/database";
 import { supabase } from "@/utils/database";
 import type { Session, User } from "@supabase/supabase-js";
-import type { ExtendedUser } from "@/types/database";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -56,11 +56,11 @@ export default function Navbar() {
 			// only check moderator status if user is logged in
 			if (session?.user) {
 				const { data: userData } = await supabase
-					.from('users')
-					.select('moderator')
-					.eq('id', session.user.id)
+					.from("users")
+					.select("moderator")
+					.eq("id", session.user.id)
 					.single();
-				
+
 				if (mounted) {
 					setIsModerator(userData?.moderator ?? false);
 				}
@@ -83,11 +83,11 @@ export default function Navbar() {
 			// only check moderator status if user is logged in
 			if (session?.user) {
 				const { data: userData } = await supabase
-					.from('users')
-					.select('moderator')
-					.eq('id', session.user.id)
+					.from("users")
+					.select("moderator")
+					.eq("id", session.user.id)
 					.single();
-				
+
 				if (mounted) {
 					setIsModerator(userData?.moderator ?? false);
 				}
@@ -104,7 +104,7 @@ export default function Navbar() {
 
 	const fullName = user?.user_metadata?.full_name || user?.email;
 	const avatarUrl = user?.user_metadata?.avatar_url;
-	
+
 	const navigationLinks = getNavigationLinks(isModerator);
 
 	return (
