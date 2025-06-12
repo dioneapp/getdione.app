@@ -7,6 +7,19 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+// client-side only wrapper
+const ClientOnly = ({ children }: { children: React.ReactNode }) => {
+	const [mounted, setMounted] = useState(false);
+
+	useEffect(() => {
+		setMounted(true);
+	}, []);
+
+	if (!mounted) return null;
+
+	return <>{children}</>;
+};
+
 // navigation links
 const links = [
 	{ label: "Explore", href: "/explore" },
@@ -182,43 +195,45 @@ export default function Navbar() {
 
 						<div className="h-6 w-[1px] bg-white/10 hidden md:block" />
 
-						{session ? (
-							<Link
-								href="/profile"
-								className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 text-white hover:bg-white/10 transition-all duration-300"
-							>
-								{avatarUrl ? (
-									<Image
-										src={avatarUrl}
-										alt="Profile"
-										width={24}
-										height={24}
-										className="rounded-full"
-									/>
-								) : (
-									<div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-white text-sm">
-										{fullName?.charAt(0).toUpperCase()}
-									</div>
-								)}
-								<span className="text-sm font-medium">{fullName}</span>
-							</Link>
-						) : (
-							<Link
-								href="/auth/login"
-								className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 text-white hover:bg-white/10 transition-all duration-300"
-							>
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									height="24"
-									viewBox="0 -960 960 960"
-									width="24"
-									fill="currentColor"
+						<ClientOnly>
+							{session ? (
+								<Link
+									href="/profile"
+									className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 text-white hover:bg-white/10 transition-all duration-300"
 								>
-									<path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-240v-32q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v32q0 33-23.5 56.5T720-160H240q-33 0-56.5-23.5T160-240Z" />
-								</svg>
-								<span className="text-sm font-medium">Log In</span>
-							</Link>
-						)}
+									{avatarUrl ? (
+										<Image
+											src={avatarUrl}
+											alt="Profile"
+											width={24}
+											height={24}
+											className="rounded-full"
+										/>
+									) : (
+										<div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-white text-sm">
+											{fullName?.charAt(0).toUpperCase()}
+										</div>
+									)}
+									<span className="text-sm font-medium">{fullName}</span>
+								</Link>
+							) : (
+								<Link
+									href="/auth/login"
+									className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 text-white hover:bg-white/10 transition-all duration-300"
+								>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										height="24"
+										viewBox="0 -960 960 960"
+										width="24"
+										fill="currentColor"
+									>
+										<path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-240v-32q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v32q0 33-23.5 56.5T720-160H240q-33 0-56.5-23.5T160-240Z" />
+									</svg>
+									<span className="text-sm font-medium">Log In</span>
+								</Link>
+							)}
+						</ClientOnly>
 
 						<Link
 							href="https://discord.gg/JSAszyCEW5"
@@ -268,88 +283,90 @@ export default function Navbar() {
 			</div>
 
 			{/* mobile menu */}
-			<div
-				id="mobile-menu"
-				className={`fixed inset-0 bg-black/90 backdrop-blur-md ${
-					isMenuOpen ? "block" : "hidden"
-				} md:hidden z-50`}
-				aria-modal="true"
-				aria-hidden={!isMenuOpen}
-				role="dialog"
-			>
-				<button
-					onClick={toggleMenu}
-					className="absolute top-8 left-10 flex items-center justify-center w-9 h-9 rounded-full bg-white/5 text-white hover:bg-white/10 transition-all duration-300"
-					aria-label="Close mobile menu"
+			<ClientOnly>
+				<div
+					id="mobile-menu"
+					className={`fixed inset-0 bg-black/90 backdrop-blur-md ${
+						isMenuOpen ? "block" : "hidden"
+					} md:hidden z-50`}
+					aria-modal="true"
+					aria-hidden={!isMenuOpen}
+					role="dialog"
 				>
-					<svg
-						className="w-5 h-5"
-						fill="none"
-						stroke="currentColor"
-						viewBox="0 0 24 24"
+					<button
+						onClick={toggleMenu}
+						className="absolute top-8 left-10 flex items-center justify-center w-9 h-9 rounded-full bg-white/5 text-white hover:bg-white/10 transition-all duration-300"
+						aria-label="Close mobile menu"
 					>
-						<path
-							strokeLinecap="round"
-							strokeLinejoin="round"
-							strokeWidth="2"
-							d="M6 18L18 6M6 6l12 12"
-						/>
-					</svg>
-				</button>
+						<svg
+							className="w-5 h-5"
+							fill="none"
+							stroke="currentColor"
+							viewBox="0 0 24 24"
+						>
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth="2"
+								d="M6 18L18 6M6 6l12 12"
+							/>
+						</svg>
+					</button>
 
-				<div className="flex flex-col items-center justify-center h-full gap-8">
-					{navigationLinks.map((link) => (
-						<Link
-							key={link.href}
-							href={link.href}
-							target={link.external ? "_blank" : undefined}
-							onClick={toggleMenu}
-							className="text-xl text-white/70 hover:text-white transition-colors"
-						>
-							{link.label}
-						</Link>
-					))}
-					{session ? (
-						<Link
-							href="/profile"
-							onClick={toggleMenu}
-							className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 text-white hover:bg-white/10 transition-all duration-300"
-						>
-							{avatarUrl ? (
-								<Image
-									src={avatarUrl}
-									alt="Profile"
-									width={24}
-									height={24}
-									className="rounded-full"
-								/>
-							) : (
-								<div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-white text-sm">
-									{fullName?.charAt(0).toUpperCase()}
-								</div>
-							)}
-							<span className="text-xl font-medium">{fullName}</span>
-						</Link>
-					) : (
-						<Link
-							href="/auth/login"
-							onClick={toggleMenu}
-							className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 text-white hover:bg-white/10 transition-all duration-300"
-						>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								height="24"
-								viewBox="0 -960 960 960"
-								width="24"
-								fill="currentColor"
+					<div className="flex flex-col items-center justify-center h-full gap-8">
+						{navigationLinks.map((link) => (
+							<Link
+								key={link.href}
+								href={link.href}
+								target={link.external ? "_blank" : undefined}
+								onClick={toggleMenu}
+								className="text-xl text-white/70 hover:text-white transition-colors"
 							>
-								<path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-240v-32q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v32q0 33-23.5 56.5T720-160H240q-33 0-56.5-23.5T160-240Z" />
-							</svg>
-							<span className="text-xl font-medium">Log In</span>
-						</Link>
-					)}
+								{link.label}
+							</Link>
+						))}
+						{session ? (
+							<Link
+								href="/profile"
+								onClick={toggleMenu}
+								className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 text-white hover:bg-white/10 transition-all duration-300"
+							>
+								{avatarUrl ? (
+									<Image
+										src={avatarUrl}
+										alt="Profile"
+										width={24}
+										height={24}
+										className="rounded-full"
+									/>
+								) : (
+									<div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-white text-sm">
+										{fullName?.charAt(0).toUpperCase()}
+									</div>
+								)}
+								<span className="text-xl font-medium">{fullName}</span>
+							</Link>
+						) : (
+							<Link
+								href="/auth/login"
+								onClick={toggleMenu}
+								className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 text-white hover:bg-white/10 transition-all duration-300"
+							>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									height="24"
+									viewBox="0 -960 960 960"
+									width="24"
+									fill="currentColor"
+								>
+									<path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-240v-32q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v32q0 33-23.5 56.5T720-160H240q-33 0-56.5-23.5T160-240Z" />
+								</svg>
+								<span className="text-xl font-medium">Log In</span>
+							</Link>
+						)}
+					</div>
 				</div>
-			</div>
+			</ClientOnly>
 		</nav>
 	);
 }

@@ -64,18 +64,48 @@ export default function ProfilePage() {
 
 				if (profileError) {
 					console.error("Profile fetch error:", profileError);
-					throw new Error(
-						"Unable to load your profile data. Please try again later.",
-					);
-				}
+					// handle 406 error specifically
+					if (profileError.code === "406") {
+						// create a new profile if it doesn't exist
+						const { data: newProfile, error: createError } = await supabase
+							.from("users")
+							.insert([
+								{
+									id: session.user.id,
+									username: session.user.email?.split("@")[0] || "user",
+									first_name: "",
+									bio: "",
+									location: "",
+								},
+							])
+							.select()
+							.single();
 
-				setUser({ ...session.user, ...profileData });
-				setEditedFields({
-					username: profileData?.username || "",
-					first_name: profileData?.first_name || "",
-					bio: profileData?.bio || "",
-					location: profileData?.location || "",
-				});
+						if (createError) {
+							throw new Error("Unable to create profile. Please try again later.");
+						}
+
+						setUser({ ...session.user, ...newProfile });
+						setEditedFields({
+							username: newProfile?.username || "",
+							first_name: newProfile?.first_name || "",
+							bio: newProfile?.bio || "",
+							location: newProfile?.location || "",
+						});
+					} else {
+						throw new Error(
+							"Unable to load your profile data. Please try again later.",
+						);
+					}
+				} else {
+					setUser({ ...session.user, ...profileData });
+					setEditedFields({
+						username: profileData?.username || "",
+						first_name: profileData?.first_name || "",
+						bio: profileData?.bio || "",
+						location: profileData?.location || "",
+					});
+				}
 			} catch (err) {
 				console.error("Auth error:", err);
 				if (err instanceof Error) {
