@@ -1,7 +1,6 @@
 "use server";
 
 import { supabase } from "@/utils/database";
-import { redirect } from "next/navigation";
 import type { Provider } from "@supabase/supabase-js";
 
 export async function loginWithOAuth(provider: Provider, isAppLogin: boolean) {
@@ -18,5 +17,5 @@ export async function loginWithOAuth(provider: Provider, isAppLogin: boolean) {
     throw new Error(error.message);
   }
 
-  redirect(data.url);
+  return data.url;
 }

@@ -10,9 +10,16 @@ function LoginHandler() {
   const searchParams = useSearchParams();
   const isAppLogin = searchParams.get("app") === "true";
 
-  const handleLogin = (provider: Provider) => {
-    startTransition(() => {
-      loginWithOAuth(provider, isAppLogin);
+  const handleLogin = async (provider: Provider) => {
+    startTransition(async () => {
+      try {
+        const url = await loginWithOAuth(provider, isAppLogin);
+        if (url) {
+          window.location.href = url;
+        }
+      } catch (err) {
+        console.error("Error during login:", err);
+      }
     });
   };
 

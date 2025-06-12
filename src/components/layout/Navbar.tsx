@@ -9,8 +9,8 @@ import { useEffect, useState } from "react";
 // navigation links
 const links = [
 	{ label: "Explore", href: "/explore" },
-	{ label: "Changelog", href: "/changelog" },
-	{ label: "Documentation", href: "https://docs.getdione.app", external: true },
+	{ label: "Changelog", href: "/changelog" , external: false },
+	// { label: "Documentation", href: "https://docs.getdione.app", external: true },
 ];
 
 export default function Navbar() {
