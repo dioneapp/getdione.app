@@ -305,6 +305,7 @@ export default function FeaturedJoin() {
 									name="category"
 									required
 									className="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+									defaultValue={""}
 								>
 									<option value="" disabled className="bg-[#080808]">
 										Select category
@@ -344,6 +345,7 @@ export default function FeaturedJoin() {
 									name="audience"
 									required
 									className="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+									defaultValue={""}
 								>
 									<option value="" disabled className="bg-[#080808]">
 										Select audience
