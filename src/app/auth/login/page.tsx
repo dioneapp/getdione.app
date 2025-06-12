@@ -1,12 +1,13 @@
 "use client";
 
 import type { Provider } from "@supabase/supabase-js";
-import { redirect, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { startTransition, Suspense, useEffect } from "react";
 import { loginWithOAuth } from "./actions";
 import { supabase } from "@/utils/database";
 
 function LoginHandler() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const isAppLogin = searchParams.get("app") === "true";
 
@@ -25,7 +26,7 @@ function LoginHandler() {
       }
 
       if (session) {
-        redirect("/profile");
+        router.push("/profile");
       }
     }
     checkSession();
