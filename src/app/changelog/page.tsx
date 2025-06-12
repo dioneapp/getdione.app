@@ -1,7 +1,16 @@
 import { marked } from "marked";
 
 async function getReleases() {
-	const response = await fetch("/api/changelog");
+	const response = await fetch(
+		"https://api.github.com/repos/dioneapp/dioneapp/releases",
+		{
+			headers: {
+				Accept: "application/vnd.github+json",
+				Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+			},
+		}
+	);
+	if (!response.ok) return [];
 	return response.json();
 }
 
