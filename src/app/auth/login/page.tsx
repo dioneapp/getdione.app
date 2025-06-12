@@ -147,7 +147,7 @@ function LoginHandler() {
               {" "}
               Terms of Use
             </a>
-            and
+            {" "}and
             <a
               href="/privacy-policy"
               target="_blank"
