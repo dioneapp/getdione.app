@@ -17,10 +17,7 @@ export async function GET() {
   );
 
   if (!response.ok) {
-    return NextResponse.json(
-      { error: "Failed to fetch releases" },
-      { status: response.status },
-    );
+    throw new Error(`Failed to fetch releases: ${response.statusText} (${response.status})`);
   }
 
   const data = await response.json();
