@@ -1,18 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { supabase } from "@/utils/database";
 import type { ExtendedUser } from "@/types/database";
+import { supabase } from "@/utils/database";
+import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 // tabs for different moderation sections
 const TABS = [
 	{ id: "users", label: "Users" },
 	{ id: "scripts", label: "Scripts" },
 ] as const;
-
 
 // add type for script data
 type Script = {
@@ -26,7 +25,8 @@ type Script = {
 
 export default function ModerationPanel() {
 	const router = useRouter();
-	const [activeTab, setActiveTab] = useState<typeof TABS[number]["id"]>("users");
+	const [activeTab, setActiveTab] =
+		useState<(typeof TABS)[number]["id"]>("users");
 	const [isModerator, setIsModerator] = useState(false);
 	const [loading, setLoading] = useState(true);
 
@@ -34,7 +34,9 @@ export default function ModerationPanel() {
 	useEffect(() => {
 		const checkModerator = async () => {
 			try {
-				const { data: { user } } = await supabase.auth.getUser();
+				const {
+					data: { user },
+				} = await supabase.auth.getUser();
 				if (!user) {
 					router.push("/auth/login");
 					return;
@@ -100,8 +102,12 @@ export default function ModerationPanel() {
 				<div className="w-full h-full group p-4 sm:p-6 rounded-xl border border-white/10 backdrop-blur-md bg-white/5 transition-all duration-300 shadow-lg shadow-black/10">
 					{/* header */}
 					<div className="mb-6 sm:mb-8">
-						<h1 className="text-2xl sm:text-3xl font-bold text-white">Moderation Panel</h1>
-						<p className="text-white/60 mt-2 text-sm sm:text-base">Manage users, scripts, and track actions</p>
+						<h1 className="text-2xl sm:text-3xl font-bold text-white">
+							Moderation Panel
+						</h1>
+						<p className="text-white/60 mt-2 text-sm sm:text-base">
+							Manage users, scripts, and track actions
+						</p>
 					</div>
 
 					{/* tabs */}
@@ -171,7 +177,9 @@ function UsersTab() {
 	const [totalCount, setTotalCount] = useState(0);
 	const [expandedUser, setExpandedUser] = useState<string | null>(null);
 	const [editingUser, setEditingUser] = useState<string | null>(null);
-	const [editedUserData, setEditedUserData] = useState<ExtendedUser | null>(null);
+	const [editedUserData, setEditedUserData] = useState<ExtendedUser | null>(
+		null,
+	);
 	const [sortField, setSortField] = useState("created_at");
 	const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
 	const [currentUserId, setCurrentUserId] = useState<string | null>(null);
@@ -181,7 +189,9 @@ function UsersTab() {
 	// get current user id and check if moderator
 	useEffect(() => {
 		const getCurrentUser = async () => {
-			const { data: { user } } = await supabase.auth.getUser();
+			const {
+				data: { user },
+			} = await supabase.auth.getUser();
 			setCurrentUserId(user?.id || null);
 
 			if (user) {
@@ -212,7 +222,9 @@ function UsersTab() {
 				const { count, error: countError } = await supabase
 					.from("users")
 					.select("*", { count: "exact", head: true })
-					.or(`username.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%,first_name.ilike.%${searchQuery}%`);
+					.or(
+						`username.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%,first_name.ilike.%${searchQuery}%`,
+					);
 
 				if (countError) throw countError;
 				setTotalCount(count || 0);
@@ -221,22 +233,29 @@ function UsersTab() {
 				const { data: usersData, error } = await supabase
 					.from("users")
 					.select("*")
-					.or(`username.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%,first_name.ilike.%${searchQuery}%`)
+					.or(
+						`username.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%,first_name.ilike.%${searchQuery}%`,
+					)
 					.order(sortField, { ascending: sortDirection === "asc" })
-					.range((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage - 1);
+					.range(
+						(currentPage - 1) * itemsPerPage,
+						currentPage * itemsPerPage - 1,
+					);
 
 				if (error) throw error;
 
 				// get auth metadata for each user
 				const usersWithMetadata = await Promise.all(
 					(usersData || []).map(async (user) => {
-						const { data: authData } = await supabase.auth.admin.getUserById(user.id);
+						const { data: authData } = await supabase.auth.admin.getUserById(
+							user.id,
+						);
 						return {
 							...user,
 							app_metadata: authData?.user?.app_metadata,
 							user_metadata: authData?.user?.user_metadata,
 						};
-					})
+					}),
 				);
 
 				setUsers(usersWithMetadata);
@@ -266,7 +285,7 @@ function UsersTab() {
 				bio: updatedUser.bio,
 				moderator: updatedUser.moderator,
 				publisher: updatedUser.publisher,
-				tester: updatedUser.tester
+				tester: updatedUser.tester,
 			};
 
 			const { error } = await supabase
@@ -280,9 +299,11 @@ function UsersTab() {
 			}
 
 			// update local state
-			setUsers(users.map(user => 
-				user.id === updatedUser.id ? { ...user, ...updateData } : user
-			));
+			setUsers(
+				users.map((user) =>
+					user.id === updatedUser.id ? { ...user, ...updateData } : user,
+				),
+			);
 			setEditingUser(null);
 			setEditedUserData(null);
 			setExpandedUser(null); // close the expanded view after saving
@@ -323,34 +344,59 @@ function UsersTab() {
 							value={sortField}
 							onChange={(e) => setSortField(e.target.value)}
 							className="px-3 py-2 bg-transparent border-none text-white focus:outline-none focus:ring-0 appearance-none cursor-pointer w-full sm:w-auto"
-							style={{ backgroundImage: 'none' }}
+							style={{ backgroundImage: "none" }}
 						>
 							{sortOptions.map((option) => (
-								<option key={option.value} value={option.value} className="bg-[#1a1a1a]">
+								<option
+									key={option.value}
+									value={option.value}
+									className="bg-[#1a1a1a]"
+								>
 									{option.icon} {option.label}
 								</option>
 							))}
 						</select>
 						<div className="w-px h-6 bg-white/10"></div>
 						<button
-							onClick={() => setSortDirection(d => d === "asc" ? "desc" : "asc")}
+							onClick={() =>
+								setSortDirection((d) => (d === "asc" ? "desc" : "asc"))
+							}
 							className="p-2 hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
 							title={`Sort ${sortDirection === "asc" ? "ascending" : "descending"}`}
 						>
 							{sortDirection === "asc" ? (
-								<svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white/80" viewBox="0 0 20 20" fill="currentColor">
-									<path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									className="h-5 w-5 text-white/80"
+									viewBox="0 0 20 20"
+									fill="currentColor"
+								>
+									<path
+										fillRule="evenodd"
+										d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+										clipRule="evenodd"
+									/>
 								</svg>
 							) : (
-								<svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white/80" viewBox="0 0 20 20" fill="currentColor">
-									<path fillRule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clipRule="evenodd" />
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									className="h-5 w-5 text-white/80"
+									viewBox="0 0 20 20"
+									fill="currentColor"
+								>
+									<path
+										fillRule="evenodd"
+										d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
+										clipRule="evenodd"
+									/>
 								</svg>
 							)}
 						</button>
 					</div>
 				</div>
 				<div className="text-sm text-white/40 truncate">
-					Sorting by {sortOptions.find(opt => opt.value === sortField)?.label} ({sortDirection === "asc" ? "ascending" : "descending"})
+					Sorting by {sortOptions.find((opt) => opt.value === sortField)?.label}{" "}
+					({sortDirection === "asc" ? "ascending" : "descending"})
 				</div>
 			</div>
 
@@ -370,9 +416,11 @@ function UsersTab() {
 								animate={{ opacity: 1, y: 0 }}
 								className="bg-white/5 rounded-lg border border-white/10 overflow-hidden"
 							>
-								<div 
+								<div
 									className="p-4 cursor-pointer hover:bg-white/5 transition-colors"
-									onClick={() => setExpandedUser(expandedUser === user.id ? null : user.id)}
+									onClick={() =>
+										setExpandedUser(expandedUser === user.id ? null : user.id)
+									}
 								>
 									<div className="flex items-center justify-between">
 										<div className="flex items-center gap-4">
@@ -394,9 +442,15 @@ function UsersTab() {
 												)}
 											</div>
 											<div>
-												<h3 className="text-lg font-medium text-white truncate">{user.first_name}</h3>
-												<p className="text-white/60 truncate">@{user.username}</p>
-												<p className="text-white/60 text-sm truncate">{user.email}</p>
+												<h3 className="text-lg font-medium text-white truncate">
+													{user.first_name}
+												</h3>
+												<p className="text-white/60 truncate">
+													@{user.username}
+												</p>
+												<p className="text-white/60 text-sm truncate">
+													{user.email}
+												</p>
 											</div>
 										</div>
 									</div>
@@ -414,12 +468,21 @@ function UsersTab() {
 											<div className="p-4 space-y-4">
 												<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 													<div>
-														<label className="block text-sm text-white/60 mb-1">Username</label>
+														<label className="block text-sm text-white/60 mb-1">
+															Username
+														</label>
 														{editingUser === user.id ? (
 															<input
 																type="text"
 																value={editedUserData?.username || ""}
-																onChange={e => setEditedUserData((prev: ExtendedUser | null) => prev ? { ...prev, username: e.target.value } : null)}
+																onChange={(e) =>
+																	setEditedUserData(
+																		(prev: ExtendedUser | null) =>
+																			prev
+																				? { ...prev, username: e.target.value }
+																				: null,
+																	)
+																}
 																className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50"
 															/>
 														) : (
@@ -427,12 +490,21 @@ function UsersTab() {
 														)}
 													</div>
 													<div>
-														<label className="block text-sm text-white/60 mb-1">Email</label>
+														<label className="block text-sm text-white/60 mb-1">
+															Email
+														</label>
 														{editingUser === user.id ? (
 															<input
 																type="email"
 																value={editedUserData?.email || ""}
-																onChange={e => setEditedUserData((prev: ExtendedUser | null) => prev ? { ...prev, email: e.target.value } : null)}
+																onChange={(e) =>
+																	setEditedUserData(
+																		(prev: ExtendedUser | null) =>
+																			prev
+																				? { ...prev, email: e.target.value }
+																				: null,
+																	)
+																}
 																className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50"
 															/>
 														) : (
@@ -440,12 +512,24 @@ function UsersTab() {
 														)}
 													</div>
 													<div>
-														<label className="block text-sm text-white/60 mb-1">First Name</label>
+														<label className="block text-sm text-white/60 mb-1">
+															First Name
+														</label>
 														{editingUser === user.id ? (
 															<input
 																type="text"
 																value={editedUserData?.first_name || ""}
-																onChange={e => setEditedUserData((prev: ExtendedUser | null) => prev ? { ...prev, first_name: e.target.value } : null)}
+																onChange={(e) =>
+																	setEditedUserData(
+																		(prev: ExtendedUser | null) =>
+																			prev
+																				? {
+																						...prev,
+																						first_name: e.target.value,
+																					}
+																				: null,
+																	)
+																}
 																className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50"
 															/>
 														) : (
@@ -453,25 +537,45 @@ function UsersTab() {
 														)}
 													</div>
 													<div>
-														<label className="block text-sm text-white/60 mb-1">Location</label>
+														<label className="block text-sm text-white/60 mb-1">
+															Location
+														</label>
 														{editingUser === user.id ? (
 															<input
 																type="text"
 																value={editedUserData?.location || ""}
-																onChange={e => setEditedUserData((prev: ExtendedUser | null) => prev ? { ...prev, location: e.target.value } : null)}
+																onChange={(e) =>
+																	setEditedUserData(
+																		(prev: ExtendedUser | null) =>
+																			prev
+																				? { ...prev, location: e.target.value }
+																				: null,
+																	)
+																}
 																className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50"
 															/>
 														) : (
-															<p className="text-white">{user.location || "Not set"}</p>
+															<p className="text-white">
+																{user.location || "Not set"}
+															</p>
 														)}
 													</div>
 												</div>
 												<div>
-													<label className="block text-sm text-white/60 mb-1">Bio</label>
+													<label className="block text-sm text-white/60 mb-1">
+														Bio
+													</label>
 													{editingUser === user.id ? (
 														<textarea
 															value={editedUserData?.bio || ""}
-															onChange={e => setEditedUserData((prev: ExtendedUser | null) => prev ? { ...prev, bio: e.target.value } : null)}
+															onChange={(e) =>
+																setEditedUserData(
+																	(prev: ExtendedUser | null) =>
+																		prev
+																			? { ...prev, bio: e.target.value }
+																			: null,
+																)
+															}
 															className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50"
 															rows={3}
 														/>
@@ -483,8 +587,19 @@ function UsersTab() {
 													<div className="flex items-center gap-2">
 														<input
 															type="checkbox"
-															checked={editingUser === user.id ? editedUserData?.moderator : user.moderator}
-															onChange={e => setEditedUserData((prev: ExtendedUser | null) => prev ? { ...prev, moderator: e.target.checked } : null)}
+															checked={
+																editingUser === user.id
+																	? editedUserData?.moderator
+																	: user.moderator
+															}
+															onChange={(e) =>
+																setEditedUserData(
+																	(prev: ExtendedUser | null) =>
+																		prev
+																			? { ...prev, moderator: e.target.checked }
+																			: null,
+																)
+															}
 															disabled={editingUser !== user.id}
 															className="w-5 h-5 rounded border-white/20 bg-white/5"
 														/>
@@ -493,8 +608,19 @@ function UsersTab() {
 													<div className="flex items-center gap-2">
 														<input
 															type="checkbox"
-															checked={editingUser === user.id ? editedUserData?.publisher : user.publisher}
-															onChange={e => setEditedUserData((prev: ExtendedUser | null) => prev ? { ...prev, publisher: e.target.checked } : null)}
+															checked={
+																editingUser === user.id
+																	? editedUserData?.publisher
+																	: user.publisher
+															}
+															onChange={(e) =>
+																setEditedUserData(
+																	(prev: ExtendedUser | null) =>
+																		prev
+																			? { ...prev, publisher: e.target.checked }
+																			: null,
+																)
+															}
 															disabled={editingUser !== user.id}
 															className="w-5 h-5 rounded border-white/20 bg-white/5"
 														/>
@@ -503,8 +629,19 @@ function UsersTab() {
 													<div className="flex items-center gap-2">
 														<input
 															type="checkbox"
-															checked={editingUser === user.id ? editedUserData?.tester : user.tester}
-															onChange={e => setEditedUserData((prev: ExtendedUser | null) => prev ? { ...prev, tester: e.target.checked } : null)}
+															checked={
+																editingUser === user.id
+																	? editedUserData?.tester
+																	: user.tester
+															}
+															onChange={(e) =>
+																setEditedUserData(
+																	(prev: ExtendedUser | null) =>
+																		prev
+																			? { ...prev, tester: e.target.checked }
+																			: null,
+																)
+															}
 															disabled={editingUser !== user.id}
 															className="w-5 h-5 rounded border-white/20 bg-white/5"
 														/>
@@ -522,11 +659,20 @@ function UsersTab() {
 																Cancel
 															</button>
 															<button
-																onClick={() => editedUserData && handleSaveUser(editedUserData)}
+																onClick={() =>
+																	editedUserData &&
+																	handleSaveUser(editedUserData)
+																}
 																className="w-full sm:w-auto shrink-0 py-2 px-4 flex items-center justify-center gap-2 rounded-full bg-white font-semibold text-[#080808] cursor-pointer hover:bg-white/90 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/50 shadow-lg border border-black/10"
 															>
-																<svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 -960 960 960" width="18" fill="currentColor">
-																	<path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/>
+																<svg
+																	xmlns="http://www.w3.org/2000/svg"
+																	height="18"
+																	viewBox="0 -960 960 960"
+																	width="18"
+																	fill="currentColor"
+																>
+																	<path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z" />
 																</svg>
 																Save Changes
 															</button>
@@ -536,14 +682,21 @@ function UsersTab() {
 															onClick={() => startEditing(user)}
 															className="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-white/80 hover:text-white transition-all duration-200 flex items-center gap-2 cursor-pointer"
 														>
-															<svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 -960 960 960" width="18" fill="currentColor">
-																<path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/>
+															<svg
+																xmlns="http://www.w3.org/2000/svg"
+																height="18"
+																viewBox="0 -960 960 960"
+																width="18"
+																fill="currentColor"
+															>
+																<path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z" />
 															</svg>
 															Edit Details
 														</button>
 													) : (
 														<div className="text-white/60 text-sm truncate">
-															You need moderator privileges to edit user profiles
+															You need moderator privileges to edit user
+															profiles
 														</div>
 													)}
 												</div>
@@ -558,27 +711,43 @@ function UsersTab() {
 					{/* pagination */}
 					<div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
 						<div className="text-white/60 text-center sm:text-left truncate">
-							Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, totalCount)} of {totalCount} users
+							Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
+							{Math.min(currentPage * itemsPerPage, totalCount)} of {totalCount}{" "}
+							users
 						</div>
 						<div className="flex gap-2">
 							<button
-								onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+								onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
 								disabled={currentPage === 1}
 								className="p-2 bg-white/10 hover:bg-white/20 rounded text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
 								title="Previous Page"
 							>
-								<svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="currentColor">
-									<path d="M560-240 320-480l240-240 56 56-184 184 184 184-56 56Z"/>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									height="20"
+									viewBox="0 -960 960 960"
+									width="20"
+									fill="currentColor"
+								>
+									<path d="M560-240 320-480l240-240 56 56-184 184 184 184-56 56Z" />
 								</svg>
 							</button>
 							<button
-								onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+								onClick={() =>
+									setCurrentPage((p) => Math.min(totalPages, p + 1))
+								}
 								disabled={currentPage === totalPages}
 								className="p-2 bg-white/10 hover:bg-white/20 rounded text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
 								title="Next Page"
 							>
-								<svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="currentColor">
-									<path d="M504-480 320-664l56-56 240 240-240 240-56-56 184-184Z"/>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									height="20"
+									viewBox="0 -960 960 960"
+									width="20"
+									fill="currentColor"
+								>
+									<path d="M504-480 320-664l56-56 240 240-240 240-56-56 184-184Z" />
 								</svg>
 							</button>
 						</div>
@@ -618,7 +787,9 @@ function ScriptsTab() {
 				const { count, error: countError } = await supabase
 					.from("scripts")
 					.select("*", { count: "exact", head: true })
-					.or(`name.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%,author.ilike.%${searchQuery}%`);
+					.or(
+						`name.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%,author.ilike.%${searchQuery}%`,
+					);
 
 				if (countError) throw countError;
 				setTotalCount(count || 0);
@@ -627,9 +798,14 @@ function ScriptsTab() {
 				const { data, error } = await supabase
 					.from("scripts")
 					.select("*")
-					.or(`name.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%,author.ilike.%${searchQuery}%`)
+					.or(
+						`name.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%,author.ilike.%${searchQuery}%`,
+					)
 					.order(sortField, { ascending: sortDirection === "asc" })
-					.range((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage - 1);
+					.range(
+						(currentPage - 1) * itemsPerPage,
+						currentPage * itemsPerPage - 1,
+					);
 
 				if (error) throw error;
 				setScripts(data || []);
@@ -658,9 +834,11 @@ function ScriptsTab() {
 			if (error) throw error;
 
 			// update local state
-			setScripts(scripts.map(script => 
-				script.id === updatedScript.id ? updatedScript : script
-			));
+			setScripts(
+				scripts.map((script) =>
+					script.id === updatedScript.id ? updatedScript : script,
+				),
+			);
 			setEditingScript(null);
 			setEditedScriptData(null);
 		} catch (error) {
@@ -695,34 +873,59 @@ function ScriptsTab() {
 							value={sortField}
 							onChange={(e) => setSortField(e.target.value)}
 							className="px-3 py-2 bg-transparent border-none text-white focus:outline-none focus:ring-0 appearance-none cursor-pointer w-full sm:w-auto"
-							style={{ backgroundImage: 'none' }}
+							style={{ backgroundImage: "none" }}
 						>
 							{sortOptions.map((option) => (
-								<option key={option.value} value={option.value} className="bg-[#1a1a1a]">
+								<option
+									key={option.value}
+									value={option.value}
+									className="bg-[#1a1a1a]"
+								>
 									{option.icon} {option.label}
 								</option>
 							))}
 						</select>
 						<div className="w-px h-6 bg-white/10"></div>
 						<button
-							onClick={() => setSortDirection(d => d === "asc" ? "desc" : "asc")}
+							onClick={() =>
+								setSortDirection((d) => (d === "asc" ? "desc" : "asc"))
+							}
 							className="p-2 hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
 							title={`Sort ${sortDirection === "asc" ? "ascending" : "descending"}`}
 						>
 							{sortDirection === "asc" ? (
-								<svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white/80" viewBox="0 0 20 20" fill="currentColor">
-									<path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									className="h-5 w-5 text-white/80"
+									viewBox="0 0 20 20"
+									fill="currentColor"
+								>
+									<path
+										fillRule="evenodd"
+										d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+										clipRule="evenodd"
+									/>
 								</svg>
 							) : (
-								<svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white/80" viewBox="0 0 20 20" fill="currentColor">
-									<path fillRule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clipRule="evenodd" />
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									className="h-5 w-5 text-white/80"
+									viewBox="0 0 20 20"
+									fill="currentColor"
+								>
+									<path
+										fillRule="evenodd"
+										d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
+										clipRule="evenodd"
+									/>
 								</svg>
 							)}
 						</button>
 					</div>
 				</div>
 				<div className="text-sm text-white/40 truncate">
-					Sorting by {sortOptions.find(opt => opt.value === sortField)?.label} ({sortDirection === "asc" ? "ascending" : "descending"})
+					Sorting by {sortOptions.find((opt) => opt.value === sortField)?.label}{" "}
+					({sortDirection === "asc" ? "ascending" : "descending"})
 				</div>
 			</div>
 
@@ -742,9 +945,13 @@ function ScriptsTab() {
 								animate={{ opacity: 1, y: 0 }}
 								className="bg-white/5 rounded-lg border border-white/10 overflow-hidden"
 							>
-								<div 
+								<div
 									className="p-4 cursor-pointer hover:bg-white/5 transition-colors"
-									onClick={() => setExpandedScript(expandedScript === script.id ? null : script.id)}
+									onClick={() =>
+										setExpandedScript(
+											expandedScript === script.id ? null : script.id,
+										)
+									}
 								>
 									<div className="flex items-center justify-between">
 										<div className="flex items-center gap-4">
@@ -766,9 +973,15 @@ function ScriptsTab() {
 												)}
 											</div>
 											<div>
-												<h3 className="text-lg font-medium text-white truncate">{script.name}</h3>
-												<p className="text-white/60 truncate">by {script.author}</p>
-												<p className="text-white/60 text-sm line-clamp-1">{script.description}</p>
+												<h3 className="text-lg font-medium text-white truncate">
+													{script.name}
+												</h3>
+												<p className="text-white/60 truncate">
+													by {script.author}
+												</p>
+												<p className="text-white/60 text-sm line-clamp-1">
+													{script.description}
+												</p>
 											</div>
 										</div>
 									</div>
@@ -786,12 +999,20 @@ function ScriptsTab() {
 											<div className="p-4 space-y-4">
 												<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 													<div>
-														<label className="block text-sm text-white/60 mb-1">Name</label>
+														<label className="block text-sm text-white/60 mb-1">
+															Name
+														</label>
 														{editingScript === script.id ? (
 															<input
 																type="text"
 																value={editedScriptData?.name || ""}
-																onChange={e => setEditedScriptData((prev: Script | null) => prev ? { ...prev, name: e.target.value } : null)}
+																onChange={(e) =>
+																	setEditedScriptData((prev: Script | null) =>
+																		prev
+																			? { ...prev, name: e.target.value }
+																			: null,
+																	)
+																}
 																className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50"
 															/>
 														) : (
@@ -799,12 +1020,20 @@ function ScriptsTab() {
 														)}
 													</div>
 													<div>
-														<label className="block text-sm text-white/60 mb-1">Author</label>
+														<label className="block text-sm text-white/60 mb-1">
+															Author
+														</label>
 														{editingScript === script.id ? (
 															<input
 																type="text"
 																value={editedScriptData?.author || ""}
-																onChange={e => setEditedScriptData((prev: Script | null) => prev ? { ...prev, author: e.target.value } : null)}
+																onChange={(e) =>
+																	setEditedScriptData((prev: Script | null) =>
+																		prev
+																			? { ...prev, author: e.target.value }
+																			: null,
+																	)
+																}
 																className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50"
 															/>
 														) : (
@@ -813,11 +1042,19 @@ function ScriptsTab() {
 													</div>
 												</div>
 												<div>
-													<label className="block text-sm text-white/60 mb-1">Description</label>
+													<label className="block text-sm text-white/60 mb-1">
+														Description
+													</label>
 													{editingScript === script.id ? (
 														<textarea
 															value={editedScriptData?.description || ""}
-															onChange={e => setEditedScriptData((prev: Script | null) => prev ? { ...prev, description: e.target.value } : null)}
+															onChange={(e) =>
+																setEditedScriptData((prev: Script | null) =>
+																	prev
+																		? { ...prev, description: e.target.value }
+																		: null,
+																)
+															}
 															className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50"
 															rows={3}
 														/>
@@ -836,11 +1073,20 @@ function ScriptsTab() {
 																Cancel
 															</button>
 															<button
-																onClick={() => editedScriptData && handleSaveScript(editedScriptData)}
+																onClick={() =>
+																	editedScriptData &&
+																	handleSaveScript(editedScriptData)
+																}
 																className="w-full sm:w-auto shrink-0 py-2 px-4 flex items-center justify-center gap-2 rounded-full bg-white font-semibold text-[#080808] cursor-pointer hover:bg-white/90 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/50 shadow-lg border border-black/10"
 															>
-																<svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 -960 960 960" width="18" fill="currentColor">
-																	<path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/>
+																<svg
+																	xmlns="http://www.w3.org/2000/svg"
+																	height="18"
+																	viewBox="0 -960 960 960"
+																	width="18"
+																	fill="currentColor"
+																>
+																	<path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z" />
 																</svg>
 																Save Changes
 															</button>
@@ -850,8 +1096,14 @@ function ScriptsTab() {
 															onClick={() => startEditing(script)}
 															className="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-white/80 hover:text-white transition-all duration-200 flex items-center gap-2 cursor-pointer"
 														>
-															<svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 -960 960 960" width="18" fill="currentColor">
-																<path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/>
+															<svg
+																xmlns="http://www.w3.org/2000/svg"
+																height="18"
+																viewBox="0 -960 960 960"
+																width="18"
+																fill="currentColor"
+															>
+																<path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z" />
 															</svg>
 															Edit Details
 														</button>
@@ -868,27 +1120,43 @@ function ScriptsTab() {
 					{/* pagination */}
 					<div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
 						<div className="text-white/60 text-center sm:text-left truncate">
-							Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, totalCount)} of {totalCount} scripts
+							Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
+							{Math.min(currentPage * itemsPerPage, totalCount)} of {totalCount}{" "}
+							scripts
 						</div>
 						<div className="flex gap-2">
 							<button
-								onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+								onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
 								disabled={currentPage === 1}
 								className="p-2 bg-white/10 hover:bg-white/20 rounded text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
 								title="Previous Page"
 							>
-								<svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="currentColor">
-									<path d="M560-240 320-480l240-240 56 56-184 184 184 184-56 56Z"/>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									height="20"
+									viewBox="0 -960 960 960"
+									width="20"
+									fill="currentColor"
+								>
+									<path d="M560-240 320-480l240-240 56 56-184 184 184 184-56 56Z" />
 								</svg>
 							</button>
 							<button
-								onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+								onClick={() =>
+									setCurrentPage((p) => Math.min(totalPages, p + 1))
+								}
 								disabled={currentPage === totalPages}
 								className="p-2 bg-white/10 hover:bg-white/20 rounded text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
 								title="Next Page"
 							>
-								<svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="currentColor">
-									<path d="M504-480 320-664l56-56 240 240-240 240-56-56 184-184Z"/>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									height="20"
+									viewBox="0 -960 960 960"
+									width="20"
+									fill="currentColor"
+								>
+									<path d="M504-480 320-664l56-56 240 240-240 240-56-56 184-184Z" />
 								</svg>
 							</button>
 						</div>
@@ -898,5 +1166,3 @@ function ScriptsTab() {
 		</div>
 	);
 }
-
-

@@ -5,7 +5,7 @@ import { supabase } from "@/utils/database";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useState, use } from "react";
+import { use, useEffect, useState } from "react";
 
 // public fields that are safe to expose
 const PUBLIC_FIELDS = [
@@ -52,7 +52,7 @@ export default function UserProfilePage({
 				}
 
 				// type check the profile data
-				if (typeof profileData === 'object' && !('error' in profileData)) {
+				if (typeof profileData === "object" && !("error" in profileData)) {
 					setUser(profileData as ExtendedUser);
 				} else {
 					throw new Error("Invalid profile data format");
