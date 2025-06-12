@@ -244,13 +244,14 @@ export default function ProfilePage() {
 					<div className="flex flex-col gap-2">
 						<div className="flex gap-4 items-center">
 							{/* avatar */}
-							<div className="relative w-20 h-20 rounded-full overflow-hidden border-2 border-white/20">
+							<div className="relative w-20 h-20 rounded-full overflow-hidden border-2 border-white/20 flex-shrink-0">
 								{user?.avatar_url ? (
 									<Image
 										src={user.avatar_url}
 										alt="Profile"
 										fill
 										className="object-cover"
+										sizes="(max-width: 768px) 80px, 80px"
 									/>
 								) : (
 									<div className="w-full h-full bg-white/10 flex items-center justify-center">
@@ -294,7 +295,7 @@ export default function ProfilePage() {
 											user?.first_name || "No name set"
 										)}
 									</div>
-									<div className="flex items-center gap-2 text-white/50 text-sm truncate max-w-[300px]">
+									<div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 text-white/50 text-sm truncate max-w-[300px]">
 										<span className="flex items-center">
 											<span>@</span>
 											{isEditing ? (
@@ -333,8 +334,8 @@ export default function ProfilePage() {
 										{/* location display */}
 										{user?.location && (
 											<>
-												<span className="text-white/20">•</span>
-												<div className="flex items-center gap-1">
+												<span className="text-white/20 hidden sm:inline">•</span>
+												<div className="flex items-center gap-1 sm:inline-flex">
 													<svg
 														xmlns="http://www.w3.org/2000/svg"
 														className="h-3.5 w-3.5"
