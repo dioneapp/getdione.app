@@ -9,6 +9,19 @@ const mockClient = {
 			}),
 		}),
 	}),
+	auth: {
+        getSession: async () => ({
+            data: { session: null },
+            error: null,
+        }),
+        onAuthStateChange: (callback: any) => ({
+            data: {
+                subscription: {
+                    unsubscribe: () => {},
+                },
+            },
+        }),
+    },
 } as unknown as SupabaseClient;
 
 // use real client if credentials are provided, otherwise use mock
