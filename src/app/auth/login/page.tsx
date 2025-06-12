@@ -2,7 +2,7 @@
 
 import type { Provider } from "@supabase/supabase-js";
 import { useRouter, useSearchParams } from "next/navigation";
-import { startTransition, Suspense, useEffect } from "react";
+import { startTransition, Suspense } from "react";
 import { loginWithOAuth } from "./actions";
 
 function LoginHandler() {
