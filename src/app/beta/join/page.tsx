@@ -172,6 +172,7 @@ export default function BetaJoin() {
 								name="role"
 								required
 								className="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+								defaultValue={""}
 							>
 								<option value="" disabled className="bg-[#080808]">
 									Select your role
@@ -209,6 +210,7 @@ export default function BetaJoin() {
 								name="experience"
 								required
 								className="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+								defaultValue={""}
 							>
 								<option value="" disabled className="bg-[#080808]">
 									Select your experience level
@@ -240,6 +242,7 @@ export default function BetaJoin() {
 								name="usage"
 								required
 								className="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+								defaultValue={""}
 							>
 								<option value="" disabled className="bg-[#080808]">
 									Select primary usage
@@ -274,6 +277,7 @@ export default function BetaJoin() {
 								name="os"
 								required
 								className="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+								defaultValue={""}
 							>
 								<option value="" disabled className="bg-[#080808]">
 									Select your OS
