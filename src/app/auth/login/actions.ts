@@ -2,6 +2,7 @@
 
 import { supabase } from "@/utils/database";
 import type { Provider } from "@supabase/supabase-js";
+import { redirect } from "next/navigation";
 
 export async function loginWithOAuth(provider: Provider, isAppLogin: boolean) {
   const { data, error } = await supabase.auth.signInWithOAuth({
@@ -17,5 +18,5 @@ export async function loginWithOAuth(provider: Provider, isAppLogin: boolean) {
     throw new Error(error.message);
   }
 
-  return data.url;
+  redirect(data.url);
 }

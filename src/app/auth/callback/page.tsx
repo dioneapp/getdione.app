@@ -43,7 +43,7 @@ function CallbackHandler() {
           redirectUrl = "/profile";
         }
 
-        window.location.replace(redirectUrl);
+        router.push(redirectUrl);
       } catch (err) {
         console.error("Auth callback error:", err);
         setError(

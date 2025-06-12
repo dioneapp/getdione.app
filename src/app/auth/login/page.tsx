@@ -34,12 +34,7 @@ function LoginHandler() {
   const handleLogin = async (provider: Provider) => {
     startTransition(async () => {
       try {
-        const url = await loginWithOAuth(provider, isAppLogin);
-        if (url) {
-          redirect(url);
-        } else {
-          console.error("No URL received from loginWithOAuth");
-        }
+        await loginWithOAuth(provider, isAppLogin);
       } catch (err) {
         console.error("Error during login:", err);
       }
