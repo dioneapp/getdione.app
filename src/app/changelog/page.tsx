@@ -11,6 +11,10 @@ async function getReleases() {
 		}
 	);
 	if (!response.ok) return [];
+	if (response.status === 404) {
+		console.log("No releases found or GitHub token is invalid.");
+		return [];
+	}
 	return response.json();
 }
 
