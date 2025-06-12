@@ -2,6 +2,7 @@
 
 import { supabase } from "@/utils/database";
 import type { Session, User } from "@supabase/supabase-js";
+import type { ExtendedUser } from "@/types/database";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -13,10 +14,20 @@ const links = [
 	// { label: "Documentation", href: "https://docs.getdione.app", external: true },
 ];
 
+// add moderation link if user is moderator
+const getNavigationLinks = (isModerator: boolean) => {
+	const baseLinks = [...links];
+	if (isModerator) {
+		baseLinks.push({ label: "Moderation", href: "/moderation" });
+	}
+	return baseLinks;
+};
+
 export default function Navbar() {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const [session, setSession] = useState<Session | null>(null);
 	const [user, setUser] = useState<User | null>(null);
+	const [isModerator, setIsModerator] = useState(false);
 
 	// handle mobile menu
 	const toggleMenu = () => {
@@ -24,8 +35,10 @@ export default function Navbar() {
 		document.body.style.overflow = !isMenuOpen ? "hidden" : "";
 	};
 
-	// get user data
+	// get user data and moderator status
 	useEffect(() => {
+		let mounted = true;
+
 		const getSession = async () => {
 			const {
 				data: { session },
@@ -35,8 +48,25 @@ export default function Navbar() {
 				console.error("Error getting session:", error);
 				return;
 			}
+			if (!mounted) return;
+
 			setSession(session);
 			setUser(session?.user ?? null);
+
+			// only check moderator status if user is logged in
+			if (session?.user) {
+				const { data: userData } = await supabase
+					.from('users')
+					.select('moderator')
+					.eq('id', session.user.id)
+					.single();
+				
+				if (mounted) {
+					setIsModerator(userData?.moderator ?? false);
+				}
+			} else {
+				setIsModerator(false);
+			}
 		};
 
 		getSession();
@@ -44,18 +74,38 @@ export default function Navbar() {
 		// listen for auth changes
 		const {
 			data: { subscription },
-		} = supabase.auth.onAuthStateChange((_event, session) => {
+		} = supabase.auth.onAuthStateChange(async (_event, session) => {
+			if (!mounted) return;
+
 			setSession(session);
 			setUser(session?.user ?? null);
+
+			// only check moderator status if user is logged in
+			if (session?.user) {
+				const { data: userData } = await supabase
+					.from('users')
+					.select('moderator')
+					.eq('id', session.user.id)
+					.single();
+				
+				if (mounted) {
+					setIsModerator(userData?.moderator ?? false);
+				}
+			} else {
+				setIsModerator(false);
+			}
 		});
 
 		return () => {
+			mounted = false;
 			subscription.unsubscribe();
 		};
 	}, []);
 
 	const fullName = user?.user_metadata?.full_name || user?.email;
 	const avatarUrl = user?.user_metadata?.avatar_url;
+	
+	const navigationLinks = getNavigationLinks(isModerator);
 
 	return (
 		<nav className="fixed top-0 w-full z-50 px-6 py-4">
@@ -118,7 +168,7 @@ export default function Navbar() {
 
 					<div className="flex items-center gap-3">
 						<div className="hidden md:flex items-center gap-6">
-							{links.map((link) => (
+							{navigationLinks.map((link) => (
 								<Link
 									key={link.href}
 									href={link.href}
@@ -246,7 +296,7 @@ export default function Navbar() {
 				</button>
 
 				<div className="flex flex-col items-center justify-center h-full gap-8">
-					{links.map((link) => (
+					{navigationLinks.map((link) => (
 						<Link
 							key={link.href}
 							href={link.href}
