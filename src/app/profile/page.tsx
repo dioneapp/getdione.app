@@ -3,7 +3,6 @@
 import type { ExtendedUser } from "@/types/database";
 import { createSupabaseBrowserClient } from "@/utils/supabase/browser-client";
 import useSession from "@/utils/supabase/use-session";
-import { Session } from "@supabase/supabase-js";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -20,8 +19,7 @@ const CHAR_LIMITS = {
 export default function ProfilePage() {
 	const router = useRouter();
 	const supabase = createSupabaseBrowserClient();
-	const [session, setSession] = useState<any>(null)
-	const [profile, setProfile] = useState<any | null>(null);
+	const { session, profile, isLoading, error: sessionError } = useSession();
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const [isDeleting, setIsDeleting] = useState(false);
@@ -39,85 +37,95 @@ export default function ProfilePage() {
 		first_name: "",
 	});
 
+	// handle auth redirect
 	useEffect(() => {
-		async function getSession() {
-			const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => setSession(session as Session));
-			return () => subscription.unsubscribe();
+		if (!isLoading && !session) {
+			router.push("/auth/login");
 		}
+	}, [session, isLoading, router]);
 
-		getSession();
-	}, []);
-
-    useEffect(() => {
-		if (!session) return;
-
-		async function getData() {
-			const data = await supabase.from('users').select('*').eq('id', session?.user?.id).single();
-			if (data) {
-				setLoading(false)
-				setProfile(data.data)
-			} else {
-				console.error('No user found')
-			}
+	// initialize form fields when profile loads
+	useEffect(() => {
+		if (profile) {
+			setEditedFields({
+				username: profile.username || "",
+				first_name: profile.first_name || "",
+				bio: profile.bio || "",
+				location: profile.location || "",
+				avatar_url: profile.avatar_url || "",
+			});
+			setLoading(false);
 		}
+	}, [profile]);
 
-		getData();
-    }, [session]);
+	// handle field changes
+	const handleFieldChange = (field: keyof typeof editedFields, value: string) => {
+		setEditedFields(prev => ({ ...prev, [field]: value }));
+		setFieldErrors(prev => ({ ...prev, [field]: "" }));
+	};
 
-	// handle profile update
-	const handleUpdateProfile = async () => {
-		if (!profile) return;
-
-		// validate fields
-		const errors = {
-			username: !editedFields.username.trim() ? "Username is required" : "",
-			first_name: !editedFields.first_name.trim() ? "Name is required" : "",
-		};
-
-		setFieldErrors(errors);
-
-		// check if there are any errors
-		if (Object.values(errors).some((error) => error)) {
-			return;
-		}
-
+	// handle form submission
+	const handleSubmit = async () => {
 		try {
-			// check if username is already taken by another user
-			if (editedFields.username !== profile.username) {
-				const { data: existingUser, error: checkError } = await supabase
-					.from("users")
-					.select("username")
-					.eq("username", editedFields.username)
-					.neq("id", profile.id)
-					.single();
+			setError(null);
+			
+			// validate fields
+			const errors = {
+				username: "",
+				first_name: "",
+			};
 
-				if (checkError && checkError.code !== "PGRST116") {
-					// PGRST116 : "no rows returned"
-					throw checkError;
-				}
-
-				if (existingUser) {
-					setFieldErrors((prev) => ({
-						...prev,
-						username: "This username is already taken",
-					}));
-					return;
-				}
+			if (!editedFields.username.trim()) {
+				errors.username = "Username is required";
+			} else if (editedFields.username.length > CHAR_LIMITS.username) {
+				errors.username = `Username must be ${CHAR_LIMITS.username} characters or less`;
 			}
 
-			const { error } = await supabase
+			if (editedFields.first_name.length > CHAR_LIMITS.first_name) {
+				errors.first_name = `First name must be ${CHAR_LIMITS.first_name} characters or less`;
+			}
+
+			if (errors.username || errors.first_name) {
+				setFieldErrors(errors);
+				return;
+			}
+
+			const { error: updateError } = await supabase
 				.from("users")
-				.update(editedFields)
-				.eq("id", profile.id);
+				.update({
+					username: editedFields.username,
+					first_name: editedFields.first_name,
+					bio: editedFields.bio,
+					location: editedFields.location,
+				})
+				.eq("id", session?.user.id);
 
-			if (error) throw error;
+			if (updateError) throw updateError;
 
-			setProfile((prev: any) => (prev ? { ...prev, ...editedFields } : null));
 			setIsEditing(false);
-			setFieldErrors({ username: "", first_name: "" });
 		} catch (err) {
-			console.error("Update error:", err);
 			setError(err instanceof Error ? err.message : "Failed to update profile");
+		}
+	};
+
+	// handle account deletion
+	const handleDeleteAccount = async () => {
+		try {
+			setIsDeleting(true);
+			setError(null);
+
+			const { error: deleteError } = await supabase
+				.from("users")
+				.delete()
+				.eq("id", session?.user.id);
+
+			if (deleteError) throw deleteError;
+
+			await supabase.auth.signOut();
+			router.push("/");
+		} catch (err) {
+			setError(err instanceof Error ? err.message : "Failed to delete account");
+			setIsDeleting(false);
 		}
 	};
 
@@ -126,61 +134,20 @@ export default function ProfilePage() {
 		try {
 			const { error } = await supabase.auth.signOut();
 			if (error) throw error;
-			router.push("/auth/login");
+			
+			// clear profile cache
+			if (session?.user?.id) {
+				profileCache.delete(session.user.id);
+			}
+			
+			// redirect to home page
+			router.push("/");
 		} catch (err) {
-			console.error("Sign out error:", err);
 			setError(err instanceof Error ? err.message : "Failed to sign out");
 		}
 	};
 
-	// handle account deletion
-	const handleDeleteAccount = async () => {
-		setIsDeleting(true);
-		try {
-			const { error } = await supabase.auth.admin.deleteUser(profile?.id || "");
-			if (error) throw error;
-			await supabase.auth.signOut();
-			router.push("/auth/login");
-		} catch (err) {
-			console.error("Delete account error:", err);
-			setError(err instanceof Error ? err.message : "Failed to delete account");
-		} finally {
-			setIsDeleting(false);
-			setShowDeleteModal(false);
-		}
-	};
-
-	// delete confirmation modal
-	const DeleteConfirmationModal = () => (
-		<div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-			<div className="bg-white/10 border border-white/20 rounded-xl p-6 max-w-md w-full mx-4">
-				<h3 className="text-white text-xl font-semibold mb-4">
-					Delete Account
-				</h3>
-				<p className="text-white/70 mb-6">
-					Are you sure you want to delete your account? This action cannot be
-					undone.
-				</p>
-				<div className="flex gap-4">
-					<button
-						onClick={() => setShowDeleteModal(false)}
-						className="flex-1 px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 cursor-pointer"
-					>
-						Cancel
-					</button>
-					<button
-						onClick={handleDeleteAccount}
-						disabled={isDeleting}
-						className="flex-1 px-4 py-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 disabled:opacity-50 cursor-pointer"
-					>
-						{isDeleting ? "Deleting..." : "Delete Account"}
-					</button>
-				</div>
-			</div>
-		</div>
-	);
-
-	if (loading) {
+	if (isLoading || loading) {
 		return (
 			<div className="flex flex-col items-center w-full min-h-[100dvh] justify-center p-12 pt-6 relative">
 				<div
@@ -198,7 +165,7 @@ export default function ProfilePage() {
 		);
 	}
 
-	if (error) {
+	if (error || sessionError) {
 		return (
 			<div className="flex flex-col items-center w-full min-h-[100dvh] justify-center p-12 pt-6 relative">
 				<div
@@ -210,7 +177,7 @@ export default function ProfilePage() {
 				<div className="h-fit w-full flex max-w-xl">
 					<div className="backdrop-blur-md bg-white/[0.02] border border-white/[0.05] rounded-xl p-12 flex flex-col items-start justify-start shadow-lg shadow-black/10 w-full h-full">
 						<h1 className="text-white text-3xl font-semibold">Error</h1>
-						<p className="mt-2 text-red-400">{error}</p>
+						<p className="mt-2 text-red-400">{error || sessionError?.message}</p>
 						<button
 							onClick={() => router.push("/auth/login")}
 							className="mt-4 px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20"
@@ -270,14 +237,7 @@ export default function ProfilePage() {
 													onChange={(
 														e: React.ChangeEvent<HTMLInputElement>,
 													) => {
-														setEditedFields((prev) => ({
-															...prev,
-															first_name: e.target.value,
-														}));
-														setFieldErrors((prev) => ({
-															...prev,
-															first_name: "",
-														}));
+														handleFieldChange("first_name", e.target.value);
 													}}
 													maxLength={CHAR_LIMITS.first_name}
 													className={`bg-transparent border-b ${fieldErrors.first_name ? "border-red-500/50" : "border-white/20"} px-1 py-0.5 text-white w-full focus:outline-none`}
@@ -310,14 +270,7 @@ export default function ProfilePage() {
 																	/[^a-zA-Z0-9_]/g,
 																	"",
 																);
-																setEditedFields((prev) => ({
-																	...prev,
-																	username: value,
-																}));
-																setFieldErrors((prev) => ({
-																	...prev,
-																	username: "",
-																}));
+																handleFieldChange("username", value);
 															}}
 															maxLength={CHAR_LIMITS.username}
 															className={`bg-transparent border-b ${fieldErrors.username ? "border-red-500/50" : "border-white/20"} px-1 py-0.5 text-white w-full focus:outline-none`}
@@ -363,10 +316,7 @@ export default function ProfilePage() {
 															onChange={(
 																e: React.ChangeEvent<HTMLInputElement>,
 															) =>
-																setEditedFields((prev) => ({
-																	...prev,
-																	location: e.target.value,
-																}))
+																handleFieldChange("location", e.target.value)
 															}
 															maxLength={CHAR_LIMITS.location}
 															className="bg-transparent border-b border-white/20 px-1 py-0.5 text-white w-full focus:outline-none"
@@ -399,10 +349,7 @@ export default function ProfilePage() {
 												exit={{ opacity: 0 }}
 												value={editedFields.bio}
 												onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-													setEditedFields((prev) => ({
-														...prev,
-														bio: e.target.value,
-													}))
+													handleFieldChange("bio", e.target.value)
 												}
 												maxLength={CHAR_LIMITS.bio}
 												className="bg-transparent border-b border-white/20 px-1 py-0.5 text-white w-full min-h-[60px] resize-y focus:outline-none"
@@ -447,7 +394,7 @@ export default function ProfilePage() {
 												className="flex justify-end gap-2 pt-4"
 											>
 												<button
-													onClick={handleUpdateProfile}
+													onClick={handleSubmit}
 													className="px-3 py-1.5 bg-gradient-to-r from-green-500/20 to-green-600/20 text-green-400 rounded-lg hover:from-green-500/30 hover:to-green-600/30 transition-all duration-300 flex items-center gap-1.5 text-sm cursor-pointer"
 												>
 													<svg
@@ -660,7 +607,34 @@ export default function ProfilePage() {
 			</div>
 
 			{/* delete confirmation modal */}
-			{showDeleteModal && <DeleteConfirmationModal />}
+			{showDeleteModal && (
+				<div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+					<div className="bg-white/10 border border-white/20 rounded-xl p-6 max-w-md w-full mx-4">
+						<h3 className="text-white text-xl font-semibold mb-4">
+							Delete Account
+						</h3>
+						<p className="text-white/70 mb-6">
+							Are you sure you want to delete your account? This action cannot be
+							undone.
+						</p>
+						<div className="flex gap-4">
+							<button
+								onClick={() => setShowDeleteModal(false)}
+								className="flex-1 px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 cursor-pointer"
+							>
+								Cancel
+							</button>
+							<button
+								onClick={handleDeleteAccount}
+								disabled={isDeleting}
+								className="flex-1 px-4 py-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 disabled:opacity-50 cursor-pointer"
+							>
+								{isDeleting ? "Deleting..." : "Delete Account"}
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
 		</div>
 	);
 }

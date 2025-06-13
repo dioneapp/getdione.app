@@ -19,7 +19,10 @@ const PUBLIC_FIELDS = [
 	"tester",
 	"publisher",
 	"moderator",
-];
+] as const;
+
+// cache for public profiles
+const profileCache = new Map<string, ExtendedUser>();
 
 export default function UserProfilePage({
 	params,
@@ -28,7 +31,7 @@ export default function UserProfilePage({
 }) {
 	const router = useRouter();
 	const supabase = createSupabaseBrowserClient();
-	const { session, profile: currentUserProfile } = useSession();
+	const { session, profile: currentUserProfile, isLoading: sessionLoading } = useSession();
 	const [user, setUser] = useState<ExtendedUser | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
@@ -40,6 +43,14 @@ export default function UserProfilePage({
 
 		const fetchUser = async () => {
 			try {
+				// check cache first
+				const cachedProfile = profileCache.get(username);
+				if (cachedProfile) {
+					setUser(cachedProfile);
+					setLoading(false);
+					return;
+				}
+
 				// fetch only public user data by username
 				const { data: profileData, error: profileError } = await supabase
 					.from("users")
@@ -50,8 +61,10 @@ export default function UserProfilePage({
 				if (!mounted) return;
 
 				if (profileError) {
-					console.error("Profile fetch error:", profileError);
-					throw new Error("User not found");
+					if (profileError.code === "PGRST116") {
+						throw new Error("User not found");
+					}
+					throw profileError;
 				}
 
 				if (!profileData) {
@@ -60,7 +73,9 @@ export default function UserProfilePage({
 
 				// type check the profile data
 				if (typeof profileData === "object" && !("error" in profileData)) {
-					setUser(profileData as ExtendedUser);
+					const typedProfile = profileData as ExtendedUser;
+					profileCache.set(username, typedProfile);
+					setUser(typedProfile);
 				} else {
 					throw new Error("Invalid profile data format");
 				}
@@ -87,7 +102,7 @@ export default function UserProfilePage({
 	}, [username, supabase]);
 
 	// show loading state
-	if (loading) {
+	if (loading || sessionLoading) {
 		return (
 			<div className="flex flex-col items-center w-full min-h-[100dvh] justify-center p-12 pt-6 relative">
 				<div

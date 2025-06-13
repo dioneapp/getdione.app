@@ -28,9 +28,10 @@ type Script = {
 export default function ModerationPanel() {
 	const router = useRouter();
 	const supabase = createSupabaseBrowserClient();
-	const { session, profile, isLoading } = useSession();
+	const { session, profile, isLoading, error: sessionError } = useSession();
 	const [activeTab, setActiveTab] =
 		useState<(typeof TABS)[number]["id"]>("users");
+	const [error, setError] = useState<string | null>(null);
 
 	// handle auth and moderator checks
 	useEffect(() => {
@@ -63,6 +64,32 @@ export default function ModerationPanel() {
 				<div className="h-fit w-full flex max-w-xl">
 					<div className="backdrop-blur-md bg-white/[0.02] border border-white/[0.05] rounded-xl p-12 flex flex-col items-start justify-start shadow-lg shadow-black/10 w-full h-full">
 						<h1 className="text-white text-3xl font-semibold">Loading...</h1>
+					</div>
+				</div>
+			</div>
+		);
+	}
+
+	// show error state
+	if (error || sessionError) {
+		return (
+			<div className="flex flex-col items-center w-full min-h-[100dvh] justify-center p-12 pt-6 relative">
+				<div
+					className="fixed inset-0 flex justify-center items-center"
+					aria-hidden="true"
+				>
+					<div className="bg-[#BCB1E7]/30 h-[70vh] w-[70vh] rounded-full blur-[150px]"></div>
+				</div>
+				<div className="h-fit w-full flex max-w-xl">
+					<div className="backdrop-blur-md bg-white/[0.02] border border-white/[0.05] rounded-xl p-12 flex flex-col items-start justify-start shadow-lg shadow-black/10 w-full h-full">
+						<h1 className="text-white text-3xl font-semibold">Error</h1>
+						<p className="mt-2 text-red-400">{error || sessionError?.message}</p>
+						<button
+							onClick={() => router.push("/")}
+							className="mt-4 px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20"
+						>
+							Return Home
+						</button>
 					</div>
 				</div>
 			</div>
