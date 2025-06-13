@@ -103,7 +103,17 @@ export default function ProfilePage() {
 				})
 				.eq("id", session?.user.id);
 
-			if (updateError) throw updateError;
+			if (updateError) {
+				// handle duplicate username error
+				if (updateError.code === '23505' && updateError.message.includes('username')) {
+					setFieldErrors(prev => ({
+						...prev,
+						username: "This username is already taken"
+					}));
+					return;
+				}
+				throw updateError;
+			}
 
 			// update local profile state
 			if (profile) {

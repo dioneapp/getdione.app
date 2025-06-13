@@ -121,6 +121,12 @@ export default function UserProfilePage({
 
 					{/* account info section */}
 					<AccountInfo user={user} />
+					{/* easter egg for own profile */}
+					{currentUserProfile?.username === username && (
+						<div className="mt-4 text-center text-sm text-white/60 animate-pulse">
+							👋 hey there, looking good today!
+						</div>
+					)}
 				</div>
 			</div>
 		</div>
