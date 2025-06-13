@@ -1,12 +1,6 @@
 export default function TermsPage() {
 	return (
 		<main>
-			<div
-				className="fixed inset-0 flex justify-center items-center"
-				aria-hidden="true"
-			>
-				<div className="bg-[#BCB1E7]/30 h-[70vh] w-[70vh] rounded-full blur-[150px]"></div>
-			</div>
 
 			<div className="relative flex flex-col items-center justify-center min-h-[100dvh] px-4 sm:px-8 pt-24 sm:pt-32 pb-16">
 				<div

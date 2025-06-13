@@ -54,12 +54,6 @@ export default function ModerationPanel() {
 	if (isLoading) {
 		return (
 			<div className="flex flex-col items-center w-full min-h-[100dvh] justify-center p-12 pt-6 relative">
-				<div
-					className="fixed inset-0 flex justify-center items-center"
-					aria-hidden="true"
-				>
-					<div className="bg-[#BCB1E7]/30 h-[70vh] w-[70vh] rounded-full blur-[150px]"></div>
-				</div>
 				<div className="h-fit w-full flex max-w-xl">
 					<div className="backdrop-blur-md bg-white/[0.02] border border-white/[0.05] rounded-xl p-12 flex flex-col items-start justify-start shadow-lg shadow-black/10 w-full h-full">
 						<h1 className="text-white text-3xl font-semibold">Loading...</h1>
@@ -73,12 +67,6 @@ export default function ModerationPanel() {
 	if (error || sessionError) {
 		return (
 			<div className="flex flex-col items-center w-full min-h-[100dvh] justify-center p-12 pt-6 relative">
-				<div
-					className="fixed inset-0 flex justify-center items-center"
-					aria-hidden="true"
-				>
-					<div className="bg-[#BCB1E7]/30 h-[70vh] w-[70vh] rounded-full blur-[150px]"></div>
-				</div>
 				<div className="h-fit w-full flex max-w-xl">
 					<div className="backdrop-blur-md bg-white/[0.02] border border-white/[0.05] rounded-xl p-12 flex flex-col items-start justify-start shadow-lg shadow-black/10 w-full h-full">
 						<h1 className="text-white text-3xl font-semibold">Error</h1>
@@ -102,13 +90,6 @@ export default function ModerationPanel() {
 
 	return (
 		<div className="flex flex-col items-center w-full min-h-[100dvh] justify-center p-4 sm:p-12 pt-32 sm:pt-36 relative">
-			{/* background elements */}
-			<div
-				className="fixed inset-0 flex justify-center items-center"
-				aria-hidden="true"
-			>
-				<div className="bg-[#BCB1E7]/30 h-[70vh] w-[70vh] rounded-full blur-[150px]"></div>
-			</div>
 
 			{/* main container */}
 			<div className="h-fit w-full flex max-w-7xl">

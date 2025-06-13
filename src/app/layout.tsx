@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import "@/styles/globals.css";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
+import ProfileBackground from "@/components/layout/Background";
 import Script from "next/script";
 
 // initialize poppins font
@@ -90,6 +91,7 @@ export default function RootLayout({
 				<link rel="apple-touch-icon" href="/favicon.ico" />
 			</head>
 			<body className={`${poppins.className} font-sans bg-[#080808]`}>
+				<ProfileBackground />
 				{/* google tag manager */}
 				<Script id="gtm-script" strategy="afterInteractive">
 					{GTM_SCRIPT}

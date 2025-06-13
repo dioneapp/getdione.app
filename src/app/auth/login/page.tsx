@@ -46,14 +46,6 @@ function LoginHandler() {
 			className="flex flex-col items-center w-full min-h-[100dvh] justify-center p-12 pt-6 relative"
 			id="container"
 		>
-			{/* background elements */}
-			<div
-				className="fixed inset-0 flex justify-center items-center"
-				aria-hidden="true"
-			>
-				<div className="bg-[#BCB1E7]/30 h-[70vh] w-[70vh] rounded-full blur-[150px]"></div>
-			</div>
-
 			{/* main container */}
 			<div className="h-fit w-full flex max-w-xl">
 				<div className="w-full h-full group p-6 rounded-xl border border-white/10 backdrop-blur-md bg-white/5 transition-all duration-300 shadow-lg">
