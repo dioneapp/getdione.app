@@ -1,7 +1,8 @@
 "use client";
 
 import type { ExtendedUser } from "@/types/database";
-import { supabase } from "@/utils/database";
+import { createSupabaseBrowserClient } from "@/utils/supabase/browser-client";
+import useSession from "@/utils/supabase/use-session";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -25,6 +26,8 @@ type Script = {
 
 export default function ModerationPanel() {
 	const router = useRouter();
+	const supabase = createSupabaseBrowserClient();
+	const { session, loadingSession } = useSession();
 	const [activeTab, setActiveTab] =
 		useState<(typeof TABS)[number]["id"]>("users");
 	const [isModerator, setIsModerator] = useState(false);
@@ -34,10 +37,13 @@ export default function ModerationPanel() {
 	useEffect(() => {
 		const checkModerator = async () => {
 			try {
-				const {
-					data: { user },
-				} = await supabase.auth.getUser();
-				if (!user) {
+				console.log("session", session);
+				console.log("loadingSession", loadingSession);
+				if (loadingSession) {
+					setLoading(true);
+					return;
+				}
+				if (!session?.user) {
 					router.push("/auth/login");
 					return;
 				}
@@ -45,7 +51,7 @@ export default function ModerationPanel() {
 				const { data: profile } = await supabase
 					.from("users")
 					.select("moderator")
-					.eq("id", user.id)
+					.eq("id", session.user.id)
 					.single();
 
 				if (!profile?.moderator) {
@@ -63,7 +69,7 @@ export default function ModerationPanel() {
 		};
 
 		checkModerator();
-	}, [router]);
+	}, [session, loadingSession]);
 
 	if (loading) {
 		return (
@@ -170,6 +176,7 @@ function LoadingSkeleton() {
 
 // users tab component
 function UsersTab() {
+	const supabase = createSupabaseBrowserClient();
 	const [users, setUsers] = useState<ExtendedUser[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [searchQuery, setSearchQuery] = useState("");
@@ -760,6 +767,7 @@ function UsersTab() {
 
 // scripts tab component
 function ScriptsTab() {
+	const supabase = createSupabaseBrowserClient();
 	const [scripts, setScripts] = useState<Script[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [searchQuery, setSearchQuery] = useState("");

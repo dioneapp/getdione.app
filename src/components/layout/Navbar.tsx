@@ -2,6 +2,7 @@
 
 import type { ExtendedUser } from "@/types/database";
 import { supabase } from "@/utils/database";
+import useSession from "@/utils/supabase/use-session";
 import type { Session, User } from "@supabase/supabase-js";
 import Image from "next/image";
 import Link from "next/link";
@@ -38,9 +39,9 @@ const getNavigationLinks = (isModerator: boolean) => {
 
 export default function Navbar() {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
-	const [session, setSession] = useState<Session | null>(null);
 	const [user, setUser] = useState<User | null>(null);
 	const [isModerator, setIsModerator] = useState(false);
+	const { session } = useSession();
 
 	// handle mobile menu
 	const toggleMenu = () => {
@@ -48,41 +49,24 @@ export default function Navbar() {
 		document.body.style.overflow = !isMenuOpen ? "hidden" : "";
 	};
 
+	useEffect(() => {
+		if (!session) return;
+	
+		setUser(session.user);
+		// check moderator status
+		supabase
+			.from("users")
+			.select("moderator")
+			.eq("id", session.user.id)
+			.single()
+			.then(({ data }) => {
+				setIsModerator(data?.moderator ?? false);
+			});
+	}, [session]);
+
 	// get user data and moderator status
 	useEffect(() => {
 		let mounted = true;
-
-		const getSession = async () => {
-			const {
-				data: { session },
-				error,
-			} = await supabase.auth.getSession();
-			if (error) {
-				console.error("Error getting session:", error);
-				return;
-			}
-			if (!mounted) return;
-
-			setSession(session);
-			setUser(session?.user ?? null);
-
-			// only check moderator status if user is logged in
-			if (session?.user) {
-				const { data: userData } = await supabase
-					.from("users")
-					.select("moderator")
-					.eq("id", session.user.id)
-					.single();
-
-				if (mounted) {
-					setIsModerator(userData?.moderator ?? false);
-				}
-			} else {
-				setIsModerator(false);
-			}
-		};
-
-		getSession();
 
 		// listen for auth changes
 		const {
@@ -90,7 +74,6 @@ export default function Navbar() {
 		} = supabase.auth.onAuthStateChange(async (_event, session) => {
 			if (!mounted) return;
 
-			setSession(session);
 			setUser(session?.user ?? null);
 
 			// only check moderator status if user is logged in
@@ -194,9 +177,7 @@ export default function Navbar() {
 						</div>
 
 						<div className="h-6 w-[1px] bg-white/10 hidden md:block" />
-
-						<ClientOnly>
-							{session ? (
+							{session !== null ? (
 								<Link
 									href="/profile"
 									className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 text-white hover:bg-white/10 transition-all duration-300"
@@ -233,7 +214,6 @@ export default function Navbar() {
 									<span className="text-sm font-medium">Log In</span>
 								</Link>
 							)}
-						</ClientOnly>
 
 						<Link
 							href="https://discord.gg/JSAszyCEW5"

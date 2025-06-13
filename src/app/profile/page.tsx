@@ -1,7 +1,8 @@
 "use client";
 
-import type { ExtendedUser, User } from "@/types/database";
-import { supabase } from "@/utils/database";
+import type { ExtendedUser } from "@/types/database";
+import { createSupabaseBrowserClient } from "@/utils/supabase/browser-client";
+import useSession from "@/utils/supabase/use-session";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -17,6 +18,8 @@ const CHAR_LIMITS = {
 
 export default function ProfilePage() {
 	const router = useRouter();
+	const supabase = createSupabaseBrowserClient();
+	const { session, loadingSession } = useSession();
 	const [user, setUser] = useState<ExtendedUser | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
@@ -38,18 +41,7 @@ export default function ProfilePage() {
 	useEffect(() => {
 		const checkAuth = async () => {
 			try {
-				const {
-					data: { session },
-					error: sessionError,
-				} = await supabase.auth.getSession();
-
-				if (sessionError) {
-					console.error("Session error:", sessionError);
-					throw new Error(
-						"Unable to verify your session. Please try logging in again.",
-					);
-				}
-
+				if (loadingSession) return;
 				if (!session) {
 					router.push("/auth/login");
 					return;
@@ -121,7 +113,7 @@ export default function ProfilePage() {
 		};
 
 		checkAuth();
-	}, [router]);
+	}, [session]);
 
 	// handle profile update
 	const handleUpdateProfile = async () => {

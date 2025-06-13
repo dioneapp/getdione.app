@@ -1,46 +1,23 @@
 "use client";
 
-import { supabase } from "@/utils/database";
-import type { Provider } from "@supabase/supabase-js";
-import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, startTransition, useEffect } from "react";
-import { loginWithOAuth } from "./actions";
+import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
+import { createSupabaseBrowserClient } from "@/utils/supabase/browser-client";
+import { Provider } from "@supabase/supabase-js";
 
 function LoginHandler() {
-	const router = useRouter();
 	const searchParams = useSearchParams();
 	const isAppLogin = searchParams.get("app") === "true";
-
-	useEffect(() => {
-		async function checkSession() {
-			const {
-				data: { session },
-				error: sessionError,
-			} = await supabase.auth.getSession();
-
-			if (sessionError) {
-				console.error("Session error:", sessionError);
-				throw new Error(
-					"Unable to verify your session. Please try logging in again.",
-				);
-			}
-
-			if (session) {
-				router.push("/profile");
-			}
-		}
-		checkSession();
-	}, []);
+	const supabase = createSupabaseBrowserClient();
 
 	const handleLogin = async (provider: Provider) => {
-		startTransition(async () => {
-			try {
-				await loginWithOAuth(provider, isAppLogin);
-			} catch (err) {
-				console.error("Error during login:", err);
-			}
+		await supabase.auth.signInWithOAuth({
+		  provider: provider,
+		  options: {
+			redirectTo: `${location.origin}/auth/callback`,
+		  },
 		});
-	};
+	  };
 
 	return (
 		<div
