@@ -2,21 +2,38 @@
 
 import { createSupabaseBrowserClient } from "@/utils/supabase/browser-client";
 import type { Provider } from "@supabase/supabase-js";
-import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { Suspense, useEffect } from "react";
+import useSession from "@/utils/supabase/use-session";
 
 function LoginHandler() {
 	const searchParams = useSearchParams();
+	const router = useRouter();
 	const isAppLogin = searchParams.get("app") === "true";
+	const returnUrl = searchParams.get("returnUrl") || "/";
 	const supabase = createSupabaseBrowserClient();
+	const { session } = useSession();
+
+	// redirect if already logged in
+	useEffect(() => {
+		if (session) {
+			router.push(decodeURIComponent(returnUrl));
+		}
+	}, [session, returnUrl, router]);
 
 	const handleLogin = async (provider: Provider) => {
-		await supabase.auth.signInWithOAuth({
-			provider: provider,
-			options: {
-				redirectTo: `${location.origin}/auth/callback`,
-			},
-		});
+		try {
+			const { error } = await supabase.auth.signInWithOAuth({
+				provider: provider,
+				options: {
+					redirectTo: `${location.origin}/auth/callback?returnUrl=${encodeURIComponent(returnUrl)}`,
+				},
+			});
+			if (error) throw error;
+		} catch (error) {
+			console.error("Login error:", error);
+			// handle error appropriately
+		}
 	};
 
 	return (

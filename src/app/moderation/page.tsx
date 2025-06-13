@@ -27,49 +27,30 @@ type Script = {
 export default function ModerationPanel() {
 	const router = useRouter();
 	const supabase = createSupabaseBrowserClient();
-	const { session, loadingSession } = useSession();
+	const { session, profile, loadingSession } = useSession();
 	const [activeTab, setActiveTab] =
 		useState<(typeof TABS)[number]["id"]>("users");
-	const [isModerator, setIsModerator] = useState(false);
-	const [loading, setLoading] = useState(true);
 
-	// check if user is moderator
+	// handle auth and moderator checks
 	useEffect(() => {
-		const checkModerator = async () => {
-			try {
-				if (loadingSession) {
-					setLoading(true);
-					return;
-				}
-				if (!session?.user) {
-					router.push("/auth/login");
-					return;
-				}
+		// wait for session to load
+		if (loadingSession) return;
 
-				const { data: profile } = await supabase
-					.from("users")
-					.select("moderator")
-					.eq("id", session.user.id)
-					.single();
+		// redirect if not logged in
+		if (!session?.user) {
+			router.push("/auth/login");
+			return;
+		}
 
-				if (!profile?.moderator) {
-					router.push("/");
-					return;
-				}
+		// redirect if not moderator
+		if (!profile?.moderator) {
+			router.push("/");
+			return;
+		}
+	}, [session, profile, loadingSession, router]);
 
-				setIsModerator(true);
-			} catch (error) {
-				console.error("Error checking moderator status:", error);
-				router.push("/");
-			} finally {
-				setLoading(false);
-			}
-		};
-
-		checkModerator();
-	}, [session, loadingSession]);
-
-	if (loading) {
+	// show loading state while checking session
+	if (loadingSession) {
 		return (
 			<div className="flex flex-col items-center w-full min-h-[100dvh] justify-center p-12 pt-6 relative">
 				<div
@@ -87,7 +68,8 @@ export default function ModerationPanel() {
 		);
 	}
 
-	if (!isModerator) {
+	// show nothing if not moderator
+	if (!profile?.moderator) {
 		return null;
 	}
 
@@ -175,6 +157,7 @@ function LoadingSkeleton() {
 // users tab component
 function UsersTab() {
 	const supabase = createSupabaseBrowserClient();
+	const { profile } = useSession();
 	const [users, setUsers] = useState<ExtendedUser[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [searchQuery, setSearchQuery] = useState("");
@@ -182,35 +165,10 @@ function UsersTab() {
 	const [totalCount, setTotalCount] = useState(0);
 	const [expandedUser, setExpandedUser] = useState<string | null>(null);
 	const [editingUser, setEditingUser] = useState<string | null>(null);
-	const [editedUserData, setEditedUserData] = useState<ExtendedUser | null>(
-		null,
-	);
+	const [editedUserData, setEditedUserData] = useState<ExtendedUser | null>(null);
 	const [sortField, setSortField] = useState("created_at");
 	const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
-	const [currentUserId, setCurrentUserId] = useState<string | null>(null);
-	const [isModerator, setIsModerator] = useState(false);
 	const itemsPerPage = 10;
-
-	// get current user id and check if moderator
-	useEffect(() => {
-		const getCurrentUser = async () => {
-			const {
-				data: { user },
-			} = await supabase.auth.getUser();
-			setCurrentUserId(user?.id || null);
-
-			if (user) {
-				const { data: profile } = await supabase
-					.from("users")
-					.select("moderator")
-					.eq("id", user.id)
-					.single();
-
-				setIsModerator(profile?.moderator || false);
-			}
-		};
-		getCurrentUser();
-	}, []);
 
 	// sort options for users
 	const sortOptions = [
@@ -322,7 +280,7 @@ function UsersTab() {
 
 	const startEditing = (user: ExtendedUser) => {
 		// allow editing if user is moderator
-		if (isModerator) {
+		if (profile?.moderator) {
 			setEditingUser(user.id);
 			setEditedUserData(user);
 		}
@@ -682,7 +640,7 @@ function UsersTab() {
 																Save Changes
 															</button>
 														</>
-													) : isModerator ? (
+													) : profile?.moderator ? (
 														<button
 															onClick={() => startEditing(user)}
 															className="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-white/80 hover:text-white transition-all duration-200 flex items-center gap-2 cursor-pointer"

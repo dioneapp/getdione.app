@@ -19,8 +19,8 @@ const CHAR_LIMITS = {
 export default function ProfilePage() {
 	const router = useRouter();
 	const supabase = createSupabaseBrowserClient();
-	const { session, loadingSession } = useSession();
-	const [user, setUser] = useState<ExtendedUser | null>(null);
+	const { session, user, loadingSession } = useSession();
+	const [profile, setProfile] = useState<ExtendedUser | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const [isDeleting, setIsDeleting] = useState(false);
@@ -31,6 +31,7 @@ export default function ProfilePage() {
 		first_name: "",
 		bio: "",
 		location: "",
+		avatar_url: "",
 	});
 	const [fieldErrors, setFieldErrors] = useState({
 		username: "",
@@ -39,13 +40,14 @@ export default function ProfilePage() {
 
 	// check authentication and get user data
 	useEffect(() => {
-		const checkAuth = async () => {
+		const fetchProfile = async () => {
 			try {
 				if (loadingSession) {
 					setLoading(true);
 					return;
 				}
-				if (!session) {
+
+				if (!user) {
 					router.push("/auth/login");
 					return;
 				}
@@ -54,7 +56,7 @@ export default function ProfilePage() {
 				const { data: profileData, error: profileError } = await supabase
 					.from("users")
 					.select("*")
-					.eq("id", session.user.id)
+					.eq("id", user.id)
 					.single();
 
 				if (profileError) {
@@ -66,45 +68,44 @@ export default function ProfilePage() {
 							.from("users")
 							.insert([
 								{
-									id: session.user.id,
-									username: session.user.email?.split("@")[0] || "user",
+									id: user.id,
+									username: user.email?.split("@")[0] || "user",
 									first_name: "",
 									bio: "",
 									location: "",
+									avatar_url: user.user_metadata?.avatar_url || null,
 								},
 							])
 							.select()
 							.single();
 
 						if (createError) {
-							throw new Error(
-								"Unable to create profile. Please try again later.",
-							);
+							throw new Error("Unable to create profile. Please try again later.");
 						}
 
-						setUser({ ...session.user, ...newProfile });
+						setProfile({ ...user, ...newProfile });
 						setEditedFields({
 							username: newProfile?.username || "",
 							first_name: newProfile?.first_name || "",
 							bio: newProfile?.bio || "",
 							location: newProfile?.location || "",
+							avatar_url: newProfile?.avatar_url || "",
 						});
 					} else {
-						throw new Error(
-							"Unable to load your profile data. Please try again later.",
-						);
+						throw new Error("Unable to load your profile data. Please try again later.");
 					}
 				} else {
-					setUser({ ...session.user, ...profileData });
+					setProfile({ ...user, ...profileData });
 					setEditedFields({
 						username: profileData?.username || "",
 						first_name: profileData?.first_name || "",
 						bio: profileData?.bio || "",
 						location: profileData?.location || "",
+						avatar_url: profileData?.avatar_url || "",
 					});
 				}
 			} catch (err) {
-				console.error("Auth error:", err);
+				console.error("Profile error:", err);
 				if (err instanceof Error) {
 					setError(err.message);
 				} else {
@@ -115,12 +116,12 @@ export default function ProfilePage() {
 			}
 		};
 
-		checkAuth();
-	}, [session]);
+		fetchProfile();
+	}, [user, loadingSession, router, supabase]);
 
 	// handle profile update
 	const handleUpdateProfile = async () => {
-		if (!user) return;
+		if (!profile) return;
 
 		// validate fields
 		const errors = {
@@ -137,12 +138,12 @@ export default function ProfilePage() {
 
 		try {
 			// check if username is already taken by another user
-			if (editedFields.username !== user.username) {
+			if (editedFields.username !== profile.username) {
 				const { data: existingUser, error: checkError } = await supabase
 					.from("users")
 					.select("username")
 					.eq("username", editedFields.username)
-					.neq("id", user.id)
+					.neq("id", profile.id)
 					.single();
 
 				if (checkError && checkError.code !== "PGRST116") {
@@ -162,11 +163,11 @@ export default function ProfilePage() {
 			const { error } = await supabase
 				.from("users")
 				.update(editedFields)
-				.eq("id", user.id);
+				.eq("id", profile.id);
 
 			if (error) throw error;
 
-			setUser((prev) => (prev ? { ...prev, ...editedFields } : null));
+			setProfile((prev) => (prev ? { ...prev, ...editedFields } : null));
 			setIsEditing(false);
 			setFieldErrors({ username: "", first_name: "" });
 		} catch (err) {
@@ -191,7 +192,7 @@ export default function ProfilePage() {
 	const handleDeleteAccount = async () => {
 		setIsDeleting(true);
 		try {
-			const { error } = await supabase.auth.admin.deleteUser(user?.id || "");
+			const { error } = await supabase.auth.admin.deleteUser(profile?.id || "");
 			if (error) throw error;
 			await supabase.auth.signOut();
 			router.push("/auth/login");
@@ -295,9 +296,9 @@ export default function ProfilePage() {
 						<div className="flex gap-4 items-center">
 							{/* avatar */}
 							<div className="relative w-20 h-20 rounded-full overflow-hidden border-2 border-white/20 flex-shrink-0">
-								{user?.avatar_url ? (
+								{profile?.avatar_url ? (
 									<Image
-										src={user.avatar_url}
+										src={profile.avatar_url}
 										alt="Profile"
 										fill
 										className="object-cover"
@@ -306,7 +307,7 @@ export default function ProfilePage() {
 								) : (
 									<div className="w-full h-full bg-white/10 flex items-center justify-center">
 										<span className="text-white/50 text-2xl">
-											{user?.username?.[0]?.toUpperCase() || "?"}
+											{profile?.username?.[0]?.toUpperCase() || "?"}
 										</span>
 									</div>
 								)}
@@ -342,7 +343,7 @@ export default function ProfilePage() {
 												)}
 											</div>
 										) : (
-											user?.first_name || "No name set"
+											profile?.first_name || "No name set"
 										)}
 									</div>
 									<div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 text-white/50 text-sm truncate max-w-[300px]">
@@ -383,11 +384,11 @@ export default function ProfilePage() {
 													)}
 												</div>
 											) : (
-												user?.username || "anonymous"
+												profile?.username || "anonymous"
 											)}
 										</span>
 										{/* location display */}
-										{user?.location && (
+										{profile?.location && (
 											<>
 												<span className="text-white/20 hidden sm:inline">
 													•
@@ -426,7 +427,7 @@ export default function ProfilePage() {
 														/>
 													) : (
 														<span className="text-white/70">
-															{user?.location}
+															{profile?.location}
 														</span>
 													)}
 												</div>
@@ -462,7 +463,7 @@ export default function ProfilePage() {
 											/>
 										) : (
 											<p className="text-white whitespace-pre-wrap line-clamp-4">
-												{user?.bio || "No bio yet"}
+												{profile?.bio || "No bio yet"}
 											</p>
 										)}
 									</div>
@@ -520,10 +521,11 @@ export default function ProfilePage() {
 													onClick={() => {
 														setIsEditing(false);
 														setEditedFields({
-															username: user?.username || "",
-															first_name: user?.first_name || "",
-															bio: user?.bio || "",
-															location: user?.location || "",
+															username: profile?.username || "",
+															first_name: profile?.first_name || "",
+															bio: profile?.bio || "",
+															location: profile?.location || "",
+															avatar_url: profile?.avatar_url || "",
 														});
 													}}
 													className="px-3 py-1.5 bg-gradient-to-r from-white/10 to-white/5 text-white rounded-lg hover:from-white/20 hover:to-white/10 transition-all duration-300 flex items-center gap-1.5 text-sm cursor-pointer"
@@ -556,7 +558,7 @@ export default function ProfilePage() {
 							<div>
 								<p className="text-white/50 text-sm">Email</p>
 								<p className="text-white truncate max-w-[200px] md:blur-sm md:hover:blur-none transition-all duration-300">
-									{user?.email}
+									{profile?.email}
 								</p>
 							</div>
 							<div>
@@ -564,14 +566,14 @@ export default function ProfilePage() {
 								<div className="relative inline-block cursor-pointer">
 									<div className="peer">
 										<p className="text-white">
-											{user?.created_at
-												? new Date(user.created_at).toLocaleDateString()
+											{profile?.created_at
+												? new Date(profile.created_at).toLocaleDateString()
 												: "N/A"}
 										</p>
 									</div>
 									<div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-black/90 text-white text-xs rounded opacity-0 peer-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-										{user?.created_at
-											? new Date(user.created_at).toLocaleDateString("en-US", {
+										{profile?.created_at
+											? new Date(profile.created_at).toLocaleDateString("en-US", {
 													weekday: "long",
 													year: "numeric",
 													month: "long",
@@ -588,14 +590,14 @@ export default function ProfilePage() {
 								<div className="relative inline-block cursor-pointer">
 									<div className="peer">
 										<p className="text-white">
-											{user?.last_sign_in_at
-												? new Date(user.last_sign_in_at).toLocaleDateString()
+											{profile?.last_sign_in_at
+												? new Date(profile.last_sign_in_at).toLocaleDateString()
 												: "N/A"}
 										</p>
 									</div>
 									<div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-black/90 text-white text-xs rounded opacity-0 peer-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-										{user?.last_sign_in_at
-											? new Date(user.last_sign_in_at).toLocaleDateString(
+										{profile?.last_sign_in_at
+											? new Date(profile.last_sign_in_at).toLocaleDateString(
 													"en-US",
 													{
 														weekday: "long",
@@ -613,9 +615,9 @@ export default function ProfilePage() {
 							<div>
 								<p className="text-white/50 text-sm">Badges</p>
 								<div className="flex gap-2">
-									{user?.tester || user?.publisher || user?.moderator ? (
+									{profile?.tester || profile?.publisher || profile?.moderator ? (
 										<>
-											{user?.tester && (
+											{profile?.tester && (
 												<div className="relative inline-block cursor-pointer">
 													<div className="peer">
 														<svg
@@ -633,7 +635,7 @@ export default function ProfilePage() {
 													</div>
 												</div>
 											)}
-											{user?.publisher && (
+											{profile?.publisher && (
 												<div className="relative inline-block cursor-pointer">
 													<div className="peer">
 														<svg
@@ -651,7 +653,7 @@ export default function ProfilePage() {
 													</div>
 												</div>
 											)}
-											{user?.moderator && (
+											{profile?.moderator && (
 												<div className="relative inline-block cursor-pointer">
 													<div className="peer">
 														<svg

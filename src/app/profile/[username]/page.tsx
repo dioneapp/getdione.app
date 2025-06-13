@@ -1,7 +1,8 @@
 "use client";
 
 import type { ExtendedUser } from "@/types/database";
-import { supabase } from "@/utils/database";
+import { createSupabaseBrowserClient } from "@/utils/supabase/browser-client";
+import useSession from "@/utils/supabase/use-session";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -26,6 +27,8 @@ export default function UserProfilePage({
 	params: Promise<{ username: string }>;
 }) {
 	const router = useRouter();
+	const supabase = createSupabaseBrowserClient();
+	const { session, profile: currentUserProfile } = useSession();
 	const [user, setUser] = useState<ExtendedUser | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
@@ -33,6 +36,8 @@ export default function UserProfilePage({
 
 	// fetch user data
 	useEffect(() => {
+		let mounted = true;
+
 		const fetchUser = async () => {
 			try {
 				// fetch only public user data by username
@@ -41,6 +46,8 @@ export default function UserProfilePage({
 					.select(PUBLIC_FIELDS.join(","))
 					.eq("username", username)
 					.single();
+
+				if (!mounted) return;
 
 				if (profileError) {
 					console.error("Profile fetch error:", profileError);
@@ -58,6 +65,7 @@ export default function UserProfilePage({
 					throw new Error("Invalid profile data format");
 				}
 			} catch (err) {
+				if (!mounted) return;
 				console.error("Fetch error:", err);
 				if (err instanceof Error) {
 					setError(err.message);
@@ -65,13 +73,20 @@ export default function UserProfilePage({
 					setError("An unexpected error occurred. Please try again later.");
 				}
 			} finally {
-				setLoading(false);
+				if (mounted) {
+					setLoading(false);
+				}
 			}
 		};
 
 		fetchUser();
-	}, [username]);
 
+		return () => {
+			mounted = false;
+		};
+	}, [username, supabase]);
+
+	// show loading state
 	if (loading) {
 		return (
 			<div className="flex flex-col items-center w-full min-h-[100dvh] justify-center p-12 pt-6 relative">
@@ -90,6 +105,7 @@ export default function UserProfilePage({
 		);
 	}
 
+	// show error state
 	if (error) {
 		return (
 			<div className="flex flex-col items-center w-full min-h-[100dvh] justify-center p-12 pt-6 relative">
@@ -115,6 +131,7 @@ export default function UserProfilePage({
 		);
 	}
 
+	// show profile
 	return (
 		<div className="flex flex-col items-center w-full min-h-[100dvh] justify-center p-12 pt-24 relative">
 			{/* background elements */}

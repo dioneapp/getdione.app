@@ -39,9 +39,8 @@ const getNavigationLinks = (isModerator: boolean) => {
 
 export default function Navbar() {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
-	const [user, setUser] = useState<User | null>(null);
 	const [isModerator, setIsModerator] = useState(false);
-	const { session } = useSession();
+	const { session, user, profile, loadingSession } = useSession();
 
 	// handle mobile menu
 	const toggleMenu = () => {
@@ -49,57 +48,17 @@ export default function Navbar() {
 		document.body.style.overflow = !isMenuOpen ? "hidden" : "";
 	};
 
+	// update moderator status when profile changes
 	useEffect(() => {
-		if (!session) return;
-
-		setUser(session.user);
-		// check moderator status
-		supabase
-			.from("users")
-			.select("moderator")
-			.eq("id", session.user.id)
-			.single()
-			.then(({ data }) => {
-				setIsModerator(data?.moderator ?? false);
-			});
-	}, [session]);
-
-	// get user data and moderator status
-	useEffect(() => {
-		let mounted = true;
-
-		// listen for auth changes
-		const {
-			data: { subscription },
-		} = supabase.auth.onAuthStateChange(async (_event, session) => {
-			if (!mounted) return;
-
-			setUser(session?.user ?? null);
-
-			// only check moderator status if user is logged in
-			if (session?.user) {
-				const { data: userData } = await supabase
-					.from("users")
-					.select("moderator")
-					.eq("id", session.user.id)
-					.single();
-
-				if (mounted) {
-					setIsModerator(userData?.moderator ?? false);
-				}
-			} else {
-				setIsModerator(false);
-			}
-		});
-
-		return () => {
-			mounted = false;
-			subscription.unsubscribe();
-		};
-	}, []);
+		if (profile) {
+			setIsModerator(profile.moderator ?? false);
+		} else {
+			setIsModerator(false);
+		}
+	}, [profile]);
 
 	const fullName = user?.user_metadata?.full_name || user?.email;
-	const avatarUrl = user?.user_metadata?.avatar_url;
+	const avatarUrl = profile?.avatar_url;
 
 	const navigationLinks = getNavigationLinks(isModerator);
 
