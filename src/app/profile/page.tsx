@@ -167,11 +167,11 @@ export default function ProfilePage() {
 	}
 
 	return (
-		<div className="flex flex-col items-center w-full min-h-[100dvh] justify-center p-12 pt-24 relative">
+		<div className="flex flex-col items-center w-full min-h-[100dvh] justify-center p-4 sm:p-12 pt-16 sm:pt-24 relative">
 
 			{/* main container */}
 			<div className="h-fit w-full flex max-w-xl">
-				<div className="w-full h-full group p-6 rounded-xl border border-white/10 backdrop-blur-md bg-white/5 transition-all duration-300 shadow-lg shadow-black/10">
+				<div className="w-full h-full group p-4 sm:p-6 rounded-xl border border-white/10 backdrop-blur-md bg-white/5 transition-all duration-300 shadow-lg shadow-black/10">
 					{/* profile header */}
 					<div className="flex flex-col gap-2">
 						<ProfileHeader
@@ -258,10 +258,10 @@ export default function ProfilePage() {
 					/>
 
 					{/* account actions */}
-					<div className="mt-6 flex items-center justify-between">
+					<div className="mt-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
 						<button
 							onClick={handleSignOut}
-							className="shrink-0 py-1 px-5 flex items-center justify-center gap-2 rounded-full bg-white font-semibold text-[#080808] cursor-pointer hover:bg-white/90 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/50 shadow-lg border border-black/10"
+							className="w-full sm:w-auto shrink-0 py-1 px-5 flex items-center justify-center gap-2 rounded-full bg-white font-semibold text-[#080808] cursor-pointer hover:bg-white/90 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/50 shadow-lg border border-black/10"
 						>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
@@ -276,7 +276,7 @@ export default function ProfilePage() {
 						</button>
 						<button
 							onClick={() => setShowDeleteModal(true)}
-							className="text-red-400/70 hover:text-red-400 text-sm transition-colors cursor-pointer"
+							className="w-full sm:w-auto text-center text-red-400/70 hover:text-red-400 text-sm transition-colors cursor-pointer"
 						>
 							Delete Account
 						</button>
