@@ -3,13 +3,6 @@ import Link from "next/link";
 export default function NotFound() {
 	return (
 		<main className="min-h-screen flex items-center justify-center px-6">
-			{/* background elements */}
-			<div
-				className="fixed inset-0 flex justify-center items-center pointer-events-none"
-				aria-hidden="true"
-			>
-				<div className="bg-[#BCB1E7]/30 h-[70vh] w-[70vh] rounded-full blur-[150px]" />
-			</div>
 			<div className="text-center">
 				<h1 className="text-9xl font-bold text-white mb-4">404</h1>
 				<h2 className="text-2xl font-semibold text-white mb-6">

@@ -27,12 +27,6 @@ function BetaSuccessHandler() {
 
 	return (
 		<main className="min-h-screen flex flex-col items-center justify-center px-4 sm:px-8">
-			<div
-				className="fixed inset-0 flex justify-center items-center"
-				aria-hidden="true"
-			>
-				<div className="bg-[#BCB1E7]/30 h-[70vh] w-[70vh] rounded-full blur-[150px]" />
-			</div>
 			<div className="relative text-center max-w-xl">
 				<h1 className="text-4xl sm:text-5xl font-semibold text-white tracking-tighter mb-6">
 					Thank You!

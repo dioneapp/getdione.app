@@ -6,9 +6,6 @@ export async function GET(request: Request, context: { params: { params: string[
 	const isApp = context.params.params.includes('app');
 	const code = searchParams.get("code");
 
-	console.log('request', request.url)
-	console.log('app', isApp)
-
 	if (code) {
 		const supabase = await createSupabaseServerClient();
 
@@ -47,7 +44,6 @@ export async function GET(request: Request, context: { params: { params: string[
 			return NextResponse.redirect(redirectUrl);
 		}
 	}
-
 
 	return NextResponse.redirect(`${origin}/auth/auth-error`);
 }

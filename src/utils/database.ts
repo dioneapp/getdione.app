@@ -37,6 +37,6 @@ export const supabase =
 						flowType: "pkce",
 						detectSessionInUrl: false,
 					},
-				}
+				},
 			)
 		: mockClient;

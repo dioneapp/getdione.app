@@ -1,144 +1,179 @@
 "use client";
 
+import type { ExtendedUser } from "@/types/database";
+import type { AuthSession, User } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
 import { createSupabaseBrowserClient } from "./browser-client";
-import type { AuthSession, User } from "@supabase/supabase-js";
-import type { ExtendedUser } from "@/types/database";
 
 interface SessionState {
-  session: AuthSession | null;
-  user: User | null;
-  profile: ExtendedUser | null;
-  isLoading: boolean;
-  error: Error | null;
+	session: AuthSession | null;
+	user: User | null;
+	profile: ExtendedUser | null;
+	isLoading: boolean;
+	error: Error | null;
 }
 
+// cache for profile data
+const profileCache = new Map<string, ExtendedUser>();
+
 export default function useSession(): SessionState {
-  const supabase = createSupabaseBrowserClient();
-  const [sessionState, setSessionState] = useState<SessionState>({
-    session: null,
-    user: null,
-    profile: null,
-    isLoading: true,
-    error: null,
-  });
+	const supabase = createSupabaseBrowserClient();
+	const [sessionState, setSessionState] = useState<SessionState>({
+		session: null,
+		user: null,
+		profile: null,
+		isLoading: true,
+		error: null,
+	});
 
-  const handleUserProfile = async (userId: string) => {
-    try {
-      const { data: profile, error } = await supabase
-        .from("users")
-        .select("*")
-        .eq("id", userId)
-        .single();
+	const handleUserProfile = async (userId: string) => {
+		try {
+			// check cache first
+			const cachedProfile = profileCache.get(userId);
+			if (cachedProfile) return cachedProfile;
 
-      if (error?.code === "PGRST116") {
-        const newProfile = {
-          id: userId,
-          username: userId.split("@")[0] || "user",
-          first_name: "",
-          bio: "",
-          location: "",
-          avatar_url: null,
-        };
+			const { data: profile, error } = await supabase
+				.from("users")
+				.select("*")
+				.eq("id", userId)
+				.single();
 
-        const { data: createdProfile } = await supabase
-          .from("users")
-          .insert(newProfile)
-          .select()
-          .single();
+			if (error?.code === "PGRST116") {
+				const newProfile = {
+					id: userId,
+					username: userId.split("@")[0] || "user",
+					first_name: "",
+					bio: "",
+					location: "",
+					avatar_url: null,
+					moderator: false,
+				};
 
-        return createdProfile;
-      }
+				const { data: createdProfile, error: createError } = await supabase
+					.from("users")
+					.insert(newProfile)
+					.select()
+					.single();
 
-      if (error) throw error;
-      return profile;
-    } catch (error) {
-      console.error("Profile error:", error);
-      throw error instanceof Error ? error : new Error("Profile operation failed");
-    }
-  };
+				if (createError) throw createError;
+				if (createdProfile) {
+					profileCache.set(userId, createdProfile);
+					return createdProfile;
+				}
+			}
 
-  const updateSessionState = async (session: AuthSession | null) => {
-    try {
-      if (!session?.user) {
-        return {
-          session: null,
-          user: null,
-          profile: null,
-          isLoading: false,
-          error: null,
-        };
-      }
+			if (error) throw error;
+			if (profile) {
+				profileCache.set(userId, profile);
+				return profile;
+			}
+			return null;
+		} catch (error) {
+			console.error("Profile error:", error);
+			throw error instanceof Error
+				? error
+				: new Error("Profile operation failed");
+		}
+	};
 
-      let profile = await handleUserProfile(session.user.id);
+	const updateSessionState = async (session: AuthSession | null) => {
+		try {
+			if (!session?.user) {
+				// clear profile cache on sign out
+				if (sessionState.user?.id) {
+					profileCache.delete(sessionState.user.id);
+				}
+				return {
+					session: null,
+					user: null,
+					profile: null,
+					isLoading: false,
+					error: null,
+				};
+			}
 
-      const authAvatar = session.user.user_metadata?.avatar_url;
-      if (authAvatar && profile?.avatar_url !== authAvatar) {
-        const { data: updatedProfile } = await supabase
-          .from("users")
-          .update({ avatar_url: authAvatar })
-          .eq("id", session.user.id)
-          .select()
-          .single();
-        
-        profile = updatedProfile || profile;
-      }
+			let profile = await handleUserProfile(session.user.id);
 
-      return {
-        session,
-        user: session.user,
-        profile: profile ? { ...session.user, ...profile } : null,
-        isLoading: false,
-        error: null,
-      };
-    } catch (error) {
-      return {
-        session: session,
-        user: session?.user || null,
-        profile: null,
-        isLoading: false,
-        error: error instanceof Error ? error : new Error("Session update failed"),
-      };
-    }
-  };
+			// sync avatar if needed
+			const authAvatar = session.user.user_metadata?.avatar_url;
+			if (authAvatar && profile?.avatar_url !== authAvatar) {
+				const { data: updatedProfile, error: updateError } = await supabase
+					.from("users")
+					.update({ avatar_url: authAvatar })
+					.eq("id", session.user.id)
+					.select()
+					.single();
 
-  useEffect(() => {
-    let isActive = true;
+				if (updateError) throw updateError;
+				if (updatedProfile) {
+					profileCache.set(session.user.id, updatedProfile);
+					profile = updatedProfile;
+				}
+			}
 
-    const loadInitialSession = async () => {
-      try {
-        const { data: { session }, error } = await supabase.auth.getSession();
-        if (error) throw error;
-        if (!isActive) return;
+			return {
+				session,
+				user: session.user,
+				profile: profile ? { ...session.user, ...profile } : null,
+				isLoading: false,
+				error: null,
+			};
+		} catch (error) {
+			console.error("Session update error:", error);
+			return {
+				session: session,
+				user: session?.user || null,
+				profile: null,
+				isLoading: false,
+				error:
+					error instanceof Error ? error : new Error("Session update failed"),
+			};
+		}
+	};
 
-        const newState = await updateSessionState(session);
-        if (isActive) setSessionState(newState);
-      } catch (error) {
-        if (isActive) {
-          setSessionState(prev => ({
-            ...prev,
-            isLoading: false,
-            error: error instanceof Error ? error : new Error("Initial session failed"),
-          }));
-        }
-      }
-    };
+	useEffect(() => {
+		let isActive = true;
 
-    loadInitialSession();
+		const loadInitialSession = async () => {
+			try {
+				const {
+					data: { session },
+					error,
+				} = await supabase.auth.getSession();
+				if (error) throw error;
+				if (!isActive) return;
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
-        if (!isActive) return;
-        const newState = await updateSessionState(session);
-        if (isActive) setSessionState(newState);
-      }
-    );
+				const newState = await updateSessionState(session);
+				if (isActive) setSessionState(newState);
+			} catch (error) {
+				if (isActive) {
+					setSessionState((prev) => ({
+						...prev,
+						isLoading: false,
+						error:
+							error instanceof Error
+								? error
+								: new Error("Initial session failed"),
+					}));
+				}
+			}
+		};
 
-    return () => {
-      isActive = false;
-      subscription?.unsubscribe();
-    };
-  }, []);
+		loadInitialSession();
 
-  return sessionState;
+		const {
+			data: { subscription },
+		} = supabase.auth.onAuthStateChange(async (_event, session) => {
+			if (!isActive) return;
+			const newState = await updateSessionState(session);
+			if (isActive) setSessionState(newState);
+		});
+
+		return () => {
+			isActive = false;
+			subscription?.unsubscribe();
+		};
+	}, []);
+
+	return sessionState;
 }

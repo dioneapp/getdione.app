@@ -3,8 +3,8 @@
 import type { ExtendedUser } from "@/types/database";
 import { createSupabaseBrowserClient } from "@/utils/supabase/browser-client";
 import useSession from "@/utils/supabase/use-session";
+import type { Session } from "@supabase/supabase-js";
 import { AnimatePresence, motion } from "framer-motion";
-import { Session } from "@supabase/supabase-js";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -27,10 +27,10 @@ type Script = {
 
 export default function ModerationPanel() {
 	const router = useRouter();
-	const supabase = createSupabaseBrowserClient();
-	const { session, profile, isLoading } = useSession();
+	const { session, profile, isLoading, error: sessionError } = useSession();
 	const [activeTab, setActiveTab] =
 		useState<(typeof TABS)[number]["id"]>("users");
+	const [error, setError] = useState<string | null>(null);
 
 	// handle auth and moderator checks
 	useEffect(() => {
@@ -45,7 +45,7 @@ export default function ModerationPanel() {
 
 		// redirect if not moderator
 		if (!profile?.moderator) {
-			router.push("/");
+			router.push("/404");
 			return;
 		}
 	}, [session, profile, isLoading, router]);
@@ -54,15 +54,31 @@ export default function ModerationPanel() {
 	if (isLoading) {
 		return (
 			<div className="flex flex-col items-center w-full min-h-[100dvh] justify-center p-12 pt-6 relative">
-				<div
-					className="fixed inset-0 flex justify-center items-center"
-					aria-hidden="true"
-				>
-					<div className="bg-[#BCB1E7]/30 h-[70vh] w-[70vh] rounded-full blur-[150px]"></div>
-				</div>
 				<div className="h-fit w-full flex max-w-xl">
 					<div className="backdrop-blur-md bg-white/[0.02] border border-white/[0.05] rounded-xl p-12 flex flex-col items-start justify-start shadow-lg shadow-black/10 w-full h-full">
 						<h1 className="text-white text-3xl font-semibold">Loading...</h1>
+					</div>
+				</div>
+			</div>
+		);
+	}
+
+	// show error state
+	if (error || sessionError) {
+		return (
+			<div className="flex flex-col items-center w-full min-h-[100dvh] justify-center p-12 pt-6 relative">
+				<div className="h-fit w-full flex max-w-xl">
+					<div className="backdrop-blur-md bg-white/[0.02] border border-white/[0.05] rounded-xl p-12 flex flex-col items-start justify-start shadow-lg shadow-black/10 w-full h-full">
+						<h1 className="text-white text-3xl font-semibold">Error</h1>
+						<p className="mt-2 text-red-400">
+							{error || sessionError?.message}
+						</p>
+						<button
+							onClick={() => router.push("/")}
+							className="mt-4 px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20"
+						>
+							Return Home
+						</button>
 					</div>
 				</div>
 			</div>
@@ -76,14 +92,6 @@ export default function ModerationPanel() {
 
 	return (
 		<div className="flex flex-col items-center w-full min-h-[100dvh] justify-center p-4 sm:p-12 pt-32 sm:pt-36 relative">
-			{/* background elements */}
-			<div
-				className="fixed inset-0 flex justify-center items-center"
-				aria-hidden="true"
-			>
-				<div className="bg-[#BCB1E7]/30 h-[70vh] w-[70vh] rounded-full blur-[150px]"></div>
-			</div>
-
 			{/* main container */}
 			<div className="h-fit w-full flex max-w-7xl">
 				<div className="w-full h-full group p-4 sm:p-6 rounded-xl border border-white/10 backdrop-blur-md bg-white/5 transition-all duration-300 shadow-lg shadow-black/10">
@@ -158,8 +166,8 @@ function LoadingSkeleton() {
 // users tab component
 function UsersTab() {
 	const supabase = createSupabaseBrowserClient();
-	const [session, setSession] = useState<Session | null>(null)
-	const [profile, setProfile] = useState<any>(null)
+	const [session, setSession] = useState<Session | null>(null);
+	const [profile, setProfile] = useState<any>(null);
 	const [users, setUsers] = useState<ExtendedUser[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [searchQuery, setSearchQuery] = useState("");
@@ -184,7 +192,11 @@ function UsersTab() {
 
 	useEffect(() => {
 		async function getSession() {
-			const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => setSession(session as Session));
+			const {
+				data: { subscription },
+			} = supabase.auth.onAuthStateChange((_, session) =>
+				setSession(session as Session),
+			);
 			return () => subscription.unsubscribe();
 		}
 
