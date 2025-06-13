@@ -37,8 +37,6 @@ export default function ModerationPanel() {
 	useEffect(() => {
 		const checkModerator = async () => {
 			try {
-				console.log("session", session);
-				console.log("loadingSession", loadingSession);
 				if (loadingSession) {
 					setLoading(true);
 					return;
