@@ -1,13 +1,13 @@
 "use client";
 
+import AccountInfo from "@/components/profile/AccountInfo";
+import ProfileBio from "@/components/profile/ProfileBio";
+import ProfileHeader from "@/components/profile/ProfileHeader";
+import ProfileStates from "@/components/profile/ProfileStates";
 import type { ExtendedUser } from "@/types/database";
 import { createSupabaseBrowserClient } from "@/utils/supabase/browser-client";
 import useSession from "@/utils/supabase/use-session";
 import { use, useEffect, useState } from "react";
-import ProfileHeader from "@/components/profile/ProfileHeader";
-import ProfileBio from "@/components/profile/ProfileBio";
-import AccountInfo from "@/components/profile/AccountInfo";
-import ProfileStates from "@/components/profile/ProfileStates";
 
 // public fields that are safe to expose
 const PUBLIC_FIELDS = [
@@ -31,7 +31,11 @@ export default function UserProfilePage({
 	params: Promise<{ username: string }>;
 }) {
 	const supabase = createSupabaseBrowserClient();
-	const { session, profile: currentUserProfile, isLoading: sessionLoading } = useSession();
+	const {
+		session,
+		profile: currentUserProfile,
+		isLoading: sessionLoading,
+	} = useSession();
 	const [user, setUser] = useState<ExtendedUser | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
@@ -109,7 +113,6 @@ export default function UserProfilePage({
 	// show profile
 	return (
 		<div className="flex flex-col items-center w-full min-h-[100dvh] justify-center p-4 sm:p-12 pt-16 sm:pt-24 relative">
-
 			{/* main container */}
 			<div className="h-fit w-full flex max-w-xl">
 				<div className="w-full h-full group p-4 sm:p-6 rounded-xl border border-white/10 backdrop-blur-md bg-white/5 transition-all duration-300 shadow-lg shadow-black/10">

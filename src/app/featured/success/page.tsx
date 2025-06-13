@@ -1,7 +1,6 @@
 export default function FeaturedSuccess() {
 	return (
 		<main className="min-h-screen flex flex-col items-center justify-center px-4 sm:px-8">
-
 			<div className="relative text-center max-w-xl">
 				<h1 className="text-4xl sm:text-5xl font-semibold text-white tracking-tighter mb-6">
 					Submission Received!

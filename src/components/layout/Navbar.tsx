@@ -1,11 +1,11 @@
 "use client";
 
+import { createSupabaseBrowserClient } from "@/utils/supabase/browser-client";
 import useSession from "@/utils/supabase/use-session";
+import type { Session } from "@supabase/supabase-js";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { createSupabaseBrowserClient } from "@/utils/supabase/browser-client";
-import { Session } from "@supabase/supabase-js";
 
 // client-side only wrapper
 const ClientOnly = ({ children }: { children: React.ReactNode }) => {
@@ -38,34 +38,42 @@ const getNavigationLinks = (isModerator: boolean) => {
 
 export default function Navbar() {
 	const supabase = createSupabaseBrowserClient();
-	const [session, setSession] = useState<any>(null)
+	const [session, setSession] = useState<any>(null);
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const [isModerator, setIsModerator] = useState(false);
-	const [user, setUser] = useState<any>(null)
+	const [user, setUser] = useState<any>(null);
 
 	useEffect(() => {
 		async function getSession() {
-			const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => setSession(session as Session));
+			const {
+				data: { subscription },
+			} = supabase.auth.onAuthStateChange((_, session) =>
+				setSession(session as Session),
+			);
 			return () => subscription.unsubscribe();
 		}
 
 		getSession();
 	}, []);
 
-    useEffect(() => {
+	useEffect(() => {
 		if (!session) return;
 
 		async function getData() {
-			const data = await supabase.from('users').select('*').eq('id', session?.user?.id).single();
+			const data = await supabase
+				.from("users")
+				.select("*")
+				.eq("id", session?.user?.id)
+				.single();
 			if (data) {
-				setUser(data.data)
+				setUser(data.data);
 			} else {
-				console.error('No user found')
+				console.error("No user found");
 			}
 		}
 
 		getData();
-    }, [session]);
+	}, [session]);
 
 	// handle mobile menu
 	const toggleMenu = () => {

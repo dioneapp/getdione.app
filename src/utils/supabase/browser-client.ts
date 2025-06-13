@@ -11,6 +11,6 @@ export function createSupabaseBrowserClient() {
 				flowType: "pkce",
 				detectSessionInUrl: true,
 			},
-		}
+		},
 	);
 }
