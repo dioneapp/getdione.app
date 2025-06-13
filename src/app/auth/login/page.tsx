@@ -1,9 +1,9 @@
 "use client";
 
+import { createSupabaseBrowserClient } from "@/utils/supabase/browser-client";
+import type { Provider } from "@supabase/supabase-js";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
-import { createSupabaseBrowserClient } from "@/utils/supabase/browser-client";
-import { Provider } from "@supabase/supabase-js";
 
 function LoginHandler() {
 	const searchParams = useSearchParams();
@@ -12,12 +12,12 @@ function LoginHandler() {
 
 	const handleLogin = async (provider: Provider) => {
 		await supabase.auth.signInWithOAuth({
-		  provider: provider,
-		  options: {
-			redirectTo: `${location.origin}/auth/callback`,
-		  },
+			provider: provider,
+			options: {
+				redirectTo: `${location.origin}/auth/callback`,
+			},
 		});
-	  };
+	};
 
 	return (
 		<div

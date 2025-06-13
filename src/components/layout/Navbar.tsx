@@ -51,7 +51,7 @@ export default function Navbar() {
 
 	useEffect(() => {
 		if (!session) return;
-	
+
 		setUser(session.user);
 		// check moderator status
 		supabase
@@ -177,43 +177,43 @@ export default function Navbar() {
 						</div>
 
 						<div className="h-6 w-[1px] bg-white/10 hidden md:block" />
-							{session !== null ? (
-								<Link
-									href="/profile"
-									className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 text-white hover:bg-white/10 transition-all duration-300"
+						{session !== null ? (
+							<Link
+								href="/profile"
+								className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 text-white hover:bg-white/10 transition-all duration-300"
+							>
+								{avatarUrl ? (
+									<Image
+										src={avatarUrl}
+										alt="Profile"
+										width={24}
+										height={24}
+										className="rounded-full"
+									/>
+								) : (
+									<div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-white text-sm">
+										{fullName?.charAt(0).toUpperCase()}
+									</div>
+								)}
+								<span className="text-sm font-medium">{fullName}</span>
+							</Link>
+						) : (
+							<Link
+								href="/auth/login"
+								className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 text-white hover:bg-white/10 transition-all duration-300"
+							>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									height="24"
+									viewBox="0 -960 960 960"
+									width="24"
+									fill="currentColor"
 								>
-									{avatarUrl ? (
-										<Image
-											src={avatarUrl}
-											alt="Profile"
-											width={24}
-											height={24}
-											className="rounded-full"
-										/>
-									) : (
-										<div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-white text-sm">
-											{fullName?.charAt(0).toUpperCase()}
-										</div>
-									)}
-									<span className="text-sm font-medium">{fullName}</span>
-								</Link>
-							) : (
-								<Link
-									href="/auth/login"
-									className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 text-white hover:bg-white/10 transition-all duration-300"
-								>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										height="24"
-										viewBox="0 -960 960 960"
-										width="24"
-										fill="currentColor"
-									>
-										<path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-240v-32q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v32q0 33-23.5 56.5T720-160H240q-33 0-56.5-23.5T160-240Z" />
-									</svg>
-									<span className="text-sm font-medium">Log In</span>
-								</Link>
-							)}
+									<path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-240v-32q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v32q0 33-23.5 56.5T720-160H240q-33 0-56.5-23.5T160-240Z" />
+								</svg>
+								<span className="text-sm font-medium">Log In</span>
+							</Link>
+						)}
 
 						<Link
 							href="https://discord.gg/JSAszyCEW5"
