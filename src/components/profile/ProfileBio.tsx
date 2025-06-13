@@ -32,7 +32,7 @@ export default function ProfileBio({
                 placeholder="Tell us about yourself..."
               />
             ) : (
-              <p className="text-white whitespace-pre-wrap line-clamp-4">
+              <p className="text-white whitespace-pre-wrap break-words line-clamp-3">
                 {user?.bio || "No bio yet"}
               </p>
             )}
