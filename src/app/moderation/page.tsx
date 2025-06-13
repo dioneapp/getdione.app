@@ -27,7 +27,6 @@ type Script = {
 
 export default function ModerationPanel() {
 	const router = useRouter();
-	const supabase = createSupabaseBrowserClient();
 	const { session, profile, isLoading, error: sessionError } = useSession();
 	const [activeTab, setActiveTab] =
 		useState<(typeof TABS)[number]["id"]>("users");
@@ -46,7 +45,7 @@ export default function ModerationPanel() {
 
 		// redirect if not moderator
 		if (!profile?.moderator) {
-			router.push("/");
+			router.push("/404");
 			return;
 		}
 	}, [session, profile, isLoading, router]);

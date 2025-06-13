@@ -112,17 +112,9 @@ export default function ProfilePage() {
 	const handleDeleteAccount = async () => {
 		try {
 			setIsDeleting(true);
-			setError(null);
-
-			const { error: deleteError } = await supabase
-				.from("users")
-				.delete()
-				.eq("id", session?.user.id);
-
-			if (deleteError) throw deleteError;
-
-			await supabase.auth.signOut();
-			router.push("/");
+			const { error } = await supabase.auth.signOut();
+			if (error) throw error;
+			window.location.href = "/";
 		} catch (err) {
 			setError(err instanceof Error ? err.message : "Failed to delete account");
 			setIsDeleting(false);
