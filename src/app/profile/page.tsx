@@ -3,6 +3,7 @@
 import type { ExtendedUser } from "@/types/database";
 import { createSupabaseBrowserClient } from "@/utils/supabase/browser-client";
 import useSession from "@/utils/supabase/use-session";
+import { Session } from "@supabase/supabase-js";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -19,8 +20,8 @@ const CHAR_LIMITS = {
 export default function ProfilePage() {
 	const router = useRouter();
 	const supabase = createSupabaseBrowserClient();
-	const { session, user, loadingSession } = useSession();
-	const [profile, setProfile] = useState<ExtendedUser | null>(null);
+	const [session, setSession] = useState<any>(null)
+	const [profile, setProfile] = useState<any | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const [isDeleting, setIsDeleting] = useState(false);
@@ -38,90 +39,30 @@ export default function ProfilePage() {
 		first_name: "",
 	});
 
-	// check authentication and get user data
 	useEffect(() => {
-		const fetchProfile = async () => {
-			try {
-				if (loadingSession) {
-					setLoading(true);
-					return;
-				}
+		async function getSession() {
+			const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => setSession(session as Session));
+			return () => subscription.unsubscribe();
+		}
 
-				if (!user) {
-					router.push("/auth/login");
-					return;
-				}
+		getSession();
+	}, []);
 
-				// fetch additional user data
-				const { data: profileData, error: profileError } = await supabase
-					.from("users")
-					.select("*")
-					.eq("id", user.id)
-					.single();
+    useEffect(() => {
+		if (!session) return;
 
-				if (profileError) {
-					console.error("Profile fetch error:", profileError);
-					// handle 406 error specifically
-					if (profileError.code === "406") {
-						// create a new profile if it doesn't exist
-						const { data: newProfile, error: createError } = await supabase
-							.from("users")
-							.insert([
-								{
-									id: user.id,
-									username: user.email?.split("@")[0] || "user",
-									first_name: "",
-									bio: "",
-									location: "",
-									avatar_url: user.user_metadata?.avatar_url || null,
-								},
-							])
-							.select()
-							.single();
-
-						if (createError) {
-							throw new Error(
-								"Unable to create profile. Please try again later.",
-							);
-						}
-
-						setProfile({ ...user, ...newProfile });
-						setEditedFields({
-							username: newProfile?.username || "",
-							first_name: newProfile?.first_name || "",
-							bio: newProfile?.bio || "",
-							location: newProfile?.location || "",
-							avatar_url: newProfile?.avatar_url || "",
-						});
-					} else {
-						throw new Error(
-							"Unable to load your profile data. Please try again later.",
-						);
-					}
-				} else {
-					setProfile({ ...user, ...profileData });
-					setEditedFields({
-						username: profileData?.username || "",
-						first_name: profileData?.first_name || "",
-						bio: profileData?.bio || "",
-						location: profileData?.location || "",
-						avatar_url: profileData?.avatar_url || "",
-					});
-				}
-			} catch (err) {
-				console.error("Profile error:", err);
-				if (err instanceof Error) {
-					setError(err.message);
-				} else {
-					setError("An unexpected error occurred. Please try again later.");
-				}
-			} finally {
-				setLoading(false);
+		async function getData() {
+			const data = await supabase.from('users').select('*').eq('id', session?.user?.id).single();
+			if (data) {
+				setLoading(false)
+				setProfile(data.data)
+			} else {
+				console.error('No user found')
 			}
-		};
+		}
 
-		fetchProfile();
-	}, [user, loadingSession, router, supabase]);
+		getData();
+    }, [session]);
 
 	// handle profile update
 	const handleUpdateProfile = async () => {
@@ -171,7 +112,7 @@ export default function ProfilePage() {
 
 			if (error) throw error;
 
-			setProfile((prev) => (prev ? { ...prev, ...editedFields } : null));
+			setProfile((prev: any) => (prev ? { ...prev, ...editedFields } : null));
 			setIsEditing(false);
 			setFieldErrors({ username: "", first_name: "" });
 		} catch (err) {
@@ -281,6 +222,8 @@ export default function ProfilePage() {
 			</div>
 		);
 	}
+
+	console.log("loading", loading);
 
 	return (
 		<div className="flex flex-col items-center w-full min-h-[100dvh] justify-center p-12 pt-24 relative">
@@ -597,13 +540,13 @@ export default function ProfilePage() {
 								<div className="relative inline-block cursor-pointer">
 									<div className="peer">
 										<p className="text-white">
-											{profile?.last_sign_in_at
-												? new Date(profile.last_sign_in_at).toLocaleDateString()
+											{session?.user?.last_sign_in_at
+												? new Date(session.user.last_sign_in_at).toLocaleDateString()
 												: "N/A"}
 										</p>
 									</div>
 									<div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-black/90 text-white text-xs rounded opacity-0 peer-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-										{profile?.last_sign_in_at
+										{session?.user?.last_sign_in_at
 											? new Date(profile.last_sign_in_at).toLocaleDateString(
 													"en-US",
 													{

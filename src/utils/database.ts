@@ -30,5 +30,13 @@ export const supabase =
 		? createClient(
 				process.env.NEXT_PUBLIC_SUPABASE_URL,
 				process.env.NEXT_PUBLIC_SUPABASE_KEY,
+				{
+					auth: {
+						autoRefreshToken: true,
+						persistSession: true,
+						flowType: "pkce",
+						detectSessionInUrl: false,
+					},
+				}
 			)
 		: mockClient;

@@ -4,7 +4,6 @@ import { NextResponse } from "next/server";
 export async function GET(request: Request) {
 	const { searchParams, origin } = new URL(request.url);
 	const code = searchParams.get("code");
-	const returnUrl = searchParams.get("returnUrl") ?? "/";
 
 	if (code) {
 		const supabase = await createSupabaseServerClient();
@@ -37,11 +36,10 @@ export async function GET(request: Request) {
 				console.error("Error syncing avatar:", error);
 			}
 
-			return NextResponse.redirect(`${origin}${decodeURIComponent(returnUrl)}`);
+			return NextResponse.redirect(`http://localhost:3000/app`);
 		}
 	}
 
-	// TODO: Create this page
-	// return the user to an error page with instructions
+
 	return NextResponse.redirect(`${origin}/auth/auth-error`);
 }

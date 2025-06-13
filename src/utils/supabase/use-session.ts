@@ -1,204 +1,144 @@
 "use client";
 
-import type { ExtendedUser } from "@/types/database";
-import type { AuthSession, User } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
 import { createSupabaseBrowserClient } from "./browser-client";
+import type { AuthSession, User } from "@supabase/supabase-js";
+import type { ExtendedUser } from "@/types/database";
 
-// session state interface
 interface SessionState {
-	session: AuthSession | null;
-	user: User | null;
-	profile: ExtendedUser | null;
-	loadingSession: boolean;
-	error: Error | null;
+  session: AuthSession | null;
+  user: User | null;
+  profile: ExtendedUser | null;
+  isLoading: boolean;
+  error: Error | null;
 }
 
-export default function useSession() {
-	const supabase = createSupabaseBrowserClient();
-	const [state, setState] = useState<SessionState>({
-		session: null,
-		user: null,
-		profile: null,
-		loadingSession: true,
-		error: null,
-	});
+export default function useSession(): SessionState {
+  const supabase = createSupabaseBrowserClient();
+  const [sessionState, setSessionState] = useState<SessionState>({
+    session: null,
+    user: null,
+    profile: null,
+    isLoading: true,
+    error: null,
+  });
 
-	// fetch profile data
-	const fetchProfile = async (userId: string) => {
-		try {
-			const { data: profile, error: profileError } = await supabase
-				.from("users")
-				.select("*")
-				.eq("id", userId)
-				.single();
+  const handleUserProfile = async (userId: string) => {
+    try {
+      const { data: profile, error } = await supabase
+        .from("users")
+        .select("*")
+        .eq("id", userId)
+        .single();
 
-			if (profileError && profileError.code === "406") {
-				// create new profile if it doesn't exist
-				const { data: newProfile, error: createError } = await supabase
-					.from("users")
-					.insert([
-						{
-							id: userId,
-							username: userId.split("@")[0] || "user",
-							first_name: "",
-							bio: "",
-							location: "",
-							avatar_url: null,
-						},
-					])
-					.select()
-					.single();
+      if (error?.code === "PGRST116") {
+        const newProfile = {
+          id: userId,
+          username: userId.split("@")[0] || "user",
+          first_name: "",
+          bio: "",
+          location: "",
+          avatar_url: null,
+        };
 
-				if (createError) throw createError;
-				return newProfile;
-			} else if (profileError) {
-				throw profileError;
-			}
+        const { data: createdProfile } = await supabase
+          .from("users")
+          .insert(newProfile)
+          .select()
+          .single();
 
-			return profile;
-		} catch (error) {
-			console.error("Error fetching profile:", error);
-			throw error;
-		}
-	};
+        return createdProfile;
+      }
 
-	useEffect(() => {
-		let mounted = true;
+      if (error) throw error;
+      return profile;
+    } catch (error) {
+      console.error("Profile error:", error);
+      throw error instanceof Error ? error : new Error("Profile operation failed");
+    }
+  };
 
-		// initial session check
-		const initializeSession = async () => {
-			try {
-				const {
-					data: { session },
-					error,
-				} = await supabase.auth.getSession();
-				if (error) throw error;
+  const updateSessionState = async (session: AuthSession | null) => {
+    try {
+      if (!session?.user) {
+        return {
+          session: null,
+          user: null,
+          profile: null,
+          isLoading: false,
+          error: null,
+        };
+      }
 
-				if (!mounted) return;
+      let profile = await handleUserProfile(session.user.id);
 
-				if (session?.user) {
-					const profile = await fetchProfile(session.user.id);
-					if (!mounted) return;
+      const authAvatar = session.user.user_metadata?.avatar_url;
+      if (authAvatar && profile?.avatar_url !== authAvatar) {
+        const { data: updatedProfile } = await supabase
+          .from("users")
+          .update({ avatar_url: authAvatar })
+          .eq("id", session.user.id)
+          .select()
+          .single();
+        
+        profile = updatedProfile || profile;
+      }
 
-					// sync avatar if needed
-					const authAvatarUrl = session.user.user_metadata?.avatar_url;
-					if (authAvatarUrl && profile.avatar_url !== authAvatarUrl) {
-						const { data: updatedProfile, error: updateError } = await supabase
-							.from("users")
-							.update({ avatar_url: authAvatarUrl })
-							.eq("id", session.user.id)
-							.select()
-							.single();
+      return {
+        session,
+        user: session.user,
+        profile: profile ? { ...session.user, ...profile } : null,
+        isLoading: false,
+        error: null,
+      };
+    } catch (error) {
+      return {
+        session: session,
+        user: session?.user || null,
+        profile: null,
+        isLoading: false,
+        error: error instanceof Error ? error : new Error("Session update failed"),
+      };
+    }
+  };
 
-						if (!updateError && updatedProfile) {
-							setState((prev) => ({
-								...prev,
-								session,
-								user: session.user,
-								profile: { ...session.user, ...updatedProfile },
-								loadingSession: false,
-							}));
-							return;
-						}
-					}
+  useEffect(() => {
+    let isActive = true;
 
-					setState((prev) => ({
-						...prev,
-						session,
-						user: session.user,
-						profile: { ...session.user, ...profile },
-						loadingSession: false,
-					}));
-				} else {
-					setState((prev) => ({
-						...prev,
-						session,
-						user: null,
-						profile: null,
-						loadingSession: false,
-					}));
-				}
-			} catch (error) {
-				if (!mounted) return;
-				setState((prev) => ({
-					...prev,
-					error:
-						error instanceof Error ? error : new Error("Failed to get session"),
-					loadingSession: false,
-				}));
-			}
-		};
+    const loadInitialSession = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error) throw error;
+        if (!isActive) return;
 
-		initializeSession();
+        const newState = await updateSessionState(session);
+        if (isActive) setSessionState(newState);
+      } catch (error) {
+        if (isActive) {
+          setSessionState(prev => ({
+            ...prev,
+            isLoading: false,
+            error: error instanceof Error ? error : new Error("Initial session failed"),
+          }));
+        }
+      }
+    };
 
-		// subscribe to auth changes
-		const {
-			data: { subscription },
-		} = supabase.auth.onAuthStateChange(async (event, session) => {
-			if (!mounted) return;
+    loadInitialSession();
 
-			try {
-				if (session?.user) {
-					const profile = await fetchProfile(session.user.id);
-					if (!mounted) return;
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (_event, session) => {
+        if (!isActive) return;
+        const newState = await updateSessionState(session);
+        if (isActive) setSessionState(newState);
+      }
+    );
 
-					// sync avatar if needed
-					const authAvatarUrl = session.user.user_metadata?.avatar_url;
-					if (authAvatarUrl && profile.avatar_url !== authAvatarUrl) {
-						const { data: updatedProfile, error: updateError } = await supabase
-							.from("users")
-							.update({ avatar_url: authAvatarUrl })
-							.eq("id", session.user.id)
-							.select()
-							.single();
+    return () => {
+      isActive = false;
+      subscription?.unsubscribe();
+    };
+  }, []);
 
-						if (!updateError && updatedProfile) {
-							setState((prev) => ({
-								...prev,
-								session,
-								user: session.user,
-								profile: { ...session.user, ...updatedProfile },
-								loadingSession: false,
-							}));
-							return;
-						}
-					}
-
-					setState((prev) => ({
-						...prev,
-						session,
-						user: session.user,
-						profile: { ...session.user, ...profile },
-						loadingSession: false,
-					}));
-				} else {
-					setState((prev) => ({
-						...prev,
-						session,
-						user: null,
-						profile: null,
-						loadingSession: false,
-					}));
-				}
-			} catch (error) {
-				if (!mounted) return;
-				setState((prev) => ({
-					...prev,
-					error:
-						error instanceof Error
-							? error
-							: new Error("Failed to update session"),
-					loadingSession: false,
-				}));
-			}
-		});
-
-		return () => {
-			mounted = false;
-			subscription.unsubscribe();
-		};
-	}, []);
-
-	return state;
+  return sessionState;
 }

@@ -4,6 +4,7 @@ import type { ExtendedUser } from "@/types/database";
 import { createSupabaseBrowserClient } from "@/utils/supabase/browser-client";
 import useSession from "@/utils/supabase/use-session";
 import { AnimatePresence, motion } from "framer-motion";
+import { Session } from "@supabase/supabase-js";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -27,14 +28,14 @@ type Script = {
 export default function ModerationPanel() {
 	const router = useRouter();
 	const supabase = createSupabaseBrowserClient();
-	const { session, profile, loadingSession } = useSession();
+	const { session, profile, isLoading } = useSession();
 	const [activeTab, setActiveTab] =
 		useState<(typeof TABS)[number]["id"]>("users");
 
 	// handle auth and moderator checks
 	useEffect(() => {
 		// wait for session to load
-		if (loadingSession) return;
+		if (isLoading) return;
 
 		// redirect if not logged in
 		if (!session?.user) {
@@ -47,10 +48,10 @@ export default function ModerationPanel() {
 			router.push("/");
 			return;
 		}
-	}, [session, profile, loadingSession, router]);
+	}, [session, profile, isLoading, router]);
 
 	// show loading state while checking session
-	if (loadingSession) {
+	if (isLoading) {
 		return (
 			<div className="flex flex-col items-center w-full min-h-[100dvh] justify-center p-12 pt-6 relative">
 				<div
@@ -157,7 +158,8 @@ function LoadingSkeleton() {
 // users tab component
 function UsersTab() {
 	const supabase = createSupabaseBrowserClient();
-	const { profile } = useSession();
+	const [session, setSession] = useState<Session | null>(null)
+	const [profile, setProfile] = useState<any>(null)
 	const [users, setUsers] = useState<ExtendedUser[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [searchQuery, setSearchQuery] = useState("");
@@ -179,6 +181,25 @@ function UsersTab() {
 		{ value: "email", label: "Email", icon: "✉️" },
 		{ value: "first_name", label: "First Name", icon: "👨‍💼" },
 	];
+
+	useEffect(() => {
+		async function getSession() {
+			const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => setSession(session as Session));
+			return () => subscription.unsubscribe();
+		}
+
+		// async function getUserData() {
+		// 	const data = await supabase.from('users').select('*').eq('id', session?.user?.id).single();
+		// 	if (data) {
+		// 		setLoading(false)
+		// 		setProfile(data.data)
+		// 	} else {
+		// 		console.error('No user found')
+		// 	}
+		// }
+
+		getSession();
+	}, []);
 
 	useEffect(() => {
 		const fetchUsers = async () => {

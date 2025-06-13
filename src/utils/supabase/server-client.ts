@@ -20,6 +20,12 @@ export async function createSupabaseServerClient(component = false) {
 					);
 				},
 			},
+			auth: {
+				autoRefreshToken: true,
+				persistSession: true,
+				flowType: "pkce",
+				detectSessionInUrl: false,
+			},
 		},
 	);
 }

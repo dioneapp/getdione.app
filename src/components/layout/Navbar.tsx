@@ -1,12 +1,11 @@
 "use client";
 
-import type { ExtendedUser } from "@/types/database";
-import { supabase } from "@/utils/database";
 import useSession from "@/utils/supabase/use-session";
-import type { Session, User } from "@supabase/supabase-js";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { createSupabaseBrowserClient } from "@/utils/supabase/browser-client";
+import { Session } from "@supabase/supabase-js";
 
 // client-side only wrapper
 const ClientOnly = ({ children }: { children: React.ReactNode }) => {
@@ -38,9 +37,35 @@ const getNavigationLinks = (isModerator: boolean) => {
 };
 
 export default function Navbar() {
+	const supabase = createSupabaseBrowserClient();
+	const [session, setSession] = useState<any>(null)
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const [isModerator, setIsModerator] = useState(false);
-	const { session, user, profile, loadingSession } = useSession();
+	const [user, setUser] = useState<any>(null)
+
+	useEffect(() => {
+		async function getSession() {
+			const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => setSession(session as Session));
+			return () => subscription.unsubscribe();
+		}
+
+		getSession();
+	}, []);
+
+    useEffect(() => {
+		if (!session) return;
+
+		async function getData() {
+			const data = await supabase.from('users').select('*').eq('id', session?.user?.id).single();
+			if (data) {
+				setUser(data.data)
+			} else {
+				console.error('No user found')
+			}
+		}
+
+		getData();
+    }, [session]);
 
 	// handle mobile menu
 	const toggleMenu = () => {
@@ -50,15 +75,15 @@ export default function Navbar() {
 
 	// update moderator status when profile changes
 	useEffect(() => {
-		if (profile) {
-			setIsModerator(profile.moderator ?? false);
+		if (user) {
+			setIsModerator(user.moderator === true);
 		} else {
 			setIsModerator(false);
 		}
-	}, [profile]);
+	}, [user]);
 
-	const fullName = user?.user_metadata?.full_name || user?.email;
-	const avatarUrl = profile?.avatar_url;
+	const fullName = user?.username;
+	const avatarUrl = user?.avatar_url;
 
 	const navigationLinks = getNavigationLinks(isModerator);
 

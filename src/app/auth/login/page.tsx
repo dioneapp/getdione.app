@@ -10,7 +10,7 @@ function LoginHandler() {
 	const searchParams = useSearchParams();
 	const router = useRouter();
 	const isAppLogin = searchParams.get("app") === "true";
-	const returnUrl = searchParams.get("returnUrl") || "/";
+	const returnUrl = searchParams.get("returnUrl") || (isAppLogin ? "/app" : "/");
 	const supabase = createSupabaseBrowserClient();
 	const { session } = useSession();
 
@@ -23,12 +23,17 @@ function LoginHandler() {
 
 	const handleLogin = async (provider: Provider) => {
 		try {
-			const { error } = await supabase.auth.signInWithOAuth({
+			const { data, error } = await supabase.auth.signInWithOAuth({
 				provider: provider,
 				options: {
-					redirectTo: `${location.origin}/auth/callback?returnUrl=${encodeURIComponent(returnUrl)}`,
+					redirectTo: `${location.origin}/api/auth/callback`,
+					queryParams: {
+						app: isAppLogin ? "true" : "false",
+						returnUrl: encodeURIComponent(returnUrl),
+					},
 				},
 			});
+
 			if (error) throw error;
 		} catch (error) {
 			console.error("Login error:", error);
