@@ -88,6 +88,6 @@ export const config = {
 		"/moderation/:path*",
 		"/auth/login",
 		"/api/auth/callback",
-		"/auth/callback/:path*"
+		"/auth/callback/:path*",
 	],
 };
