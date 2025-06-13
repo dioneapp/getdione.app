@@ -1,8 +1,8 @@
 "use client";
 
+import type { AuthSession } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
 import { createSupabaseBrowserClient } from "./browser-client";
-import { AuthSession } from "@supabase/supabase-js";
 
 export default function useSession() {
 	const supabase = createSupabaseBrowserClient();
