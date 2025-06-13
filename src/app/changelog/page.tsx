@@ -31,7 +31,7 @@ export default function ChangelogPage() {
 					Latest changes to Dione directly from GitHub.
 				</p>
 				{releases.length === 0 && (
-					<p className="text-center text-sm text-white/70 justify-center items-center mt-auto mb-14">
+					<p className="text-center text-sm text-white/70 justify-center items-center mt-auto mb-24 flex">
 						No releases found.
 					</p>
 				)}
@@ -40,7 +40,7 @@ export default function ChangelogPage() {
 					className="mt-auto grid grid-cols-1 gap-4 sm:gap-6 px-4 max-w-4xl w-full"
 					aria-labelledby="features-heading"
 				>
-					{releases.map(
+					{releases.length > 0 && releases.map(
 						(release: { name: string; html_url: string; body: string }) => (
 							<article
 								key={release.name}
