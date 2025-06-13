@@ -40,19 +40,21 @@ const Stars: React.FC = () => {
   const [stars, setStars] = useState<StarData[]>([]);
 
   useEffect(() => {
-    // generate initial stars
+    // generate initial stars with stable seed
     const generateStars = () => {
-      const newStars = Array.from({ length: 200 }, () => {
-        const size = Math.random() < 0.7 
-          ? Math.random() * 0.5 + 0.1  // 70% of stars are tiny (0.1-0.6px)
-          : Math.random() * 1.5 + 0.5; // 30% are larger (0.5-2px)
+      const newStars = Array.from({ length: 200 }, (_, i) => {
+        // use index as part of the seed for stable values
+        const seed = i * 0.1;
+        const size = Math.sin(seed) < 0.7 
+          ? Math.sin(seed * 2) * 0.5 + 0.1  // 70% of stars are tiny
+          : Math.sin(seed * 3) * 1.5 + 0.5; // 30% are larger
         
         return {
-          x: Math.random() * 100,
-          y: Math.random() * 100,
+          x: Math.sin(seed * 4) * 50 + 50, // center around 50%
+          y: Math.sin(seed * 5) * 50 + 50, // center around 50%
           size,
-          opacity: Math.random() * 0.7 + 0.3, // higher base opacity
-          blur: Math.random() < 0.3 ? Math.random() * 0.5 : 0, // some stars are slightly blurred
+          opacity: Math.sin(seed * 6) * 0.35 + 0.35, // between 0.3 and 0.7
+          blur: Math.sin(seed * 7) < 0.3 ? Math.sin(seed * 8) * 0.5 : 0,
         };
       });
       setStars(newStars);
@@ -60,15 +62,15 @@ const Stars: React.FC = () => {
 
     generateStars();
 
-    // animate stars
+    // animate stars with stable transitions
     const interval = setInterval(() => {
       setStars(prevStars =>
-        prevStars.map(star => ({
+        prevStars.map((star, i) => ({
           ...star,
-          opacity: Math.random() * 0.7 + 0.3, // keep stars more visible
+          opacity: Math.sin(Date.now() * 0.001 + i) * 0.35 + 0.35,
         }))
       );
-    }, 3000); // slower animation
+    }, 3000);
 
     return () => clearInterval(interval);
   }, []);
@@ -82,10 +84,10 @@ const Stars: React.FC = () => {
   );
 };
 
-const ProfileBackground: React.FC = () => {
+const Background: React.FC = () => {
   return (
     <div
-      className="fixed inset-0 flex justify-center items-center"
+      className="absolute inset-0 flex justify-center items-center -z-10"
       aria-hidden="true"
     >
       <div className="bg-[#BCB1E7]/30 h-[70vh] w-[70vh] rounded-full blur-[150px]"></div>
@@ -94,4 +96,4 @@ const ProfileBackground: React.FC = () => {
   );
 };
 
-export default ProfileBackground; 
+export default Background; 
