@@ -1,15 +1,15 @@
 "use client";
 
+import AccountInfo from "@/components/profile/AccountInfo";
+import ProfileBio from "@/components/profile/ProfileBio";
+import ProfileHeader from "@/components/profile/ProfileHeader";
+import ProfileStates from "@/components/profile/ProfileStates";
 import type { ExtendedUser } from "@/types/database";
 import { createSupabaseBrowserClient } from "@/utils/supabase/browser-client";
 import useSession from "@/utils/supabase/use-session";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import ProfileHeader from "@/components/profile/ProfileHeader";
-import ProfileBio from "@/components/profile/ProfileBio";
-import AccountInfo from "@/components/profile/AccountInfo";
-import ProfileStates from "@/components/profile/ProfileStates";
 
 // character limits
 const CHAR_LIMITS = {
@@ -62,16 +62,19 @@ export default function ProfilePage() {
 	}, [profile]);
 
 	// handle field changes
-	const handleFieldChange = (field: keyof typeof editedFields, value: string) => {
-		setEditedFields(prev => ({ ...prev, [field]: value }));
-		setFieldErrors(prev => ({ ...prev, [field]: "" }));
+	const handleFieldChange = (
+		field: keyof typeof editedFields,
+		value: string,
+	) => {
+		setEditedFields((prev) => ({ ...prev, [field]: value }));
+		setFieldErrors((prev) => ({ ...prev, [field]: "" }));
 	};
 
 	// handle form submission
 	const handleSubmit = async () => {
 		try {
 			setError(null);
-			
+
 			// validate fields
 			const errors = {
 				username: "",
@@ -105,10 +108,13 @@ export default function ProfilePage() {
 
 			if (updateError) {
 				// handle duplicate username error
-				if (updateError.code === '23505' && updateError.message.includes('username')) {
-					setFieldErrors(prev => ({
+				if (
+					updateError.code === "23505" &&
+					updateError.message.includes("username")
+				) {
+					setFieldErrors((prev) => ({
 						...prev,
-						username: "This username is already taken"
+						username: "This username is already taken",
 					}));
 					return;
 				}
@@ -168,7 +174,6 @@ export default function ProfilePage() {
 
 	return (
 		<div className="flex flex-col items-center w-full min-h-[100dvh] justify-center p-4 sm:p-12 pt-16 sm:pt-24 relative">
-
 			{/* main container */}
 			<div className="h-fit w-full flex max-w-xl">
 				<div className="w-full h-full group p-4 sm:p-6 rounded-xl border border-white/10 backdrop-blur-md bg-white/5 transition-all duration-300 shadow-lg shadow-black/10">
@@ -292,8 +297,8 @@ export default function ProfilePage() {
 							Delete Account
 						</h3>
 						<p className="text-white/70 mb-6">
-							Are you sure you want to delete your account? This action cannot be
-							undone.
+							Are you sure you want to delete your account? This action cannot
+							be undone.
 						</p>
 						<div className="flex gap-4">
 							<button

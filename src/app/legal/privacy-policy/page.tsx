@@ -1,5 +1,5 @@
-import LegalPageLayout from "@/components/legal/LegalPageLayout";
 import LegalArticle from "@/components/legal/LegalArticle";
+import LegalPageLayout from "@/components/legal/LegalPageLayout";
 
 export default function PrivacyPage() {
 	return (
@@ -17,9 +17,8 @@ export default function PrivacyPage() {
 					<li className="flex items-start">
 						<span className="text-white/80 mr-2">•</span>
 						<span>
-							System Diagnostics (Optional): Anonymous system information
-							about your operating system when you choose to submit error
-							reports.
+							System Diagnostics (Optional): Anonymous system information about
+							your operating system when you choose to submit error reports.
 						</span>
 					</li>
 				</ul>
@@ -37,8 +36,8 @@ export default function PrivacyPage() {
 					<li className="flex items-start">
 						<span className="text-white/80 mr-2">•</span>
 						<span>
-							Service Improvement: To analyze system diagnostics (when
-							provided) and improve our service.
+							Service Improvement: To analyze system diagnostics (when provided)
+							and improve our service.
 						</span>
 					</li>
 					<li className="flex items-start">
@@ -52,17 +51,17 @@ export default function PrivacyPage() {
 
 			<LegalArticle title="Data Storage and Security">
 				<p>
-					We use Supabase as our database provider and authentication
-					service. All data is stored securely and processed in accordance
-					with industry standards. For more information about Supabase's
-					security practices, we encourage you to visit their websites.
+					We use Supabase as our database provider and authentication service.
+					All data is stored securely and processed in accordance with industry
+					standards. For more information about Supabase's security practices,
+					we encourage you to visit their websites.
 				</p>
 			</LegalArticle>
 
 			<LegalArticle title="Data Retention and Deletion">
 				<p>
-					We retain your data as long as you maintain an active account.
-					You can delete your data by:
+					We retain your data as long as you maintain an active account. You can
+					delete your data by:
 				</p>
 				<ul className="space-y-2">
 					<li className="flex items-start">
@@ -73,9 +72,7 @@ export default function PrivacyPage() {
 					</li>
 					<li className="flex items-start">
 						<span className="text-white/80 mr-2">•</span>
-						<span>
-							Contacting us via email to request account deletion.
-						</span>
+						<span>Contacting us via email to request account deletion.</span>
 					</li>
 				</ul>
 			</LegalArticle>
@@ -93,9 +90,7 @@ export default function PrivacyPage() {
 					</li>
 					<li className="flex items-start">
 						<span className="text-white/80 mr-2">•</span>
-						<span>
-							Request deletion of your account and associated data.
-						</span>
+						<span>Request deletion of your account and associated data.</span>
 					</li>
 					<li className="flex items-start">
 						<span className="text-white/80 mr-2">•</span>
@@ -106,16 +101,16 @@ export default function PrivacyPage() {
 
 			<LegalArticle title="Changes to This Policy">
 				<p>
-					We may update this privacy policy from time to time. We will
-					notify you of any changes by posting the new policy on this page
-					and updating the "Updated" date at the top of this policy.
+					We may update this privacy policy from time to time. We will notify
+					you of any changes by posting the new policy on this page and updating
+					the "Updated" date at the top of this policy.
 				</p>
 			</LegalArticle>
 
 			<LegalArticle title="Contact Us">
 				<p>
-					If you have any questions about this privacy policy, please
-					contact us at{" "}
+					If you have any questions about this privacy policy, please contact us
+					at{" "}
 					<a
 						href="mailto:support@getdione.app"
 						className="text-white/80 underline"

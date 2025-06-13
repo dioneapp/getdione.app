@@ -10,7 +10,8 @@ function LoginHandler() {
 	const searchParams = useSearchParams();
 	const router = useRouter();
 	const isAppLogin = searchParams.get("app") === "true";
-	const returnUrl = searchParams.get("returnUrl") || (isAppLogin ? "/app" : "/");
+	const returnUrl =
+		searchParams.get("returnUrl") || (isAppLogin ? "/app" : "/");
 	const supabase = createSupabaseBrowserClient();
 	const { session } = useSession();
 

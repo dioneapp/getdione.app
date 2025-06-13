@@ -15,8 +15,6 @@ export default function ChangelogPage() {
 
 	return (
 		<main>
-			
-
 			<div className="relative flex flex-col items-center justify-center min-h-[100dvh] px-4 sm:px-8 pt-24 sm:pt-32 pb-16">
 				<div
 					className="absolute inset-0 bg-gradient-to-b from-transparent to-black/20 pointer-events-none"
