@@ -130,7 +130,7 @@ function LoginHandler() {
 					<div className="mt-4 text-center text-white/70 text-sm">
 						By logging in, you agree to our
 						<a
-							href="/terms-use"
+							href="/legal/terms-use"
 							target="_blank"
 							className="text-[#BCB1E7] hover:underline"
 							rel="noreferrer"
@@ -140,7 +140,7 @@ function LoginHandler() {
 						</a>{" "}
 						and
 						<a
-							href="/privacy-policy"
+							href="/legal/privacy-policy"
 							target="_blank"
 							className="text-[#BCB1E7] hover:underline"
 							rel="noreferrer"

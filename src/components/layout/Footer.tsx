@@ -23,8 +23,8 @@ const footerData = {
 		{
 			title: "Legal",
 			links: [
-				{ label: "Terms Of Use", href: "/terms-use" },
-				{ label: "Privacy Policy", href: "/privacy-policy" },
+				{ label: "Terms Of Use", href: "/legal/terms-use" },
+				{ label: "Privacy Policy", href: "/legal/privacy-policy" },
 			],
 		},
 	],
