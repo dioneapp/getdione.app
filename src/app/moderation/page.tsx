@@ -165,7 +165,9 @@ function UsersTab() {
 	const [totalCount, setTotalCount] = useState(0);
 	const [expandedUser, setExpandedUser] = useState<string | null>(null);
 	const [editingUser, setEditingUser] = useState<string | null>(null);
-	const [editedUserData, setEditedUserData] = useState<ExtendedUser | null>(null);
+	const [editedUserData, setEditedUserData] = useState<ExtendedUser | null>(
+		null,
+	);
 	const [sortField, setSortField] = useState("created_at");
 	const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
 	const itemsPerPage = 10;

@@ -1,9 +1,9 @@
 "use client";
 
+import type { ExtendedUser } from "@/types/database";
 import type { AuthSession, User } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
 import { createSupabaseBrowserClient } from "./browser-client";
-import type { ExtendedUser } from "@/types/database";
 
 // session state interface
 interface SessionState {
@@ -21,7 +21,7 @@ export default function useSession() {
 		user: null,
 		profile: null,
 		loadingSession: true,
-		error: null
+		error: null,
 	});
 
 	// fetch profile data
@@ -69,9 +69,12 @@ export default function useSession() {
 		// initial session check
 		const initializeSession = async () => {
 			try {
-				const { data: { session }, error } = await supabase.auth.getSession();
+				const {
+					data: { session },
+					error,
+				} = await supabase.auth.getSession();
 				if (error) throw error;
-				
+
 				if (!mounted) return;
 
 				if (session?.user) {
@@ -89,39 +92,40 @@ export default function useSession() {
 							.single();
 
 						if (!updateError && updatedProfile) {
-							setState(prev => ({
+							setState((prev) => ({
 								...prev,
 								session,
 								user: session.user,
 								profile: { ...session.user, ...updatedProfile },
-								loadingSession: false
+								loadingSession: false,
 							}));
 							return;
 						}
 					}
 
-					setState(prev => ({
+					setState((prev) => ({
 						...prev,
 						session,
 						user: session.user,
 						profile: { ...session.user, ...profile },
-						loadingSession: false
+						loadingSession: false,
 					}));
 				} else {
-					setState(prev => ({
+					setState((prev) => ({
 						...prev,
 						session,
 						user: null,
 						profile: null,
-						loadingSession: false
+						loadingSession: false,
 					}));
 				}
 			} catch (error) {
 				if (!mounted) return;
-				setState(prev => ({
+				setState((prev) => ({
 					...prev,
-					error: error instanceof Error ? error : new Error('Failed to get session'),
-					loadingSession: false
+					error:
+						error instanceof Error ? error : new Error("Failed to get session"),
+					loadingSession: false,
 				}));
 			}
 		};
@@ -129,7 +133,9 @@ export default function useSession() {
 		initializeSession();
 
 		// subscribe to auth changes
-		const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+		const {
+			data: { subscription },
+		} = supabase.auth.onAuthStateChange(async (event, session) => {
 			if (!mounted) return;
 
 			try {
@@ -148,39 +154,42 @@ export default function useSession() {
 							.single();
 
 						if (!updateError && updatedProfile) {
-							setState(prev => ({
+							setState((prev) => ({
 								...prev,
 								session,
 								user: session.user,
 								profile: { ...session.user, ...updatedProfile },
-								loadingSession: false
+								loadingSession: false,
 							}));
 							return;
 						}
 					}
 
-					setState(prev => ({
+					setState((prev) => ({
 						...prev,
 						session,
 						user: session.user,
 						profile: { ...session.user, ...profile },
-						loadingSession: false
+						loadingSession: false,
 					}));
 				} else {
-					setState(prev => ({
+					setState((prev) => ({
 						...prev,
 						session,
 						user: null,
 						profile: null,
-						loadingSession: false
+						loadingSession: false,
 					}));
 				}
 			} catch (error) {
 				if (!mounted) return;
-				setState(prev => ({
+				setState((prev) => ({
 					...prev,
-					error: error instanceof Error ? error : new Error('Failed to update session'),
-					loadingSession: false
+					error:
+						error instanceof Error
+							? error
+							: new Error("Failed to update session"),
+					loadingSession: false,
 				}));
 			}
 		});

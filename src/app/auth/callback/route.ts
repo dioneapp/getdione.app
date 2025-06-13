@@ -9,7 +9,10 @@ export async function GET(request: Request) {
 	if (code) {
 		const supabase = await createSupabaseServerClient();
 
-		const { data: { session }, error } = await supabase.auth.exchangeCodeForSession(code);
+		const {
+			data: { session },
+			error,
+		} = await supabase.auth.exchangeCodeForSession(code);
 
 		if (!error && session?.user) {
 			try {
@@ -21,7 +24,10 @@ export async function GET(request: Request) {
 					.single();
 
 				// if profile exists and avatar_url is different from auth metadata, update it
-				if (profile && profile.avatar_url !== session.user.user_metadata?.avatar_url) {
+				if (
+					profile &&
+					profile.avatar_url !== session.user.user_metadata?.avatar_url
+				) {
 					await supabase
 						.from("users")
 						.update({ avatar_url: session.user.user_metadata?.avatar_url })
