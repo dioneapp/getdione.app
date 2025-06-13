@@ -82,7 +82,7 @@ export default function ProfileHeader({
                       onFieldChange?.("username", value);
                     }}
                     maxLength={15}
-                    className={`bg-transparent border-b ${fieldErrors?.username ? "border-red-500/50" : "border-white/20"} pl-0 pr-1 py-0.5 text-white w-full focus:outline-none`}
+                    className={`bg-transparent border-b ${fieldErrors?.username ? "border-red-500/50" : "border-white/20"} pl-1 pr-1 py-0.5 text-white w-full focus:outline-none`}
                     placeholder="username"
                   />
                   {fieldErrors?.username && (
