@@ -130,22 +130,17 @@ export default function ProfilePage() {
 	};
 
 	// handle sign out
-	const handleSignOut = async () => {
-		try {
-			const { error } = await supabase.auth.signOut();
-			if (error) throw error;
-			
-			// clear profile cache
-			if (session?.user?.id) {
-				profileCache.delete(session.user.id);
+		const handleSignOut = async () => {
+			try {
+				await supabase.auth.signOut();
+				// force redirect to home page
+				window.location.href = "/";
+			} catch (err) {
+				console.error("Sign out error:", err);
+				// force redirect even if there's an error
+				window.location.href = "/";
 			}
-			
-			// redirect to home page
-			router.push("/");
-		} catch (err) {
-			setError(err instanceof Error ? err.message : "Failed to sign out");
-		}
-	};
+		};
 
 	if (isLoading || loading) {
 		return (
