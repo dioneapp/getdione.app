@@ -1,4 +1,3 @@
-// shared profile bio component
 import { motion } from "framer-motion";
 import { ExtendedUser } from "@/types/database";
 

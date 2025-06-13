@@ -1,4 +1,3 @@
-// shared profile header component
 import Image from "next/image";
 import { ExtendedUser } from "@/types/database";
 

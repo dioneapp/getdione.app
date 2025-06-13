@@ -1,4 +1,3 @@
-// shared profile states component
 import { useRouter } from "next/navigation";
 
 interface ProfileStatesProps {

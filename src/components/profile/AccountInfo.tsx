@@ -1,4 +1,3 @@
-// shared account info component
 import { ExtendedUser } from "@/types/database";
 
 interface AccountInfoProps {
