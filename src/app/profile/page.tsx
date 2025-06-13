@@ -80,7 +80,9 @@ export default function ProfilePage() {
 							.single();
 
 						if (createError) {
-							throw new Error("Unable to create profile. Please try again later.");
+							throw new Error(
+								"Unable to create profile. Please try again later.",
+							);
 						}
 
 						setProfile({ ...user, ...newProfile });
@@ -92,7 +94,9 @@ export default function ProfilePage() {
 							avatar_url: newProfile?.avatar_url || "",
 						});
 					} else {
-						throw new Error("Unable to load your profile data. Please try again later.");
+						throw new Error(
+							"Unable to load your profile data. Please try again later.",
+						);
 					}
 				} else {
 					setProfile({ ...user, ...profileData });
@@ -573,14 +577,17 @@ export default function ProfilePage() {
 									</div>
 									<div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-black/90 text-white text-xs rounded opacity-0 peer-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
 										{profile?.created_at
-											? new Date(profile.created_at).toLocaleDateString("en-US", {
-													weekday: "long",
-													year: "numeric",
-													month: "long",
-													day: "numeric",
-													hour: "2-digit",
-													minute: "2-digit",
-												})
+											? new Date(profile.created_at).toLocaleDateString(
+													"en-US",
+													{
+														weekday: "long",
+														year: "numeric",
+														month: "long",
+														day: "numeric",
+														hour: "2-digit",
+														minute: "2-digit",
+													},
+												)
 											: "N/A"}
 									</div>
 								</div>
@@ -615,7 +622,9 @@ export default function ProfilePage() {
 							<div>
 								<p className="text-white/50 text-sm">Badges</p>
 								<div className="flex gap-2">
-									{profile?.tester || profile?.publisher || profile?.moderator ? (
+									{profile?.tester ||
+									profile?.publisher ||
+									profile?.moderator ? (
 										<>
 											{profile?.tester && (
 												<div className="relative inline-block cursor-pointer">

@@ -1,10 +1,10 @@
 "use client";
 
 import { createSupabaseBrowserClient } from "@/utils/supabase/browser-client";
-import type { Provider } from "@supabase/supabase-js";
-import { useSearchParams, useRouter } from "next/navigation";
-import { Suspense, useEffect } from "react";
 import useSession from "@/utils/supabase/use-session";
+import type { Provider } from "@supabase/supabase-js";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect } from "react";
 
 function LoginHandler() {
 	const searchParams = useSearchParams();
