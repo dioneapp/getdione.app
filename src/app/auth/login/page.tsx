@@ -10,12 +10,14 @@ function LoginHandler() {
 	const searchParams = useSearchParams();
 	const router = useRouter();
 	const isAppLogin = searchParams.get("app") === "true";
-	const returnUrl = searchParams.get("returnUrl") || (isAppLogin ? "/app" : "/");
+	const redirectTo = isAppLogin ? "/app" : "/web";
+	const returnUrl = searchParams.get("returnUrl") || redirectTo;
 	const supabase = createSupabaseBrowserClient();
 	const { session } = useSession();
 
 	// redirect if already logged in
 	useEffect(() => {
+		console.log('isAppLogin', isAppLogin)
 		if (session) {
 			router.push(decodeURIComponent(returnUrl));
 		}
@@ -26,11 +28,7 @@ function LoginHandler() {
 			const { data, error } = await supabase.auth.signInWithOAuth({
 				provider: provider,
 				options: {
-					redirectTo: `${location.origin}/api/auth/callback`,
-					queryParams: {
-						app: isAppLogin ? "true" : "false",
-						returnUrl: encodeURIComponent(returnUrl),
-					},
+					redirectTo: `${location.origin}/auth/callback${redirectTo}`,
 				},
 			});
 

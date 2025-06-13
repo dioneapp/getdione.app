@@ -1,9 +1,13 @@
 import { createSupabaseServerClient } from "@/utils/supabase/server-client";
 import { NextResponse } from "next/server";
 
-export async function GET(request: Request) {
+export async function GET(request: Request, context: { params: { params: string[] } }) {
 	const { searchParams, origin } = new URL(request.url);
+	const isApp = context.params.params.includes('app');
 	const code = searchParams.get("code");
+
+	console.log('request', request.url)
+	console.log('app', isApp)
 
 	if (code) {
 		const supabase = await createSupabaseServerClient();
@@ -36,7 +40,11 @@ export async function GET(request: Request) {
 				console.error("Error syncing avatar:", error);
 			}
 
-			return NextResponse.redirect(`http://localhost:3000/app`);
+			const encodedAccessToken = encodeURIComponent(session.access_token);
+			const encodedRefreshToken = encodeURIComponent(session.refresh_token);
+			const redirectUrl = isApp ? `dione://auth=${encodedAccessToken}${encodedRefreshToken ? `&refresh=${encodedRefreshToken}` : ""}` : `${origin}/profile`;
+
+			return NextResponse.redirect(redirectUrl);
 		}
 	}
 
