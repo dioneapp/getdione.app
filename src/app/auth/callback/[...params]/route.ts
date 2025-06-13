@@ -1,9 +1,12 @@
 import { createSupabaseServerClient } from "@/utils/supabase/server-client";
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 
-export async function GET(request: Request, context: { params: { params: string[] } }) {
+export async function GET(request: NextRequest, { params }: { params: { params: string[] } }) {
 	const { searchParams, origin } = new URL(request.url);
-	const isApp = context.params.params.includes('app');
+	const realParams = await params;
+	const pathSegments = realParams.params; 
+	
+	const isApp = pathSegments.includes("app");
 	const code = searchParams.get("code");
 
 	if (code) {
