@@ -41,7 +41,10 @@ export default function ProfilePage() {
 	useEffect(() => {
 		const checkAuth = async () => {
 			try {
-				if (loadingSession) return;
+				if (loadingSession) {
+					setLoading(true);
+					return;
+				}
 				if (!session) {
 					router.push("/auth/login");
 					return;
