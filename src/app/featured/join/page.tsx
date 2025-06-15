@@ -1,5 +1,6 @@
 "use client";
 
+import { sendFeaturedWebhook } from "@/app/actions/webhook";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -77,13 +78,8 @@ async function submitForm(formData: FormData) {
 		],
 	};
 
-	const response = await fetch("/api/featured", {
-		method: "POST",
-		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify(webhookBody),
-	});
-
-	if (!response.ok) {
+	const result = await sendFeaturedWebhook(webhookBody);
+	if (!result.success) {
 		throw new Error("Failed to submit application");
 	}
 }

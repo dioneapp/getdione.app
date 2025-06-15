@@ -2,15 +2,19 @@
 
 import { marked } from "marked";
 import { useEffect, useState } from "react";
+import { getReleases } from "@/app/actions/releases";
+import { Release } from "@/app/actions/releases";
 
 export default function ChangelogPage() {
-	const [releases, setReleases] = useState([]);
+	const [releases, setReleases] = useState<Release[]>([]);
 
 	useEffect(() => {
-		fetch("/api/releases")
-			.then((res) => res.json())
-			.then(setReleases)
-			.catch(() => setReleases([]));
+		async function fetchReleases() {
+			const result = await getReleases();
+			setReleases(result.data || []);
+		}
+
+		fetchReleases();
 	}, []);
 
 	return (
@@ -41,7 +45,7 @@ export default function ChangelogPage() {
 					aria-labelledby="features-heading"
 				>
 					{releases.length > 0 && releases.map(
-						(release: { name: string; html_url: string; body: string }) => (
+						(release: Release) => (
 							<article
 								key={release.name}
 								className="group p-6 rounded-xl border border-white/10 backdrop-blur-md bg-white/5 hover:bg-white/10 transition-all duration-300 hover:-translate-y-1 shadow-lg"
