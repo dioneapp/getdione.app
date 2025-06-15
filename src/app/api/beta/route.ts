@@ -1,11 +1,15 @@
 import { NextResponse } from "next/server";
 
+export interface Env {
+	BETA_DISCORD_WEBHOOK_URL: string;
+}
+
 // handle webhook submission securely
-export async function POST(request: Request) {
+export async function POST(request: Request, env: Env) {
 	try {
 		const data = await request.json();
 
-		const response = await fetch(process.env.BETA_DISCORD_WEBHOOK_URL!, {
+		const response = await fetch(env.BETA_DISCORD_WEBHOOK_URL || process.env.BETA_DISCORD_WEBHOOK_URL!, {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify(data),
