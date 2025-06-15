@@ -90,4 +90,5 @@ export const config = {
 		"/api/auth/callback",
 		"/auth/callback/:path*"
 	],
+	runtime: "nodejs",
 };
