@@ -1,5 +1,6 @@
 "use client";
 
+import { sendWebhook } from "@/app/actions/webhook";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -53,15 +54,10 @@ async function submitForm(formData: FormData) {
 		],
 	};
 
-	const response = await fetch("/api/beta", {
-		method: "POST",
-		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify(webhookBody),
-	});
+	const result = await sendWebhook(webhookBody);
 
-	if (!response.ok) {
-		const error = await response.json();
-		console.error("Discord webhook error:", error);
+	if (!result.success) {
+		console.error("Discord webhook error:", result.error);
 		throw new Error("Failed to submit application");
 	}
 
