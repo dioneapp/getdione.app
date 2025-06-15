@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
 
-export const config = {
-    runtime: 'edge',
-}
+export const runtime = 'edge';
 
 // handle webhook submission securely
 export async function POST(request: Request) {
