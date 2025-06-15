@@ -60,6 +60,7 @@ async function submitForm(formData: FormData) {
 	});
 
 	if (!response.ok) {
+		console.error("Discord webhook error:", response.statusText);
 		throw new Error("Failed to submit application");
 	}
 

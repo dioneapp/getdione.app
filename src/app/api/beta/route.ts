@@ -12,6 +12,7 @@ export async function POST(request: Request) {
 		});
 
 		if (!response.ok) {
+			console.error("Discord webhook error:", response.statusText);
 			throw new Error(`Discord webhook error: ${response.statusText}`);
 		}
 
