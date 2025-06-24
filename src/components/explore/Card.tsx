@@ -1,6 +1,6 @@
 "use client";
 
-import { Tag, Calendar, ThumbsUp, Download } from "lucide-react";
+import { Calendar, Download, Tag, ThumbsUp } from "lucide-react";
 
 interface CardProps {
 	id: number;
@@ -76,8 +76,7 @@ export default function Card({
 							<div className="flex items-center gap-4">
 								{version && (
 									<span className="flex items-center">
-										<Tag className="w-4 h-4 mr-1" />
-										v{version}
+										<Tag className="w-4 h-4 mr-1" />v{version}
 									</span>
 								)}
 								<span className="flex items-center">

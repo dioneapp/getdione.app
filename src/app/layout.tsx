@@ -1,10 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import { Poppins } from "next/font/google";
 import "@/styles/globals.css";
+import Script from "next/script";
 import Background from "@/components/layout/Background";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
-import Script from "next/script";
 
 // initialize poppins font
 const poppins = Poppins({

@@ -1,6 +1,6 @@
-import type { ExtendedUser } from "@/types/database";
+import { Edit, MapPin } from "lucide-react";
 import Image from "next/image";
-import { MapPin, Edit } from "lucide-react";
+import type { ExtendedUser } from "@/types/database";
 
 interface ProfileHeaderProps {
 	user: ExtendedUser | null;

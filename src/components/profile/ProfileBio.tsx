@@ -1,5 +1,5 @@
-import type { ExtendedUser } from "@/types/database";
 import { motion } from "framer-motion";
+import type { ExtendedUser } from "@/types/database";
 
 interface ProfileBioProps {
 	user: ExtendedUser | null;

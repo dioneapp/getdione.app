@@ -2,8 +2,7 @@
 
 import { marked } from "marked";
 import { useEffect, useState } from "react";
-import { getReleases } from "@/app/actions/releases";
-import { Release } from "@/app/actions/releases";
+import { getReleases, type Release } from "@/app/actions/releases";
 
 export default function ChangelogPage() {
 	const [releases, setReleases] = useState<Release[]>([]);
@@ -44,8 +43,8 @@ export default function ChangelogPage() {
 					className="mt-auto grid grid-cols-1 gap-4 sm:gap-6 px-4 max-w-4xl w-full"
 					aria-labelledby="features-heading"
 				>
-					{releases.length > 0 && releases.map(
-						(release: Release) => (
+					{releases.length > 0 &&
+						releases.map((release: Release) => (
 							<article
 								key={release.name}
 								className="group p-6 rounded-xl border border-white/10 backdrop-blur-md bg-white/5 hover:bg-white/10 transition-all duration-300 hover:-translate-y-1 shadow-lg"
@@ -70,8 +69,7 @@ export default function ChangelogPage() {
 									}}
 								/>
 							</article>
-						),
-					)}
+						))}
 				</section>
 				<p className="text-center text-sm text-white/70 mt-8 max-md:text-balance">
 					Check out the{" "}

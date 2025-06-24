@@ -1,14 +1,21 @@
 "use client";
 
-import type { ExtendedUser } from "@/types/database";
-import { createSupabaseBrowserClient } from "@/utils/supabase/browser-client";
-import useSession from "@/utils/supabase/use-session";
 import type { Session } from "@supabase/supabase-js";
 import { AnimatePresence, motion } from "framer-motion";
+import {
+	Check,
+	ChevronDown,
+	ChevronLeft,
+	ChevronRight,
+	ChevronUp,
+	Pencil,
+} from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { ChevronDown, ChevronUp, Check, Pencil, ChevronLeft, ChevronRight } from "lucide-react";
+import type { ExtendedUser } from "@/types/database";
+import { createSupabaseBrowserClient } from "@/utils/supabase/browser-client";
+import useSession from "@/utils/supabase/use-session";
 
 // tabs for different moderation sections
 const TABS = [

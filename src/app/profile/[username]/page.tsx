@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+import { use, useEffect, useState } from "react";
 import AccountInfo from "@/components/profile/AccountInfo";
 import ProfileBio from "@/components/profile/ProfileBio";
 import ProfileHeader from "@/components/profile/ProfileHeader";
@@ -7,8 +9,6 @@ import ProfileStates from "@/components/profile/ProfileStates";
 import type { ExtendedUser } from "@/types/database";
 import { createSupabaseBrowserClient } from "@/utils/supabase/browser-client";
 import useSession from "@/utils/supabase/use-session";
-import { use, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 
 // public fields that are safe to expose
 const PUBLIC_FIELDS = [
@@ -92,7 +92,9 @@ export default function UserProfilePage({
 				if (!mounted) return;
 				console.error("Fetch error:", err);
 				setError(
-					err instanceof Error ? err.message : "An unexpected error occurred. Please try again later."
+					err instanceof Error
+						? err.message
+						: "An unexpected error occurred. Please try again later.",
 				);
 			} finally {
 				if (mounted) {
