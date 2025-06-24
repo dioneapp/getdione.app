@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
 export default function NotFound() {
 	return (
@@ -15,15 +16,7 @@ export default function NotFound() {
 					href="/"
 					className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/5 text-white hover:bg-white/10 transition-all duration-300"
 				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						height="24"
-						viewBox="0 -960 960 960"
-						width="24"
-						fill="currentColor"
-					>
-						<path d="M480-160 160-480l320-320 42 42-248 248h526v60H274l248 248-42 42Z" />
-					</svg>
+					<ArrowLeft className="w-6 h-6" />
 					Back to Home
 				</Link>
 			</div>

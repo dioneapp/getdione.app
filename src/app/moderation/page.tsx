@@ -8,6 +8,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { ChevronDown, ChevronUp, Check, Pencil, ChevronLeft, ChevronRight } from "lucide-react";
 
 // tabs for different moderation sections
 const TABS = [
@@ -363,31 +364,9 @@ function UsersTab() {
 							title={`Sort ${sortDirection === "asc" ? "ascending" : "descending"}`}
 						>
 							{sortDirection === "asc" ? (
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									className="h-5 w-5 text-white/80"
-									viewBox="0 0 20 20"
-									fill="currentColor"
-								>
-									<path
-										fillRule="evenodd"
-										d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-										clipRule="evenodd"
-									/>
-								</svg>
+								<ChevronDown className="h-5 w-5 text-white/80" />
 							) : (
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									className="h-5 w-5 text-white/80"
-									viewBox="0 0 20 20"
-									fill="currentColor"
-								>
-									<path
-										fillRule="evenodd"
-										d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
-										clipRule="evenodd"
-									/>
-								</svg>
+								<ChevronUp className="h-5 w-5 text-white/80" />
 							)}
 						</button>
 					</div>
@@ -663,15 +642,7 @@ function UsersTab() {
 																}
 																className="w-full sm:w-auto shrink-0 py-2 px-4 flex items-center justify-center gap-2 rounded-full bg-white font-semibold text-[#080808] cursor-pointer hover:bg-white/90 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/50 shadow-lg border border-black/10"
 															>
-																<svg
-																	xmlns="http://www.w3.org/2000/svg"
-																	height="18"
-																	viewBox="0 -960 960 960"
-																	width="18"
-																	fill="currentColor"
-																>
-																	<path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z" />
-																</svg>
+																<Check className="w-4 h-4" />
 																Save Changes
 															</button>
 														</>
@@ -680,15 +651,7 @@ function UsersTab() {
 															onClick={() => startEditing(user)}
 															className="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-white/80 hover:text-white transition-all duration-200 flex items-center gap-2 cursor-pointer"
 														>
-															<svg
-																xmlns="http://www.w3.org/2000/svg"
-																height="18"
-																viewBox="0 -960 960 960"
-																width="18"
-																fill="currentColor"
-															>
-																<path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z" />
-															</svg>
+															<Pencil className="w-4 h-4" />
 															Edit Details
 														</button>
 													) : (
@@ -720,15 +683,7 @@ function UsersTab() {
 								className="p-2 bg-white/10 hover:bg-white/20 rounded text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
 								title="Previous Page"
 							>
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									height="20"
-									viewBox="0 -960 960 960"
-									width="20"
-									fill="currentColor"
-								>
-									<path d="M560-240 320-480l240-240 56 56-184 184 184 184-56 56Z" />
-								</svg>
+								<ChevronLeft className="w-5 h-5" />
 							</button>
 							<button
 								onClick={() =>
@@ -738,15 +693,7 @@ function UsersTab() {
 								className="p-2 bg-white/10 hover:bg-white/20 rounded text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
 								title="Next Page"
 							>
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									height="20"
-									viewBox="0 -960 960 960"
-									width="20"
-									fill="currentColor"
-								>
-									<path d="M504-480 320-664l56-56 240 240-240 240-56-56 184-184Z" />
-								</svg>
+								<ChevronRight className="w-5 h-5" />
 							</button>
 						</div>
 					</div>
@@ -893,31 +840,9 @@ function ScriptsTab() {
 							title={`Sort ${sortDirection === "asc" ? "ascending" : "descending"}`}
 						>
 							{sortDirection === "asc" ? (
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									className="h-5 w-5 text-white/80"
-									viewBox="0 0 20 20"
-									fill="currentColor"
-								>
-									<path
-										fillRule="evenodd"
-										d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-										clipRule="evenodd"
-									/>
-								</svg>
+								<ChevronDown className="h-5 w-5 text-white/80" />
 							) : (
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									className="h-5 w-5 text-white/80"
-									viewBox="0 0 20 20"
-									fill="currentColor"
-								>
-									<path
-										fillRule="evenodd"
-										d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
-										clipRule="evenodd"
-									/>
-								</svg>
+								<ChevronUp className="h-5 w-5 text-white/80" />
 							)}
 						</button>
 					</div>
@@ -1078,15 +1003,7 @@ function ScriptsTab() {
 																}
 																className="w-full sm:w-auto shrink-0 py-2 px-4 flex items-center justify-center gap-2 rounded-full bg-white font-semibold text-[#080808] cursor-pointer hover:bg-white/90 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/50 shadow-lg border border-black/10"
 															>
-																<svg
-																	xmlns="http://www.w3.org/2000/svg"
-																	height="18"
-																	viewBox="0 -960 960 960"
-																	width="18"
-																	fill="currentColor"
-																>
-																	<path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z" />
-																</svg>
+																<Check className="w-4 h-4" />
 																Save Changes
 															</button>
 														</>
@@ -1095,15 +1012,7 @@ function ScriptsTab() {
 															onClick={() => startEditing(script)}
 															className="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-white/80 hover:text-white transition-all duration-200 flex items-center gap-2 cursor-pointer"
 														>
-															<svg
-																xmlns="http://www.w3.org/2000/svg"
-																height="18"
-																viewBox="0 -960 960 960"
-																width="18"
-																fill="currentColor"
-															>
-																<path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z" />
-															</svg>
+															<Pencil className="w-4 h-4" />
 															Edit Details
 														</button>
 													)}
@@ -1130,15 +1039,7 @@ function ScriptsTab() {
 								className="p-2 bg-white/10 hover:bg-white/20 rounded text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
 								title="Previous Page"
 							>
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									height="20"
-									viewBox="0 -960 960 960"
-									width="20"
-									fill="currentColor"
-								>
-									<path d="M560-240 320-480l240-240 56 56-184 184 184 184-56 56Z" />
-								</svg>
+								<ChevronLeft className="w-5 h-5" />
 							</button>
 							<button
 								onClick={() =>
@@ -1148,15 +1049,7 @@ function ScriptsTab() {
 								className="p-2 bg-white/10 hover:bg-white/20 rounded text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
 								title="Next Page"
 							>
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									height="20"
-									viewBox="0 -960 960 960"
-									width="20"
-									fill="currentColor"
-								>
-									<path d="M504-480 320-664l56-56 240 240-240 240-56-56 184-184Z" />
-								</svg>
+								<ChevronRight className="w-5 h-5" />
 							</button>
 						</div>
 					</div>

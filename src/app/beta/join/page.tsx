@@ -3,6 +3,7 @@
 import { sendWebhook } from "@/app/actions/webhook";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { ArrowRight } from "lucide-react";
 
 // form submission handler
 async function submitForm(formData: FormData) {
@@ -340,21 +341,7 @@ export default function BetaJoin() {
 							className="w-full font-semibold shrink-0 h-11 sm:h-12 px-5 sm:px-6 flex items-center justify-center gap-2 rounded-full bg-white text-[#080808] hover:bg-white/90 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/50 shadow-lg border border-black/10 cursor-pointer"
 						>
 							Submit Application
-							<svg
-								aria-hidden="true"
-								xmlns="http://www.w3.org/2000/svg"
-								width="20"
-								height="20"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								strokeWidth="2"
-								strokeLinecap="round"
-								strokeLinejoin="round"
-							>
-								<path d="M5 12h14" />
-								<path d="m12 5 7 7-7 7" />
-							</svg>
+							<ArrowRight className="w-5 h-5" />
 						</button>
 					</div>
 				</form>

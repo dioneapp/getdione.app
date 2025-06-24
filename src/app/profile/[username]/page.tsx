@@ -8,6 +8,7 @@ import type { ExtendedUser } from "@/types/database";
 import { createSupabaseBrowserClient } from "@/utils/supabase/browser-client";
 import useSession from "@/utils/supabase/use-session";
 import { use, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 // public fields that are safe to expose
 const PUBLIC_FIELDS = [
@@ -40,6 +41,7 @@ export default function UserProfilePage({
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const { username } = use(params);
+	const router = useRouter();
 
 	// fetch user data
 	useEffect(() => {
@@ -66,13 +68,15 @@ export default function UserProfilePage({
 
 				if (profileError) {
 					if (profileError.code === "PGRST116") {
-						throw new Error("User not found");
+						router.push("/404");
+						return;
 					}
 					throw profileError;
 				}
 
 				if (!profileData) {
-					throw new Error("No profile data found");
+					router.push("/404");
+					return;
 				}
 
 				// type check the profile data
@@ -81,16 +85,15 @@ export default function UserProfilePage({
 					profileCache.set(username, typedProfile);
 					setUser(typedProfile);
 				} else {
-					throw new Error("Invalid profile data format");
+					router.push("/404");
+					return;
 				}
 			} catch (err) {
 				if (!mounted) return;
 				console.error("Fetch error:", err);
-				if (err instanceof Error) {
-					setError(err.message);
-				} else {
-					setError("An unexpected error occurred. Please try again later.");
-				}
+				setError(
+					err instanceof Error ? err.message : "An unexpected error occurred. Please try again later."
+				);
 			} finally {
 				if (mounted) {
 					setLoading(false);
@@ -103,10 +106,10 @@ export default function UserProfilePage({
 		return () => {
 			mounted = false;
 		};
-	}, [username, supabase]);
+	}, [username, supabase, router]);
 
-	// show loading or error state
-	if (loading || sessionLoading || error) {
+	// show loading or error state (but not for user not found)
+	if (loading || sessionLoading || (error && error !== "User not found")) {
 		return <ProfileStates loading={loading || sessionLoading} error={error} />;
 	}
 

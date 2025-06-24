@@ -1,5 +1,6 @@
 import type { ExtendedUser } from "@/types/database";
 import Image from "next/image";
+import { MapPin, Edit } from "lucide-react";
 
 interface ProfileHeaderProps {
 	user: ExtendedUser | null;
@@ -106,18 +107,7 @@ export default function ProfileHeader({
 						{/* location display */}
 						{user?.location && (
 							<div className="flex items-center gap-1">
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									className="h-3.5 w-3.5"
-									viewBox="0 0 20 20"
-									fill="currentColor"
-								>
-									<path
-										fillRule="evenodd"
-										d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-										clipRule="evenodd"
-									/>
-								</svg>
+								<MapPin className="h-3.5 w-3.5" />
 								{isEditing ? (
 									<input
 										type="text"
@@ -141,15 +131,7 @@ export default function ProfileHeader({
 						onClick={onEditClick}
 						className="mt-4 w-full sm:w-auto shrink-0 px-3 py-1.5 gap-2 flex items-center justify-center bg-white/10 backdrop-blur border border-white/10 text-white text-sm rounded-lg hover:bg-white/20 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/50 cursor-pointer"
 					>
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							height="20px"
-							viewBox="0 -960 960 960"
-							width="20px"
-							fill="currentColor"
-						>
-							<path d="M160-120q-17 0-28.5-11.5T120-160v-97q0-16 6-30.5t17-25.5l505-504q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L313-143q-11 11-25.5 17t-30.5 6h-97Zm544-528 56-56-56-56-56 56 56 56Z" />
-						</svg>
+						<Edit className="w-5 h-5" />
 						Edit Profile
 					</button>
 				)}

@@ -6,6 +6,7 @@ import type { Session } from "@supabase/supabase-js";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { Menu, X, User } from "lucide-react";
 
 // client-side only wrapper
 const ClientOnly = ({ children }: { children: React.ReactNode }) => {
@@ -107,19 +108,7 @@ export default function Navbar() {
 							aria-controls="mobile-menu"
 							aria-expanded={isMenuOpen}
 						>
-							<svg
-								className="w-5 h-5"
-								fill="none"
-								stroke="currentColor"
-								viewBox="0 0 24 24"
-							>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									strokeWidth="2"
-									d="M4 6h16M4 12h16M4 18h16"
-								/>
-							</svg>
+							<Menu className="w-5 h-5" />
 						</button>
 
 						<Link
@@ -194,15 +183,7 @@ export default function Navbar() {
 								href="/auth/login"
 								className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 text-white hover:bg-white/10 transition-all duration-300"
 							>
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									height="24"
-									viewBox="0 -960 960 960"
-									width="24"
-									fill="currentColor"
-								>
-									<path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-240v-32q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v32q0 33-23.5 56.5T720-160H240q-33 0-56.5-23.5T160-240Z" />
-								</svg>
+								<User className="w-5 h-5" />
 								<span className="text-sm font-medium">Log In</span>
 							</Link>
 						)}
@@ -270,19 +251,7 @@ export default function Navbar() {
 						className="absolute top-8 left-10 flex items-center justify-center w-9 h-9 rounded-full bg-white/5 text-white hover:bg-white/10 transition-all duration-300"
 						aria-label="Close mobile menu"
 					>
-						<svg
-							className="w-5 h-5"
-							fill="none"
-							stroke="currentColor"
-							viewBox="0 0 24 24"
-						>
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								strokeWidth="2"
-								d="M6 18L18 6M6 6l12 12"
-							/>
-						</svg>
+						<X className="w-5 h-5" />
 					</button>
 
 					<div className="flex flex-col items-center justify-center h-full gap-8">
@@ -324,15 +293,7 @@ export default function Navbar() {
 								onClick={toggleMenu}
 								className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 text-white hover:bg-white/10 transition-all duration-300"
 							>
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									height="24"
-									viewBox="0 -960 960 960"
-									width="24"
-									fill="currentColor"
-								>
-									<path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-240v-32q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v32q0 33-23.5 56.5T720-160H240q-33 0-56.5-23.5T160-240Z" />
-								</svg>
+								<User className="w-5 h-5" />
 								<span className="text-xl font-medium">Log In</span>
 							</Link>
 						)}

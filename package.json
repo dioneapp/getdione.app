@@ -17,6 +17,7 @@
 		"@supabase/ssr": "^0.6.1",
 		"@supabase/supabase-js": "^2.49.8",
 		"framer-motion": "^12.17.0",
+		"lucide-react": "^0.523.0",
 		"marked": "^15.0.12",
 		"next": "^15.3.3",
 		"postcss": "^8.5.4",

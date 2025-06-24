@@ -1,4 +1,5 @@
 import type { ExtendedUser } from "@/types/database";
+import { FlaskConical, Shield, Crown } from "lucide-react";
 
 interface AccountInfoProps {
 	user: ExtendedUser | null;
