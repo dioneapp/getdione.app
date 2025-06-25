@@ -1,10 +1,10 @@
+import { type NextRequest, NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/utils/supabase/server-client";
-import { NextResponse, NextRequest } from "next/server";
 
 export async function GET(request: NextRequest, context: any) {
 	const { searchParams, origin } = new URL(request.url);
 	const real = await context.params;
-	
+
 	const isApp = real.params.includes("app");
 	const code = searchParams.get("code");
 
@@ -41,7 +41,9 @@ export async function GET(request: NextRequest, context: any) {
 
 			const encodedAccessToken = encodeURIComponent(session.access_token);
 			const encodedRefreshToken = encodeURIComponent(session.refresh_token);
-			const redirectUrl = isApp ? `dione://auth=${encodedAccessToken}${encodedRefreshToken ? `&refresh=${encodedRefreshToken}` : ""}` : `${origin}/profile`;
+			const redirectUrl = isApp
+				? `dione://auth=${encodedAccessToken}${encodedRefreshToken ? `&refresh=${encodedRefreshToken}` : ""}`
+				: `${origin}/profile`;
 
 			return NextResponse.redirect(redirectUrl);
 		}

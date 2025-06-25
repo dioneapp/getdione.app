@@ -1,5 +1,5 @@
-import { createSupabaseReqResClient } from "@/utils/supabase/server-client";
 import { type NextRequest, NextResponse } from "next/server";
+import { createSupabaseReqResClient } from "@/utils/supabase/server-client";
 
 // protected routes that require authentication
 const PROTECTED_ROUTES = ["/profile", "/moderation"];
@@ -88,6 +88,6 @@ export const config = {
 		"/moderation/:path*",
 		"/auth/login",
 		"/api/auth/callback",
-		"/auth/callback/:path*"
+		"/auth/callback/:path*",
 	],
 };

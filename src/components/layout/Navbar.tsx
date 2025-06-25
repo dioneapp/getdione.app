@@ -1,12 +1,12 @@
 "use client";
 
-import { createSupabaseBrowserClient } from "@/utils/supabase/browser-client";
-import useSession from "@/utils/supabase/use-session";
 import type { Session } from "@supabase/supabase-js";
+import { Menu, User, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Menu, X, User } from "lucide-react";
+import { createSupabaseBrowserClient } from "@/utils/supabase/browser-client";
+import useSession from "@/utils/supabase/use-session";
 
 // client-side only wrapper
 const ClientOnly = ({ children }: { children: React.ReactNode }) => {

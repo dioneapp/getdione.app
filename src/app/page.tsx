@@ -1,5 +1,12 @@
+import {
+	Download,
+	GitBranch,
+	Monitor,
+	RefreshCw,
+	Search,
+	Zap,
+} from "lucide-react";
 import Image from "next/image";
-import { Download, GitBranch, Monitor, RefreshCw, Search, Zap } from "lucide-react";
 
 export default function Home() {
 	return (

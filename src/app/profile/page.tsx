@@ -1,5 +1,9 @@
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
+import { Check, LogOut, X as XIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import AccountInfo from "@/components/profile/AccountInfo";
 import ProfileBio from "@/components/profile/ProfileBio";
 import ProfileHeader from "@/components/profile/ProfileHeader";
@@ -7,10 +11,6 @@ import ProfileStates from "@/components/profile/ProfileStates";
 import type { ExtendedUser } from "@/types/database";
 import { createSupabaseBrowserClient } from "@/utils/supabase/browser-client";
 import useSession from "@/utils/supabase/use-session";
-import { AnimatePresence, motion } from "framer-motion";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { Check, X as XIcon, LogOut } from "lucide-react";
 
 // character limits
 const CHAR_LIMITS = {

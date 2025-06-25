@@ -1,8 +1,8 @@
 "use client";
 
-import type { ExtendedUser } from "@/types/database";
 import type { AuthSession, User } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
+import type { ExtendedUser } from "@/types/database";
 import { createSupabaseBrowserClient } from "./browser-client";
 
 interface SessionState {
