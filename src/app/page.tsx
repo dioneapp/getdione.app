@@ -1,3 +1,5 @@
+"use client";
+
 import {
 	Download,
 	GitBranch,
@@ -5,10 +7,20 @@ import {
 	RefreshCw,
 	Search,
 	Zap,
+	ChevronDown,
 } from "lucide-react";
-import Image from "next/image";
+import { useState } from "react";
 
 export default function Home() {
+	const [openItems, setOpenItems] = useState<number[]>([]);
+	const toggleItem = (index: number) => {
+		setOpenItems((prev) =>
+			prev.includes(index)
+				? prev.filter((i) => i !== index)
+				: [...prev, index]
+		);
+	};
+
 	return (
 		<main>
 			{/* main content */}
@@ -148,6 +160,36 @@ export default function Home() {
 				<p className="text-white/80 text-sm mt-6 text-center">
 					Want to know more? Try it now, free!
 				</p>
+
+				{/* faq section */}
+				<section className="w-full max-w-3xl mx-auto mt-16" aria-labelledby="faq-heading">
+					<h2 id="faq-heading" className="text-3xl sm:text-4xl font-semibold text-white text-center mb-12">
+						Frequently Asked Questions
+					</h2>
+					<div className="space-y-0">
+						{faq.map((item, index) => (
+							<article key={index} className="border-b border-white/10 last:border-b-0">
+								<button
+									onClick={() => toggleItem(index)}
+									className="w-full py-6 text-left flex items-center justify-between text-white hover:text-white/80 transition-colors duration-200 cursor-pointer"
+									aria-expanded={openItems.includes(index)}
+									aria-controls={`faq-answer-${index}`}
+								>
+									<span className="font-medium text-lg pr-4">{item.question}</span>
+									<ChevronDown
+										className={`w-5 h-5 flex-shrink-0 transition-transform duration-200 ${openItems.includes(index) ? "rotate-180" : ""}`}
+									/>
+								</button>
+								<div
+									id={`faq-answer-${index}`}
+									className={`transition-all duration-300 overflow-hidden ${openItems.includes(index) ? "max-h-32 pb-6" : "max-h-0"}`}
+								>
+									<p className="text-white/70 leading-relaxed">{item.answer}</p>
+								</div>
+							</article>
+						))}
+					</div>
+				</section>
 			</div>
 		</main>
 	);
@@ -186,3 +228,36 @@ const features = [
 		icon: <Zap className="w-6 h-6 text-white" />,
 	},
 ];
+
+// faq data
+const faq = [
+  {
+    question: "What is Dione?",
+    answer: "Dione is a platform to easily discover, install, and manage open-source AI apps. It offers a simple interface, streamlined workflows, and a growing library of tools designed to make running local AI apps effortless.",
+  },
+  {
+    question: "Is Dione free to use?",
+    answer: "Yes! Dione is completely free and open-source. Everyone is welcome to use it, contribute to it, and build with it.",
+  },
+  {
+    question: "What is the current state of Dione?",
+    answer: "Dione is currently in early public beta. Many features are functional, but bugs and rough edges are to be expected. We're rapidly iterating based on user feedback to improve stability and add new features.",
+  },
+  {
+    question: "Which platforms are supported?",
+    answer: "Dione supports Windows, with macOS and Linux currently under active development. Full support for all major platforms is a top priority.",
+  },
+  {
+    question: "Where can I get help or report bugs?",
+    answer: "Join our Discord community to ask questions, share feedback, or report issues. We're active and always listening.",
+  },
+  {
+    question: "Can I contribute to Dione?",
+    answer: "Absolutely! You can contribute by improving the app itself, or by creating installation scripts for apps. Contributions for macOS and Linux support are especially welcome!",
+  },
+  {
+    question: "What makes Dione different from other platforms?",
+    answer: "Dione stands out thanks to its clean user interface, ease of use, lightweight installation system, frequent updates, and a beginner-friendly scripting language for adding new apps. We're building a community-first platform focused on simplicity, transparency, and extensibility."
+  }
+];
+
