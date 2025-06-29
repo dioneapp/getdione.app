@@ -4,7 +4,7 @@ import type { Session } from "@supabase/supabase-js";
 import { Menu, User, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { createSupabaseBrowserClient } from "@/utils/supabase/browser-client";
 import useSession from "@/utils/supabase/use-session";
 
@@ -43,6 +43,7 @@ export default function Navbar() {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const [isModerator, setIsModerator] = useState(false);
 	const [user, setUser] = useState<any>(null);
+	const menuToggleRef = useRef<HTMLButtonElement>(null);
 
 	useEffect(() => {
 		async function getSession() {
@@ -80,6 +81,11 @@ export default function Navbar() {
 	const toggleMenu = () => {
 		setIsMenuOpen(!isMenuOpen);
 		document.body.style.overflow = !isMenuOpen ? "hidden" : "";
+		
+		// return focus to toggle button when closing menu
+		if (isMenuOpen && menuToggleRef.current) {
+			menuToggleRef.current.focus();
+		}
 	};
 
 	// update moderator status when profile changes
@@ -103,6 +109,7 @@ export default function Navbar() {
 					<div className="backdrop-blur-md bg-white/[0.02] border border-white/[0.05] rounded-full px-4 py-3 flex items-center justify-between shadow-lg shadow-black/10">
 						<div className="flex items-center gap-3">
 							<button
+								ref={menuToggleRef}
 								onClick={toggleMenu}
 								className="md:hidden flex items-center justify-center w-9 h-9 rounded-full bg-white/5 text-white hover:bg-white/10 transition-all duration-300"
 								aria-label="Toggle mobile menu"
@@ -243,7 +250,6 @@ export default function Navbar() {
 						isMenuOpen ? "block" : "hidden"
 					} md:hidden z-50`}
 					aria-modal="true"
-					aria-hidden={!isMenuOpen}
 					role="dialog"
 				>
 					<button
