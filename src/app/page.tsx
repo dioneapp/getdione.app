@@ -1,30 +1,30 @@
 "use client";
 
 import {
+	ChevronDown,
 	Download,
 	GitBranch,
 	Monitor,
 	RefreshCw,
 	Search,
 	Zap,
-	ChevronDown,
 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function Home() {
 	const [openItems, setOpenItems] = useState<number[]>([]);
-	
+
 	useEffect(() => {
 		// randomly select 2 items to be open initially
-		const shuffled = [...Array(faq.length).keys()].sort(() => Math.random() - 0.5);
+		const shuffled = [...Array(faq.length).keys()].sort(
+			() => Math.random() - 0.5,
+		);
 		setOpenItems(shuffled.slice(0, 2));
 	}, []);
-	
+
 	const toggleItem = (index: number) => {
 		setOpenItems((prev) =>
-			prev.includes(index)
-				? prev.filter((i) => i !== index)
-				: [...prev, index]
+			prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index],
 		);
 	};
 
@@ -174,16 +174,22 @@ export default function Home() {
 				</p>
 
 				{/* faq section */}
-				<section className="w-full max-w-4xl mx-auto mt-16 px-4" aria-labelledby="faq-heading">
-					<h2 id="faq-heading" className="text-3xl sm:text-4xl font-semibold text-white text-center mb-12">
+				<section
+					className="w-full max-w-4xl mx-auto mt-16 px-4"
+					aria-labelledby="faq-heading"
+				>
+					<h2
+						id="faq-heading"
+						className="text-3xl sm:text-4xl font-semibold text-white text-center mb-12"
+					>
 						Frequently Asked Questions
 					</h2>
 					<div className="grid gap-4">
 						{faq.map((item, index) => (
-							<article 
-								key={index} 
+							<article
+								key={index}
 								className={`group rounded-xl border border-white/10 hover:border-white/20 transition-all duration-300 overflow-hidden ${
-									openItems.includes(index) ? 'border-white/30' : ''
+									openItems.includes(index) ? "border-white/30" : ""
 								}`}
 							>
 								<button
@@ -192,7 +198,9 @@ export default function Home() {
 									aria-expanded={openItems.includes(index)}
 									aria-controls={`faq-answer-${index}`}
 								>
-									<span className="font-semibold text-lg pr-4 leading-tight">{item.question}</span>
+									<span className="font-semibold text-lg pr-4 leading-tight">
+										{item.question}
+									</span>
 									<div className="flex-shrink-0 w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors duration-200">
 										<ChevronDown
 											className={`w-4 h-4 transition-transform duration-300 ${openItems.includes(index) ? "rotate-180" : ""}`}
@@ -207,7 +215,9 @@ export default function Home() {
 								>
 									<div className="px-6 pb-6">
 										<div className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent mb-4"></div>
-										<p className="text-white/90 leading-relaxed text-base">{item.answer}</p>
+										<p className="text-white/90 leading-relaxed text-base">
+											{item.answer}
+										</p>
 									</div>
 								</div>
 							</article>
@@ -255,33 +265,39 @@ const features = [
 
 // faq data
 const faq = [
-  {
-    question: "What is Dione?",
-    answer: "Dione is a platform to easily discover, install, and manage open-source AI apps. It offers a simple interface, streamlined workflows, and a growing library of tools designed to make running local AI apps effortless.",
-  },
-  {
-    question: "Is Dione free to use?",
-    answer: "Yes! Dione is completely free and open-source. Everyone is welcome to use it, contribute to it, and build with it.",
-  },
-  {
-    question: "What is the current state of Dione?",
-    answer: "Dione is currently in early public beta. Many features are functional, but bugs and rough edges are to be expected. We're rapidly iterating based on user feedback to improve stability and add new features.",
-  },
-  {
-    question: "Which platforms are supported?",
-    answer: "Dione supports Windows, with macOS and Linux currently under active development. Full support for all major platforms is a top priority.",
-  },
-  {
-    question: "Where can I get help or report bugs?",
-    answer: "Join our Discord community to ask questions, share feedback, or report issues. We're active and always listening.",
-  },
-  {
-    question: "Can I contribute to Dione?",
-    answer: "Absolutely! You can contribute by improving the app itself, or by creating installation scripts for apps. Contributions for macOS and Linux support are especially welcome!",
-  },
-  {
-    question: "What makes Dione different from other platforms?",
-    answer: "Dione stands out thanks to its clean user interface, ease of use, lightweight installation system, frequent updates, and a beginner-friendly scripting language for adding new apps. We're building a community-first platform focused on simplicity, transparency, and extensibility."
-  }
+	{
+		question: "What is Dione?",
+		answer:
+			"Dione is a platform to easily discover, install, and manage open-source AI apps. It offers a simple interface, streamlined workflows, and a growing library of tools designed to make running local AI apps effortless.",
+	},
+	{
+		question: "Is Dione free to use?",
+		answer:
+			"Yes! Dione is completely free and open-source. Everyone is welcome to use it, contribute to it, and build with it.",
+	},
+	{
+		question: "What is the current state of Dione?",
+		answer:
+			"Dione is currently in early public beta. Many features are functional, but bugs and rough edges are to be expected. We're rapidly iterating based on user feedback to improve stability and add new features.",
+	},
+	{
+		question: "Which platforms are supported?",
+		answer:
+			"Dione supports Windows, with macOS and Linux currently under active development. Full support for all major platforms is a top priority.",
+	},
+	{
+		question: "Where can I get help or report bugs?",
+		answer:
+			"Join our Discord community to ask questions, share feedback, or report issues. We're active and always listening.",
+	},
+	{
+		question: "Can I contribute to Dione?",
+		answer:
+			"Absolutely! You can contribute by improving the app itself, or by creating installation scripts for apps. Contributions for macOS and Linux support are especially welcome!",
+	},
+	{
+		question: "What makes Dione different from other platforms?",
+		answer:
+			"Dione stands out thanks to its clean user interface, ease of use, lightweight installation system, frequent updates, and a beginner-friendly scripting language for adding new apps. We're building a community-first platform focused on simplicity, transparency, and extensibility.",
+	},
 ];
-

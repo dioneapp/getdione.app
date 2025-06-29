@@ -7,9 +7,5 @@ export default function GitHubPage() {
 		window.location.href = "https://github.com/dioneapp";
 	}, []);
 
-	return (
-		<div className="h-screen w-screen">
-
-		</div>
-	);
+	return <div className="h-screen w-screen"></div>;
 }

@@ -7,9 +7,5 @@ export default function DiscordPage() {
 		window.location.href = "https://discord.gg/JSAszyCEW5";
 	}, []);
 
-	return (
-		<div className="h-screen w-screen">
-
-		</div>
-	);
+	return <div className="h-screen w-screen"></div>;
 }
