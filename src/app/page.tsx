@@ -97,12 +97,13 @@ export default function Home() {
 					</a>
 
 					<a
-						href="/beta/join"
+						href="https://github.com/dioneapp/dioneapp/releases"
+						target="_blank"
 						rel="noopener noreferrer"
 						className="shrink-0 h-11 sm:h-12 px-8 sm:px-10 flex items-center justify-center bg-white/10 backdrop-blur border border-white/10 text-white font-semibold rounded-full hover:bg-white/20 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/50 shadow-lg"
-						aria-label="Join our beta program"
+						aria-label="Download Dione"
 					>
-						Join beta
+						Download
 					</a>
 
 					<a
@@ -130,6 +131,10 @@ export default function Home() {
 						<span className="font-semibold">Discord</span>
 					</a>
 				</nav>
+
+				<p className="text-white/60 text-sm mt-4 text-center">
+					Dione is still in beta. Join Discord for updates.
+				</p>
 
 				{/* feature cards */}
 				<section
