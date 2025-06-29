@@ -9,14 +9,16 @@ import {
 	Zap,
 	ChevronDown,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Home() {
-	const [openItems, setOpenItems] = useState<number[]>(() => {
+	const [openItems, setOpenItems] = useState<number[]>([]);
+	
+	useEffect(() => {
 		// randomly select 2 items to be open initially
 		const shuffled = [...Array(faq.length).keys()].sort(() => Math.random() - 0.5);
-		return shuffled.slice(0, 2);
-	});
+		setOpenItems(shuffled.slice(0, 2));
+	}, []);
 	
 	const toggleItem = (index: number) => {
 		setOpenItems((prev) =>
