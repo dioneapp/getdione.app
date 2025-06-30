@@ -10,6 +10,11 @@ const nextConfig: NextConfig = {
 			},
 			{
 				protocol: "https",
+				hostname: "cdn.discordapp.com",
+				pathname: "/embed/avatars/**",
+			},
+			{
+				protocol: "https",
 				hostname: "avatars.githubusercontent.com",
 				pathname: "/**",
 			},
@@ -21,6 +26,16 @@ const nextConfig: NextConfig = {
 			{
 				protocol: "https",
 				hostname: "i.imgur.com",
+				pathname: "/**",
+			},
+			{
+				protocol: "https",
+				hostname: "github.com",
+				pathname: "/**",
+			},
+			{
+				protocol: "https",
+				hostname: "pbs.twimg.com",
 				pathname: "/**",
 			},
 		],
