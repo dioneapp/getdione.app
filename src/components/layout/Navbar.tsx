@@ -1,9 +1,9 @@
 "use client";
 
 import { Menu, User, X } from "lucide-react";
-import Link from "next/link";
-import { useState, useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { useRef, useState } from "react";
 
 const links = [
 	{ label: "Explore", href: "/explore" },
@@ -43,7 +43,13 @@ export default function Navbar() {
 							className="flex items-center justify-center px-4 py-2 gap-2 rounded-full text-white hover:bg-white/10 transition-all duration-300"
 						>
 							<span className="hidden md:inline-flex">
-								<Image src="/Dio.svg" alt="Dione logo" width={25} height={25} priority />
+								<Image
+									src="/Dio.svg"
+									alt="Dione logo"
+									width={25}
+									height={25}
+									priority
+								/>
 							</span>
 							<span className="font-semibold text-white group-hover:text-white hidden md:inline-flex">
 								Dione

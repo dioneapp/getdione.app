@@ -1,5 +1,5 @@
-import { redirect } from 'next/navigation';
+import { redirect } from "next/navigation";
 
 export async function GET() {
-  redirect('https://discord.gg/JSAszyCEW5');
-} 
+	redirect("https://discord.gg/JSAszyCEW5");
+}

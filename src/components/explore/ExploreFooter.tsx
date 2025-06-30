@@ -8,4 +8,4 @@ export default function ExploreFooter() {
 			for more details.
 		</p>
 	);
-} 
+}

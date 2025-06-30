@@ -1,6 +1,6 @@
-import ExploreHeader from "@/components/explore/ExploreHeader";
-import ExploreGrid from "@/components/explore/ExploreGrid";
 import ExploreFooter from "@/components/explore/ExploreFooter";
+import ExploreGrid from "@/components/explore/ExploreGrid";
+import ExploreHeader from "@/components/explore/ExploreHeader";
 import { getScripts } from "@/utils/getScripts";
 
 export default async function ExplorePage() {

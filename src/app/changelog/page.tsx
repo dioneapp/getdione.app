@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getReleases, Release } from "@/app/server/changelog";
+import { getReleases, type Release } from "@/app/server/changelog";
 import ChangelogLayout from "@/components/changelog/ChangelogLayout";
 import ReleaseList from "@/components/changelog/ReleaseList";
 
