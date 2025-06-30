@@ -1,20 +1,7 @@
-import Card from "@/components/explore/Card";
-import { supabase } from "@/utils/database";
-
-async function getScripts() {
-	const { data, error } = await supabase
-		.from("scripts")
-		.select("*")
-		.order("created_at", { ascending: false })
-		.limit(24);
-
-	if (error) {
-		console.error("Error fetching scripts:", error);
-		return [];
-	}
-
-	return data;
-}
+import ExploreHeader from "@/components/explore/ExploreHeader";
+import ExploreGrid from "@/components/explore/ExploreGrid";
+import ExploreFooter from "@/components/explore/ExploreFooter";
+import { getScripts } from "@/utils/getScripts";
 
 export default async function ExplorePage() {
 	const scripts = await getScripts();
@@ -27,47 +14,9 @@ export default async function ExplorePage() {
 					aria-hidden="true"
 				/>
 
-				<h1 className="text-5xl font-semibold text-white tracking-tighter mt-6 text-balance text-center">
-					Explore
-				</h1>
-				<p
-					className="mt-4 max-w-xl text-center text-base sm:text-lg text-white/80 leading-relaxed text-balance px-4"
-					style={{ textRendering: "optimizeLegibility" }}
-				>
-					Explore the latest available applications at Dione.
-				</p>
-
-				<section
-					className="mt-8 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 max-w-7xl"
-					aria-labelledby="features-heading"
-				>
-					{scripts.map((script) => (
-						<Card
-							key={script.id}
-							id={script.id}
-							name={script.name}
-							description={script.description}
-							author={script.author}
-							author_url={script.author_url}
-							logo_url={script.logo_url}
-							banner_url={script.banner_url}
-							script_url={script.script_url}
-							version={script.version}
-							tags={script.tags}
-							likes={script.likes}
-							downloads={script.downloads}
-							created_at={script.created_at}
-							updated_at={script.updated_at}
-						/>
-					))}
-				</section>
-				<p className="text-white/80 text-sm mt-6 text-center">
-					Want to see more? Check out the{" "}
-					<a href="/" rel="noopener" className="underline">
-						Home
-					</a>{" "}
-					for more details.
-				</p>
+				<ExploreHeader />
+				<ExploreGrid scripts={scripts} />
+				<ExploreFooter />
 			</div>
 		</main>
 	);
