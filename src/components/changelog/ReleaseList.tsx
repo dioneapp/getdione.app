@@ -1,4 +1,4 @@
-import { Release } from "@/app/server/changelog";
+import type { Release } from "@/app/server/changelog";
 import ReleaseItem from "@/components/changelog/ReleaseItem";
 
 export default function ReleaseList({ releases }: { releases: Release[] }) {
@@ -19,4 +19,4 @@ export default function ReleaseList({ releases }: { releases: Release[] }) {
 			))}
 		</section>
 	);
-} 
+}

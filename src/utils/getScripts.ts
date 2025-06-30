@@ -13,4 +13,4 @@ export async function getScripts() {
 	}
 
 	return data;
-} 
+}
