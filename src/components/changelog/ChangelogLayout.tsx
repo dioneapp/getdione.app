@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 export default function ChangelogLayout({ children }: { children: ReactNode }) {
 	return (
@@ -33,4 +33,4 @@ export default function ChangelogLayout({ children }: { children: ReactNode }) {
 			</div>
 		</main>
 	);
-} 
+}

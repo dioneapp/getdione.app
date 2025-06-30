@@ -1,5 +1,5 @@
-import { redirect } from 'next/navigation';
+import { redirect } from "next/navigation";
 
 export async function GET() {
-  redirect('https://docs.getdione.app');
-} 
+	redirect("https://docs.getdione.app");
+}
