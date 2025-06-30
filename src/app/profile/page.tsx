@@ -1,14 +1,14 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import DeleteAccountModal from "@/components/profile/DeleteAccountModal";
 import ProfileStates from "@/components/profile/ProfileStates";
+import ProfileTabContent from "@/components/profile/ProfileTabContent";
+import ScriptModal from "@/components/profile/ScriptModal";
+import ScriptsTabContent from "@/components/profile/ScriptsTabContent";
 import { createSupabaseBrowserClient } from "@/utils/supabase/browser-client";
 import useSession from "@/utils/supabase/use-session";
-import ScriptModal from "@/components/profile/ScriptModal";
-import ProfileTabContent from "@/components/profile/ProfileTabContent";
-import ScriptsTabContent from "@/components/profile/ScriptsTabContent";
-import DeleteAccountModal from "@/components/profile/DeleteAccountModal";
 
 // character limits
 const CHAR_LIMITS = {
@@ -196,8 +196,23 @@ export default function ProfilePage() {
 	async function handleScriptSubmit(e: React.FormEvent) {
 		e.preventDefault();
 		setScriptError("");
-		const { name, description, script_url, logo_url, banner_url, version, tags } = scriptForm;
-		if (!name || !description || !script_url || !logo_url || !version || tags.length === 0) {
+		const {
+			name,
+			description,
+			script_url,
+			logo_url,
+			banner_url,
+			version,
+			tags,
+		} = scriptForm;
+		if (
+			!name ||
+			!description ||
+			!script_url ||
+			!logo_url ||
+			!version ||
+			tags.length === 0
+		) {
 			setScriptError("all fields required");
 			return;
 		}
@@ -239,7 +254,15 @@ export default function ProfilePage() {
 			return;
 		}
 		setShowScriptModal(false);
-		setScriptForm({ name: "", description: "", script_url: "", logo_url: "", banner_url: "", version: "", tags: [] });
+		setScriptForm({
+			name: "",
+			description: "",
+			script_url: "",
+			logo_url: "",
+			banner_url: "",
+			version: "",
+			tags: [],
+		});
 		fetchUserScripts();
 	}
 
@@ -273,20 +296,39 @@ export default function ProfilePage() {
 		e.preventDefault();
 		setScriptError("");
 		if (!editScript) return;
-		const { name, description, script_url, logo_url, banner_url, version, tags, id } = editScript;
-		if (!name || !description || !script_url || !logo_url || !version || !tags) {
-			setScriptError("all fields required");
-			return;
-		}
-		const { error } = await supabase.from("scripts").update({
+		const {
 			name,
 			description,
 			script_url,
 			logo_url,
 			banner_url,
 			version,
-			tags: Array.isArray(tags) ? tags.join(",") : tags,
-		}).eq("id", id);
+			tags,
+			id,
+		} = editScript;
+		if (
+			!name ||
+			!description ||
+			!script_url ||
+			!logo_url ||
+			!version ||
+			!tags
+		) {
+			setScriptError("all fields required");
+			return;
+		}
+		const { error } = await supabase
+			.from("scripts")
+			.update({
+				name,
+				description,
+				script_url,
+				logo_url,
+				banner_url,
+				version,
+				tags: Array.isArray(tags) ? tags.join(",") : tags,
+			})
+			.eq("id", id);
 		if (error) {
 			setScriptError("failed to update");
 			return;
@@ -315,10 +357,18 @@ export default function ProfilePage() {
 				<div className="w-full h-full group p-4 sm:p-6 rounded-xl border border-white/10 backdrop-blur-md bg-white/5 transition-all duration-300 shadow-lg shadow-black/10">
 					{/* tabs */}
 					<div className="flex mb-6 border-b border-white/10">
-						<button onClick={() => setActiveTab("profile")}
-							className={`px-4 py-2 text-sm font-medium cursor-pointer ${activeTab === "profile" ? "text-white border-b-2 border-white" : "text-white/50"}`}>Profile</button>
-						<button onClick={() => setActiveTab("scripts")}
-							className={`px-4 py-2 text-sm font-medium cursor-pointer ${activeTab === "scripts" ? "text-white border-b-2 border-white" : "text-white/50"}`}>Scripts</button>
+						<button
+							onClick={() => setActiveTab("profile")}
+							className={`px-4 py-2 text-sm font-medium cursor-pointer ${activeTab === "profile" ? "text-white border-b-2 border-white" : "text-white/50"}`}
+						>
+							Profile
+						</button>
+						<button
+							onClick={() => setActiveTab("scripts")}
+							className={`px-4 py-2 text-sm font-medium cursor-pointer ${activeTab === "scripts" ? "text-white border-b-2 border-white" : "text-white/50"}`}
+						>
+							Scripts
+						</button>
 					</div>
 
 					{activeTab === "profile" && (
@@ -339,14 +389,14 @@ export default function ProfilePage() {
 
 					{activeTab === "scripts" && (
 						<ScriptsTabContent
-							setShowScriptModal={s => {
-								if (s && typeof s === 'object') {
+							setShowScriptModal={(s) => {
+								if (s && typeof s === "object") {
 									setEditScript({
 										...s,
 										tags: Array.isArray(s.tags)
 											? s.tags
-											: typeof s.tags === 'string' && s.tags.length > 0
-												? s.tags.split(',').map((t: string) => t.trim())
+											: typeof s.tags === "string" && s.tags.length > 0
+												? s.tags.split(",").map((t: string) => t.trim())
 												: [],
 									});
 								}
@@ -375,7 +425,9 @@ export default function ProfilePage() {
 					formRef={scriptFormRef}
 					scriptForm={editScript || scriptForm}
 					handleScriptField={handleScriptField}
-					handleScriptSubmit={editScript ? handleScriptUpdate : handleScriptSubmit}
+					handleScriptSubmit={
+						editScript ? handleScriptUpdate : handleScriptSubmit
+					}
 					tagOptions={tagOptions}
 					handleTagToggle={handleTagToggle}
 					scriptError={scriptError}

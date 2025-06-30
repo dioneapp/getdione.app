@@ -4,7 +4,7 @@ import type { Session } from "@supabase/supabase-js";
 import { Menu, User, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createSupabaseBrowserClient } from "@/utils/supabase/browser-client";
 import useSession from "@/utils/supabase/use-session";
 
@@ -81,7 +81,7 @@ export default function Navbar() {
 	const toggleMenu = () => {
 		setIsMenuOpen(!isMenuOpen);
 		document.body.style.overflow = !isMenuOpen ? "hidden" : "";
-		
+
 		// return focus to toggle button when closing menu
 		if (isMenuOpen && menuToggleRef.current) {
 			menuToggleRef.current.focus();
@@ -134,8 +134,18 @@ export default function Navbar() {
 									<circle cx="262.5" cy="262.5" r="262.5" fill="white" />
 									<circle cx="164" cy="506" r="49" fill="white" />
 									<circle cx="359" cy="506" r="49" fill="white" />
-									<circle cx="105.483" cy="202.109" r="23.3512" fill="#080808" />
-									<circle cx="294.161" cy="202.109" r="23.3512" fill="#080808" />
+									<circle
+										cx="105.483"
+										cy="202.109"
+										r="23.3512"
+										fill="#080808"
+									/>
+									<circle
+										cx="294.161"
+										cy="202.109"
+										r="23.3512"
+										fill="#080808"
+									/>
 									<rect
 										x="148"
 										y="179"

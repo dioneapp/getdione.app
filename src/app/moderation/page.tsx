@@ -13,10 +13,10 @@ import {
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import ModerationPanel from "@/components/moderation/ModerationPanel";
 import type { ExtendedUser } from "@/types/database";
 import { createSupabaseBrowserClient } from "@/utils/supabase/browser-client";
 import useSession from "@/utils/supabase/use-session";
-import ModerationPanel from "@/components/moderation/ModerationPanel";
 
 // tabs for different moderation sections
 const TABS = [
@@ -624,7 +624,10 @@ function ScriptsTab() {
 	const [sortField, setSortField] = useState("created_at");
 	const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
 	const itemsPerPage = 10;
-	const [feedbackModal, setFeedbackModal] = useState<{ open: boolean, scriptId: string | null }>({ open: false, scriptId: null });
+	const [feedbackModal, setFeedbackModal] = useState<{
+		open: boolean;
+		scriptId: string | null;
+	}>({ open: false, scriptId: null });
 	const [feedbackText, setFeedbackText] = useState("");
 
 	// sort options for scripts
@@ -638,16 +641,16 @@ function ScriptsTab() {
 	useEffect(() => {
 		const fetchScripts = async () => {
 			try {
-				const { data, error } = await supabase
-					.from("scripts")
-					.select("*");
+				const { data, error } = await supabase.from("scripts").select("*");
 				if (error) throw error;
 				const statusOrder = { pending: 0, approved: 1, denied: 2 };
 				const sorted = (data || []).sort((a, b) => {
 					const sa = statusOrder[a.status] ?? 3;
 					const sb = statusOrder[b.status] ?? 3;
 					if (sa !== sb) return sa - sb;
-					return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+					return (
+						new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+					);
 				});
 				setTotalCount(sorted.length);
 				const start = (currentPage - 1) * itemsPerPage;
@@ -668,8 +671,27 @@ function ScriptsTab() {
 	const totalPages = Math.ceil(totalCount / itemsPerPage);
 
 	const handleApprove = async (scriptId: string) => {
-		const { error } = await supabase.from("scripts").update({ status: "approved", pending_review: false, review_feedback: null }).eq("id", scriptId);
-		if (!error) setScripts(scripts.map(s => s.id === scriptId ? { ...s, status: "approved", pending_review: false, review_feedback: null } : s));
+		const { error } = await supabase
+			.from("scripts")
+			.update({
+				status: "approved",
+				pending_review: false,
+				review_feedback: null,
+			})
+			.eq("id", scriptId);
+		if (!error)
+			setScripts(
+				scripts.map((s) =>
+					s.id === scriptId
+						? {
+								...s,
+								status: "approved",
+								pending_review: false,
+								review_feedback: null,
+							}
+						: s,
+				),
+			);
 	};
 
 	const handleDeny = (scriptId: string) => {
@@ -679,8 +701,27 @@ function ScriptsTab() {
 
 	const submitFeedback = async () => {
 		if (!feedbackModal.scriptId) return;
-		const { error } = await supabase.from("scripts").update({ status: "denied", pending_review: false, review_feedback: feedbackText }).eq("id", feedbackModal.scriptId);
-		if (!error) setScripts(scripts.map(s => s.id === feedbackModal.scriptId ? { ...s, status: "denied", pending_review: false, review_feedback: feedbackText } : s));
+		const { error } = await supabase
+			.from("scripts")
+			.update({
+				status: "denied",
+				pending_review: false,
+				review_feedback: feedbackText,
+			})
+			.eq("id", feedbackModal.scriptId);
+		if (!error)
+			setScripts(
+				scripts.map((s) =>
+					s.id === feedbackModal.scriptId
+						? {
+								...s,
+								status: "denied",
+								pending_review: false,
+								review_feedback: feedbackText,
+							}
+						: s,
+				),
+			);
 		setFeedbackModal({ open: false, scriptId: null });
 		setFeedbackText("");
 	};
@@ -696,7 +737,11 @@ function ScriptsTab() {
 				})
 				.eq("id", updatedScript.id);
 			if (error) throw error;
-			setScripts(scripts.map(s => s.id === updatedScript.id ? { ...s, ...updatedScript } : s));
+			setScripts(
+				scripts.map((s) =>
+					s.id === updatedScript.id ? { ...s, ...updatedScript } : s,
+				),
+			);
 			setEditingScript(null);
 			setEditedScriptData(null);
 		} catch (err) {
@@ -887,9 +932,12 @@ function ScriptsTab() {
 														<p className="text-white">{script.description}</p>
 													)}
 												</div>
-												{script.status === "denied" && script.review_feedback && (
-													<div className="text-red-500 text-sm">Feedback: {script.review_feedback}</div>
-												)}
+												{script.status === "denied" &&
+													script.review_feedback && (
+														<div className="text-red-500 text-sm">
+															Feedback: {script.review_feedback}
+														</div>
+													)}
 												<div className="flex flex-col sm:flex-row justify-end gap-3 mt-4">
 													{editingScript === script.id ? (
 														<>
@@ -981,18 +1029,33 @@ function ScriptsTab() {
 			{feedbackModal.open && (
 				<div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
 					<div className="bg-white p-6 rounded-xl w-full max-w-md">
-						<h2 className="text-lg font-bold mb-2 text-black">feedback for denial</h2>
+						<h2 className="text-lg font-bold mb-2 text-black">
+							feedback for denial
+						</h2>
 						<textarea
 							value={feedbackText}
-							onChange={e => setFeedbackText(e.target.value)}
+							onChange={(e) => setFeedbackText(e.target.value)}
 							className="w-full border border-gray-300 rounded-lg p-3 mb-4 text-black bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-400 resize-none"
 							rows={5}
 							placeholder="reason for denial (required)"
 							autoFocus
 						/>
 						<div className="flex gap-2 justify-end">
-							<button onClick={() => setFeedbackModal({ open: false, scriptId: null })} className="px-4 py-2 bg-gray-200 rounded">cancel</button>
-							<button onClick={submitFeedback} className="px-4 py-2 bg-red-600 text-white rounded" disabled={!feedbackText.trim()}>submit</button>
+							<button
+								onClick={() =>
+									setFeedbackModal({ open: false, scriptId: null })
+								}
+								className="px-4 py-2 bg-gray-200 rounded"
+							>
+								cancel
+							</button>
+							<button
+								onClick={submitFeedback}
+								className="px-4 py-2 bg-red-600 text-white rounded"
+								disabled={!feedbackText.trim()}
+							>
+								submit
+							</button>
 						</div>
 					</div>
 				</div>
