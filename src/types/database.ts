@@ -18,6 +18,28 @@ export interface User {
 	moderator: boolean;
 }
 
+// script type for scripts table
+export interface Script {
+	id: string;
+	name: string;
+	author: string;
+	description: string;
+	logo_url?: string;
+	banner_url?: string;
+	script_url: string;
+	version: string;
+	tags: string;
+	created_at: string;
+	updated_at?: string;
+	pending_review: boolean;
+	official: boolean;
+	likes: number;
+	downloads: number;
+	author_url?: string;
+	status: "pending" | "approved" | "denied";
+	review_feedback: string | null;
+}
+
 // extended user type that includes auth metadata
 export interface ExtendedUser extends User {
 	user_metadata?: {

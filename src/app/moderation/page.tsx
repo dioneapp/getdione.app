@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import type { ExtendedUser } from "@/types/database";
 import { createSupabaseBrowserClient } from "@/utils/supabase/browser-client";
 import useSession from "@/utils/supabase/use-session";
+import ModerationPanel from "@/components/moderation/ModerationPanel";
 
 // tabs for different moderation sections
 const TABS = [
@@ -31,114 +32,13 @@ type Script = {
 	description: string;
 	logo_url?: string;
 	created_at: string;
+	status: string;
+	pending_review: boolean;
+	review_feedback: string | null;
 };
 
-export default function ModerationPanel() {
-	const router = useRouter();
-	const { session, profile, isLoading, error: sessionError } = useSession();
-	const [activeTab, setActiveTab] =
-		useState<(typeof TABS)[number]["id"]>("users");
-	const [error, setError] = useState<string | null>(null);
-
-	// handle auth and moderator checks
-	useEffect(() => {
-		// wait for session to load
-		if (isLoading) return;
-
-		// redirect if not logged in
-		if (!session?.user) {
-			router.push("/auth/login");
-			return;
-		}
-
-		// redirect if not moderator
-		if (!profile?.moderator) {
-			router.push("/404");
-			return;
-		}
-	}, [session, profile, isLoading, router]);
-
-	// show loading state while checking session
-	if (isLoading) {
-		return (
-			<div className="flex flex-col items-center w-full min-h-[100dvh] justify-center p-12 pt-6 relative">
-				<div className="h-fit w-full flex max-w-xl">
-					<div className="backdrop-blur-md bg-white/[0.02] border border-white/[0.05] rounded-xl p-12 flex flex-col items-start justify-start shadow-lg shadow-black/10 w-full h-full">
-						<h1 className="text-white text-3xl font-semibold">Loading...</h1>
-					</div>
-				</div>
-			</div>
-		);
-	}
-
-	// show error state
-	if (error || sessionError) {
-		return (
-			<div className="flex flex-col items-center w-full min-h-[100dvh] justify-center p-12 pt-6 relative">
-				<div className="h-fit w-full flex max-w-xl">
-					<div className="backdrop-blur-md bg-white/[0.02] border border-white/[0.05] rounded-xl p-12 flex flex-col items-start justify-start shadow-lg shadow-black/10 w-full h-full">
-						<h1 className="text-white text-3xl font-semibold">Error</h1>
-						<p className="mt-2 text-red-400">
-							{error || sessionError?.message}
-						</p>
-						<button
-							onClick={() => router.push("/")}
-							className="mt-4 px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20"
-						>
-							Return Home
-						</button>
-					</div>
-				</div>
-			</div>
-		);
-	}
-
-	// show nothing if not moderator
-	if (!profile?.moderator) {
-		return null;
-	}
-
-	return (
-		<div className="flex flex-col items-center w-full min-h-[100dvh] justify-center p-4 sm:p-12 pt-32 sm:pt-36 relative">
-			{/* main container */}
-			<div className="h-fit w-full flex max-w-7xl">
-				<div className="w-full h-full group p-4 sm:p-6 rounded-xl border border-white/10 backdrop-blur-md bg-white/5 transition-all duration-300 shadow-lg shadow-black/10">
-					{/* header */}
-					<div className="mb-6 sm:mb-8">
-						<h1 className="text-2xl sm:text-3xl font-bold text-white">
-							Moderation Panel
-						</h1>
-						<p className="text-white/60 mt-2 text-sm sm:text-base">
-							Manage users, scripts, and track actions
-						</p>
-					</div>
-
-					{/* tabs */}
-					<div className="flex gap-4 border-b border-white/10 mb-8">
-						{TABS.map((tab) => (
-							<button
-								key={tab.id}
-								onClick={() => setActiveTab(tab.id)}
-								className={`px-4 py-2 -mb-px cursor-pointer ${
-									activeTab === tab.id
-										? "border-b-2 border-white text-white"
-										: "text-white/60 hover:text-white"
-								}`}
-							>
-								{tab.label}
-							</button>
-						))}
-					</div>
-
-					{/* content */}
-					<div className="bg-white/5 rounded-lg p-6">
-						{activeTab === "users" && <UsersTab />}
-						{activeTab === "scripts" && <ScriptsTab />}
-					</div>
-				</div>
-			</div>
-		</div>
-	);
+export default function ModerationPage() {
+	return <ModerationPanel />;
 }
 
 function LoadingSkeleton() {
@@ -724,6 +624,8 @@ function ScriptsTab() {
 	const [sortField, setSortField] = useState("created_at");
 	const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
 	const itemsPerPage = 10;
+	const [feedbackModal, setFeedbackModal] = useState<{ open: boolean, scriptId: string | null }>({ open: false, scriptId: null });
+	const [feedbackText, setFeedbackText] = useState("");
 
 	// sort options for scripts
 	const sortOptions = [
@@ -736,39 +638,27 @@ function ScriptsTab() {
 	useEffect(() => {
 		const fetchScripts = async () => {
 			try {
-				// get total count with search filter
-				const { count, error: countError } = await supabase
-					.from("scripts")
-					.select("*", { count: "exact", head: true })
-					.or(
-						`name.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%,author.ilike.%${searchQuery}%`,
-					);
-
-				if (countError) throw countError;
-				setTotalCount(count || 0);
-
-				// get paginated data with sorting and search
 				const { data, error } = await supabase
 					.from("scripts")
-					.select("*")
-					.or(
-						`name.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%,author.ilike.%${searchQuery}%`,
-					)
-					.order(sortField, { ascending: sortDirection === "asc" })
-					.range(
-						(currentPage - 1) * itemsPerPage,
-						currentPage * itemsPerPage - 1,
-					);
-
+					.select("*");
 				if (error) throw error;
-				setScripts(data || []);
+				const statusOrder = { pending: 0, approved: 1, denied: 2 };
+				const sorted = (data || []).sort((a, b) => {
+					const sa = statusOrder[a.status] ?? 3;
+					const sb = statusOrder[b.status] ?? 3;
+					if (sa !== sb) return sa - sb;
+					return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+				});
+				setTotalCount(sorted.length);
+				const start = (currentPage - 1) * itemsPerPage;
+				const end = start + itemsPerPage;
+				setScripts(sorted.slice(start, end));
 			} catch (error) {
 				console.error("Error fetching scripts:", error);
 			} finally {
 				setLoading(false);
 			}
 		};
-
 		fetchScripts();
 	}, [currentPage, sortField, sortDirection, searchQuery]);
 
@@ -777,37 +667,41 @@ function ScriptsTab() {
 
 	const totalPages = Math.ceil(totalCount / itemsPerPage);
 
+	const handleApprove = async (scriptId: string) => {
+		const { error } = await supabase.from("scripts").update({ status: "approved", pending_review: false, review_feedback: null }).eq("id", scriptId);
+		if (!error) setScripts(scripts.map(s => s.id === scriptId ? { ...s, status: "approved", pending_review: false, review_feedback: null } : s));
+	};
+
+	const handleDeny = (scriptId: string) => {
+		setFeedbackModal({ open: true, scriptId });
+		setFeedbackText("");
+	};
+
+	const submitFeedback = async () => {
+		if (!feedbackModal.scriptId) return;
+		const { error } = await supabase.from("scripts").update({ status: "denied", pending_review: false, review_feedback: feedbackText }).eq("id", feedbackModal.scriptId);
+		if (!error) setScripts(scripts.map(s => s.id === feedbackModal.scriptId ? { ...s, status: "denied", pending_review: false, review_feedback: feedbackText } : s));
+		setFeedbackModal({ open: false, scriptId: null });
+		setFeedbackText("");
+	};
+
 	const handleSaveScript = async (updatedScript: Script) => {
 		try {
 			const { error } = await supabase
 				.from("scripts")
-				.update(updatedScript)
+				.update({
+					name: updatedScript.name,
+					author: updatedScript.author,
+					description: updatedScript.description,
+				})
 				.eq("id", updatedScript.id);
-
 			if (error) throw error;
-
-			// update local state
-			setScripts(
-				scripts.map((script) =>
-					script.id === updatedScript.id ? updatedScript : script,
-				),
-			);
+			setScripts(scripts.map(s => s.id === updatedScript.id ? { ...s, ...updatedScript } : s));
 			setEditingScript(null);
 			setEditedScriptData(null);
-		} catch (error) {
-			console.error("Error updating script:", error);
-			throw error;
+		} catch (err) {
+			console.error("Error updating script:", err);
 		}
-	};
-
-	const startEditing = (script: Script) => {
-		setEditingScript(script.id);
-		setEditedScriptData(script);
-	};
-
-	const cancelEditing = () => {
-		setEditingScript(null);
-		setEditedScriptData(null);
 	};
 
 	return (
@@ -993,12 +887,17 @@ function ScriptsTab() {
 														<p className="text-white">{script.description}</p>
 													)}
 												</div>
-
+												{script.status === "denied" && script.review_feedback && (
+													<div className="text-red-500 text-sm">Feedback: {script.review_feedback}</div>
+												)}
 												<div className="flex flex-col sm:flex-row justify-end gap-3 mt-4">
 													{editingScript === script.id ? (
 														<>
 															<button
-																onClick={cancelEditing}
+																onClick={() => {
+																	setEditingScript(null);
+																	setEditedScriptData(null);
+																}}
 																className="w-full sm:w-auto px-4 py-3 hover:text-white/70 rounded-lg text-white/80 transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
 															>
 																Cancel
@@ -1015,13 +914,30 @@ function ScriptsTab() {
 															</button>
 														</>
 													) : (
-														<button
-															onClick={() => startEditing(script)}
-															className="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-white/80 hover:text-white transition-all duration-200 flex items-center gap-2 cursor-pointer"
-														>
-															<Pencil className="w-4 h-4" />
-															Edit Details
-														</button>
+														<>
+															<button
+																onClick={() => {
+																	setEditingScript(script.id);
+																	setEditedScriptData(script);
+																}}
+																className="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-white/80 hover:text-white transition-all duration-200 flex items-center gap-2 cursor-pointer"
+															>
+																<Pencil className="w-4 h-4" />
+																Edit Details
+															</button>
+															<button
+																onClick={() => handleApprove(script.id)}
+																className="bg-green-600 text-white rounded px-4 py-2"
+															>
+																approve
+															</button>
+															<button
+																onClick={() => handleDeny(script.id)}
+																className="bg-red-600 text-white rounded px-4 py-2"
+															>
+																deny
+															</button>
+														</>
 													)}
 												</div>
 											</div>
@@ -1061,6 +977,25 @@ function ScriptsTab() {
 						</div>
 					</div>
 				</>
+			)}
+			{feedbackModal.open && (
+				<div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+					<div className="bg-white p-6 rounded-xl w-full max-w-md">
+						<h2 className="text-lg font-bold mb-2 text-black">feedback for denial</h2>
+						<textarea
+							value={feedbackText}
+							onChange={e => setFeedbackText(e.target.value)}
+							className="w-full border border-gray-300 rounded-lg p-3 mb-4 text-black bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-400 resize-none"
+							rows={5}
+							placeholder="reason for denial (required)"
+							autoFocus
+						/>
+						<div className="flex gap-2 justify-end">
+							<button onClick={() => setFeedbackModal({ open: false, scriptId: null })} className="px-4 py-2 bg-gray-200 rounded">cancel</button>
+							<button onClick={submitFeedback} className="px-4 py-2 bg-red-600 text-white rounded" disabled={!feedbackText.trim()}>submit</button>
+						</div>
+					</div>
+				</div>
 			)}
 		</div>
 	);

@@ -1,16 +1,14 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
-import { Check, LogOut, X as XIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import AccountInfo from "@/components/profile/AccountInfo";
-import ProfileBio from "@/components/profile/ProfileBio";
-import ProfileHeader from "@/components/profile/ProfileHeader";
+import { useEffect, useState, useRef } from "react";
 import ProfileStates from "@/components/profile/ProfileStates";
-import type { ExtendedUser } from "@/types/database";
 import { createSupabaseBrowserClient } from "@/utils/supabase/browser-client";
 import useSession from "@/utils/supabase/use-session";
+import ScriptModal from "@/components/profile/ScriptModal";
+import ProfileTabContent from "@/components/profile/ProfileTabContent";
+import ScriptsTabContent from "@/components/profile/ScriptsTabContent";
+import DeleteAccountModal from "@/components/profile/DeleteAccountModal";
 
 // character limits
 const CHAR_LIMITS = {
@@ -40,6 +38,26 @@ export default function ProfilePage() {
 		username: "",
 		first_name: "",
 	});
+	const [activeTab, setActiveTab] = useState("profile");
+	const [showScriptModal, setShowScriptModal] = useState(false);
+	const [scriptForm, setScriptForm] = useState({
+		name: "",
+		description: "",
+		script_url: "",
+		logo_url: "",
+		banner_url: "",
+		version: "",
+		tags: [] as string[],
+	});
+	const [scriptError, setScriptError] = useState("");
+	const scriptFormRef = useRef<HTMLFormElement>(null);
+	const [userScripts, setUserScripts] = useState<any[]>([]);
+	const [scriptsLoading, setScriptsLoading] = useState(false);
+	const [deleteId, setDeleteId] = useState<string | null>(null);
+	const [scriptSuccess, setScriptSuccess] = useState("");
+	const [editScript, setEditScript] = useState<any | null>(null);
+
+	const tagOptions = ["audio", "chat", "video", "image"];
 
 	// handle auth redirect
 	useEffect(() => {
@@ -162,6 +180,123 @@ export default function ProfilePage() {
 		}
 	};
 
+	function handleScriptField(field: string, value: string) {
+		setScriptForm((prev) => ({ ...prev, [field]: value }));
+	}
+
+	function handleTagToggle(tag: string) {
+		setScriptForm((prev) => ({
+			...prev,
+			tags: prev.tags.includes(tag)
+				? prev.tags.filter((t) => t !== tag)
+				: [...prev.tags, tag],
+		}));
+	}
+
+	async function handleScriptSubmit(e: React.FormEvent) {
+		e.preventDefault();
+		setScriptError("");
+		const { name, description, script_url, logo_url, banner_url, version, tags } = scriptForm;
+		if (!name || !description || !script_url || !logo_url || !version || tags.length === 0) {
+			setScriptError("all fields required");
+			return;
+		}
+		if (!profile) {
+			setScriptError("not logged in");
+			return;
+		}
+		// check pending scripts count
+		const { count } = await supabase
+			.from("scripts")
+			.select("id", { count: "exact", head: false })
+			.eq("author", profile.first_name || profile.username || "user")
+			.eq("status", "pending");
+		if ((count ?? 0) >= 3) {
+			setScriptError("max 3 scripts pending review");
+			return;
+		}
+		const author = profile.first_name || profile.username || "user";
+		const author_url = `https://getdione.app/profile/${profile.username}`;
+		const { error } = await supabase.from("scripts").insert({
+			name,
+			description,
+			script_url,
+			logo_url,
+			banner_url: banner_url || null,
+			version,
+			tags: tags.join(","),
+			author,
+			author_url,
+			likes: 0,
+			downloads: 0,
+			pending_review: true,
+			official: false,
+			status: "pending",
+			review_feedback: null,
+		});
+		if (error) {
+			setScriptError("failed to submit");
+			return;
+		}
+		setShowScriptModal(false);
+		setScriptForm({ name: "", description: "", script_url: "", logo_url: "", banner_url: "", version: "", tags: [] });
+		fetchUserScripts();
+	}
+
+	async function fetchUserScripts() {
+		if (!profile) return;
+		setScriptsLoading(true);
+		const { data, error } = await supabase
+			.from("scripts")
+			.select("id,name,version,status,review_feedback")
+			.eq("author", profile.first_name || profile.username || "user")
+			.order("created_at", { ascending: false });
+		if (!error) setUserScripts(data || []);
+		setScriptsLoading(false);
+	}
+
+	useEffect(() => {
+		if (activeTab === "scripts" && profile) fetchUserScripts();
+	}, [activeTab, profile]);
+
+	async function handleDeleteScript(id: string) {
+		const { error } = await supabase.from("scripts").delete().eq("id", id);
+		if (error) setScriptError("could not delete script");
+		else {
+			setScriptSuccess("script deleted");
+			fetchUserScripts();
+		}
+		setDeleteId(null);
+	}
+
+	async function handleScriptUpdate(e: React.FormEvent) {
+		e.preventDefault();
+		setScriptError("");
+		if (!editScript) return;
+		const { name, description, script_url, logo_url, banner_url, version, tags, id } = editScript;
+		if (!name || !description || !script_url || !logo_url || !version || !tags) {
+			setScriptError("all fields required");
+			return;
+		}
+		const { error } = await supabase.from("scripts").update({
+			name,
+			description,
+			script_url,
+			logo_url,
+			banner_url,
+			version,
+			tags: Array.isArray(tags) ? tags.join(",") : tags,
+		}).eq("id", id);
+		if (error) {
+			setScriptError("failed to update");
+			return;
+		}
+		setShowScriptModal(false);
+		setEditScript(null);
+		fetchUserScripts();
+		setScriptSuccess("script updated");
+	}
+
 	// show loading or error state
 	if (isLoading || loading || error || sessionError) {
 		return (
@@ -178,117 +313,83 @@ export default function ProfilePage() {
 			{/* main container */}
 			<div className="h-fit w-full flex max-w-xl">
 				<div className="w-full h-full group p-4 sm:p-6 rounded-xl border border-white/10 backdrop-blur-md bg-white/5 transition-all duration-300 shadow-lg shadow-black/10">
-					{/* profile header */}
-					<div className="flex flex-col gap-2">
-						<ProfileHeader
-							user={profile}
+					{/* tabs */}
+					<div className="flex mb-6 border-b border-white/10">
+						<button onClick={() => setActiveTab("profile")}
+							className={`px-4 py-2 text-sm font-medium cursor-pointer ${activeTab === "profile" ? "text-white border-b-2 border-white" : "text-white/50"}`}>Profile</button>
+						<button onClick={() => setActiveTab("scripts")}
+							className={`px-4 py-2 text-sm font-medium cursor-pointer ${activeTab === "scripts" ? "text-white border-b-2 border-white" : "text-white/50"}`}>Scripts</button>
+					</div>
+
+					{activeTab === "profile" && (
+						<ProfileTabContent
+							profile={profile}
 							isEditing={isEditing}
 							editedFields={editedFields}
-							onFieldChange={handleFieldChange}
+							handleFieldChange={handleFieldChange}
 							fieldErrors={fieldErrors}
-							onEditClick={() => setIsEditing(true)}
+							setIsEditing={setIsEditing}
+							setEditedFields={setEditedFields}
+							handleSubmit={handleSubmit}
+							handleSignOut={handleSignOut}
+							setShowDeleteModal={setShowDeleteModal}
+							session={session}
 						/>
-						<ProfileBio
-							user={profile}
-							isEditing={isEditing}
-							editedBio={editedFields.bio}
-							onBioChange={(value) => handleFieldChange("bio", value)}
+					)}
+
+					{activeTab === "scripts" && (
+						<ScriptsTabContent
+							setShowScriptModal={s => {
+								if (s && typeof s === 'object') {
+									setEditScript({
+										...s,
+										tags: Array.isArray(s.tags)
+											? s.tags
+											: typeof s.tags === 'string' && s.tags.length > 0
+												? s.tags.split(',').map((t: string) => t.trim())
+												: [],
+									});
+								}
+								setShowScriptModal(true);
+							}}
+							scriptSuccess={scriptSuccess}
+							scriptError={scriptError}
+							scriptsLoading={scriptsLoading}
+							userScripts={userScripts}
+							setDeleteId={setDeleteId}
+							deleteId={deleteId}
+							handleDeleteScript={handleDeleteScript}
 						/>
-
-						{/* action buttons */}
-						{isEditing && (
-							<AnimatePresence>
-								<motion.div
-									initial={{ opacity: 0, y: 10 }}
-									animate={{ opacity: 1, y: 0 }}
-									exit={{ opacity: 0, y: -10 }}
-									transition={{ duration: 0.2 }}
-									className="flex justify-end gap-2 pt-4"
-								>
-									<button
-										onClick={handleSubmit}
-										className="px-3 py-1.5 bg-gradient-to-r from-green-500/20 to-green-600/20 text-green-400 rounded-lg hover:from-green-500/30 hover:to-green-600/30 transition-all duration-300 flex items-center gap-1.5 text-sm cursor-pointer"
-									>
-										<Check className="h-3.5 w-3.5" />
-										Save
-									</button>
-									<button
-										onClick={() => {
-											setIsEditing(false);
-											setEditedFields({
-												username: profile?.username || "",
-												first_name: profile?.first_name || "",
-												bio: profile?.bio || "",
-												location: profile?.location || "",
-												avatar_url: profile?.avatar_url || "",
-											});
-										}}
-										className="px-3 py-1.5 bg-gradient-to-r from-white/10 to-white/5 text-white rounded-lg hover:from-white/20 hover:to-white/10 transition-all duration-300 flex items-center gap-1.5 text-sm cursor-pointer"
-									>
-										<XIcon className="h-3.5 w-3.5" />
-										Cancel
-									</button>
-								</motion.div>
-							</AnimatePresence>
-						)}
-					</div>
-
-					{/* account info section */}
-					<AccountInfo
-						user={profile}
-						showEmail
-						email={profile?.email}
-						lastSignInAt={session?.user?.last_sign_in_at}
-					/>
-
-					{/* account actions */}
-					<div className="mt-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-						<button
-							onClick={handleSignOut}
-							className="w-full sm:w-auto shrink-0 py-1 px-5 flex items-center justify-center gap-2 rounded-full bg-white font-semibold text-[#080808] cursor-pointer hover:bg-white/90 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/50 shadow-lg border border-black/10"
-						>
-							<LogOut className="w-5 h-5" />
-							Sign Out
-						</button>
-						<button
-							onClick={() => setShowDeleteModal(true)}
-							className="w-full sm:w-auto text-center text-red-400/70 hover:text-red-400 text-sm transition-colors cursor-pointer"
-						>
-							Delete Account
-						</button>
-					</div>
+					)}
 				</div>
 			</div>
 
-			{/* delete confirmation modal */}
-			{showDeleteModal && (
-				<div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-					<div className="bg-white/10 border border-white/20 rounded-xl p-6 max-w-md w-full mx-4">
-						<h3 className="text-white text-xl font-semibold mb-4">
-							Delete Account
-						</h3>
-						<p className="text-white/70 mb-6">
-							Are you sure you want to delete your account? This action cannot
-							be undone.
-						</p>
-						<div className="flex gap-4">
-							<button
-								onClick={() => setShowDeleteModal(false)}
-								className="flex-1 px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 cursor-pointer"
-							>
-								Cancel
-							</button>
-							<button
-								onClick={handleDeleteAccount}
-								disabled={isDeleting}
-								className="flex-1 px-4 py-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 disabled:opacity-50 cursor-pointer"
-							>
-								{isDeleting ? "Deleting..." : "Delete Account"}
-							</button>
-						</div>
-					</div>
-				</div>
+			{/* script modal */}
+			{showScriptModal && (
+				<ScriptModal
+					show={showScriptModal}
+					onClose={() => {
+						setShowScriptModal(false);
+						setEditScript(null);
+					}}
+					formRef={scriptFormRef}
+					scriptForm={editScript || scriptForm}
+					handleScriptField={handleScriptField}
+					handleScriptSubmit={editScript ? handleScriptUpdate : handleScriptSubmit}
+					tagOptions={tagOptions}
+					handleTagToggle={handleTagToggle}
+					scriptError={scriptError}
+					isEdit={!!editScript}
+				/>
 			)}
+
+			{/* delete confirmation modal */}
+			<DeleteAccountModal
+				show={showDeleteModal}
+				onClose={() => setShowDeleteModal(false)}
+				onDelete={handleDeleteAccount}
+				isDeleting={isDeleting}
+			/>
 		</div>
 	);
 }
