@@ -1,28 +1,28 @@
-import LegalArticle from "@/components/legal/LegalArticle";
+import LegalCard from "@/components/legal/LegalCard";
 import LegalPageLayout from "@/components/legal/LegalPageLayout";
 
 export default function TermsPage() {
 	return (
 		<LegalPageLayout title="Terms of Use" updatedDate="June 11, 2025">
-			<LegalArticle title="Service Overview">
+			<LegalCard title="Service Overview">
 				<p>
 					Dione ("we," "our," or "us") is a software installation platform that
 					facilitates access to open-source artificial intelligence
 					applications. We provide a technical interface to streamline the
 					installation process of publicly available AI tools.
 				</p>
-			</LegalArticle>
+			</LegalCard>
 
-			<LegalArticle title="Access to Third-Party Tools">
+			<LegalCard title="Access to Third-Party Tools">
 				<p>
 					Our service exclusively provides access to open-source tools created
 					and maintained by third parties. We do not own, control, or maintain
 					these tools. The availability and functionality of these tools are
 					subject to their respective authors' decisions and licenses.
 				</p>
-			</LegalArticle>
+			</LegalCard>
 
-			<LegalArticle title="Disclaimer of Warranties">
+			<LegalCard title="Disclaimer of Warranties">
 				<p>
 					The platform is provided "as is" and "as available" without any
 					warranties of any kind. We do not guarantee the functionality,
@@ -30,9 +30,9 @@ export default function TermsPage() {
 					through our platform. Users acknowledge that they use these tools at
 					their own risk.
 				</p>
-			</LegalArticle>
+			</LegalCard>
 
-			<LegalArticle title="User Responsibilities">
+			<LegalCard title="User Responsibilities">
 				<p>Users must:</p>
 				<ul className="space-y-2">
 					<li className="flex items-start">
@@ -60,9 +60,9 @@ export default function TermsPage() {
 						<span>Not engage in any illegal or unauthorized activities.</span>
 					</li>
 				</ul>
-			</LegalArticle>
+			</LegalCard>
 
-			<LegalArticle title="Limitation of Liability">
+			<LegalCard title="Limitation of Liability">
 				<p>
 					We shall not be liable for any direct, indirect, incidental, special,
 					consequential, or punitive damages resulting from:
@@ -90,17 +90,17 @@ export default function TermsPage() {
 						<span>Any technical malfunctions or errors in the tools.</span>
 					</li>
 				</ul>
-			</LegalArticle>
+			</LegalCard>
 
-			<LegalArticle title="Modifications to Terms">
+			<LegalCard title="Modifications to Terms">
 				<p>
 					We reserve the right to modify these terms at any time. Users will be
 					notified of any changes, and continued use of the platform constitutes
 					acceptance of the modified terms.
 				</p>
-			</LegalArticle>
+			</LegalCard>
 
-			<LegalArticle title="Contact">
+			<LegalCard title="Contact">
 				<p>
 					For questions about these terms, please contact us at{" "}
 					<a
@@ -111,7 +111,7 @@ export default function TermsPage() {
 					</a>
 					.
 				</p>
-			</LegalArticle>
+			</LegalCard>
 		</LegalPageLayout>
 	);
 }

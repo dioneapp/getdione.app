@@ -1,7 +1,7 @@
-import { type NextRequest, NextResponse } from "next/server";
-import { createSupabaseServerClient } from "@/utils/supabase/server-client";
+import { NextResponse } from "next/server";
+import createClient from "@/utils/supabase/server";
 
-export async function GET(request: NextRequest, context: any) {
+export async function GET(request: Request, context: any) {
 	const { searchParams, origin } = new URL(request.url);
 	const real = await context.params;
 
@@ -9,45 +9,27 @@ export async function GET(request: NextRequest, context: any) {
 	const code = searchParams.get("code");
 
 	if (code) {
-		const supabase = await createSupabaseServerClient();
+		const supabase = await createClient();
 
-		const {
-			data: { session },
-			error,
-		} = await supabase.auth.exchangeCodeForSession(code);
+		// Exchange the auth code for a session
+		const { data, error } = await supabase.auth.exchangeCodeForSession(code);
 
-		if (!error && session?.user) {
-			try {
-				// check if user profile exists
-				const { data: profile } = await supabase
-					.from("users")
-					.select("avatar_url")
-					.eq("id", session.user.id)
-					.single();
-
-				// if profile exists and avatar_url is different from auth metadata, update it
-				if (
-					profile &&
-					profile.avatar_url !== session.user.user_metadata?.avatar_url
-				) {
-					await supabase
-						.from("users")
-						.update({ avatar_url: session.user.user_metadata?.avatar_url })
-						.eq("id", session.user.id);
-				}
-			} catch (error) {
-				console.error("Error syncing avatar:", error);
-			}
-
-			const encodedAccessToken = encodeURIComponent(session.access_token);
-			const encodedRefreshToken = encodeURIComponent(session.refresh_token);
+		if (!error) {
+			// Redirect to the intended path or fallback to homepage
+			const encodedAccessToken = encodeURIComponent(data.session.access_token);
+			const encodedRefreshToken = encodeURIComponent(
+				data.session.refresh_token,
+			);
 			const redirectUrl = isApp
 				? `dione://auth=${encodedAccessToken}${encodedRefreshToken ? `&refresh=${encodedRefreshToken}` : ""}`
 				: `${origin}/profile`;
 
 			return NextResponse.redirect(redirectUrl);
 		}
+
+		console.error("Error exchanging code for session", error);
 	}
 
-	return NextResponse.redirect(`${origin}/auth/auth-error`);
+	// Redirect to error page if code is missing or exchange fails
+	return NextResponse.redirect(`${origin}/auth/auth-code-error`);
 }

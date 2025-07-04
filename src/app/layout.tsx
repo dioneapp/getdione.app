@@ -1,12 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import { Poppins } from "next/font/google";
-import "@/styles/globals.css";
 import Script from "next/script";
+import "@/styles/globals.css";
 import Background from "@/components/layout/Background";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
 
-// initialize poppins font
 const poppins = Poppins({
 	subsets: ["latin"],
 	variable: "--font-poppins",
@@ -84,34 +83,25 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en" className="dark" suppressHydrationWarning>
-			<body className={`${poppins.className} font-sans bg-[#080808]`}>
+		<html lang="en" suppressHydrationWarning>
+			{/* google tag manager */}
+			<Script id="gtm-script" strategy="afterInteractive">
+				{GTM_SCRIPT}
+			</Script>
+
+			{/* google analytics */}
+			<Script
+				src="https://www.googletagmanager.com/gtag/js?id=G-YJKEH2QD9S"
+				strategy="afterInteractive"
+			/>
+			<Script id="ga-script" strategy="afterInteractive">
+				{GA_SCRIPT}
+			</Script>
+
+			{/* google tag manager noscript fallback */}
+
+			<body className={`${poppins.variable} antialiased min-h-screen`}>
 				<Background />
-				{/* google tag manager */}
-				<Script id="gtm-script" strategy="afterInteractive">
-					{GTM_SCRIPT}
-				</Script>
-
-				{/* google analytics */}
-				<Script
-					src="https://www.googletagmanager.com/gtag/js?id=G-YJKEH2QD9S"
-					strategy="afterInteractive"
-				/>
-				<Script id="ga-script" strategy="afterInteractive">
-					{GA_SCRIPT}
-				</Script>
-
-				{/* google tag manager noscript fallback */}
-				<noscript>
-					<iframe
-						src="https://www.googletagmanager.com/ns.html?id=GTM-NP7VRXHK"
-						height="0"
-						width="0"
-						style={{ display: "none", visibility: "hidden" }}
-					/>
-				</noscript>
-
-				{/* main layout components */}
 				<Navbar />
 				{children}
 				<Footer />

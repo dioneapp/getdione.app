@@ -1,8 +1,7 @@
 import { Crown, FlaskConical, Shield } from "lucide-react";
-import type { ExtendedUser } from "@/types/database";
 
 interface AccountInfoProps {
-	user: ExtendedUser | null;
+	user: any | null;
 	showEmail?: boolean;
 	email?: string;
 	lastSignInAt?: string;

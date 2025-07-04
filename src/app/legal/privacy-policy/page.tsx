@@ -1,10 +1,10 @@
-import LegalArticle from "@/components/legal/LegalArticle";
+import LegalCard from "@/components/legal/LegalCard";
 import LegalPageLayout from "@/components/legal/LegalPageLayout";
 
 export default function PrivacyPage() {
 	return (
 		<LegalPageLayout title="Privacy Policy" updatedDate="June 11, 2025">
-			<LegalArticle title="Information We Collect">
+			<LegalCard title="Information We Collect">
 				<p>We collect the following information:</p>
 				<ul className="space-y-2">
 					<li className="flex items-start">
@@ -22,9 +22,9 @@ export default function PrivacyPage() {
 						</span>
 					</li>
 				</ul>
-			</LegalArticle>
+			</LegalCard>
 
-			<LegalArticle title="How We Use Your Information">
+			<LegalCard title="How We Use Your Information">
 				<p>We use the collected information for:</p>
 				<ul className="space-y-2">
 					<li className="flex items-start">
@@ -47,18 +47,18 @@ export default function PrivacyPage() {
 						</span>
 					</li>
 				</ul>
-			</LegalArticle>
+			</LegalCard>
 
-			<LegalArticle title="Data Storage and Security">
+			<LegalCard title="Data Storage and Security">
 				<p>
 					We use Supabase as our database provider and authentication service.
 					All data is stored securely and processed in accordance with industry
 					standards. For more information about Supabase's security practices,
 					we encourage you to visit their websites.
 				</p>
-			</LegalArticle>
+			</LegalCard>
 
-			<LegalArticle title="Data Retention and Deletion">
+			<LegalCard title="Data Retention and Deletion">
 				<p>
 					We retain your data as long as you maintain an active account. You can
 					delete your data by:
@@ -75,9 +75,9 @@ export default function PrivacyPage() {
 						<span>Contacting us via email to request account deletion.</span>
 					</li>
 				</ul>
-			</LegalArticle>
+			</LegalCard>
 
-			<LegalArticle title="Your Rights">
+			<LegalCard title="Your Rights">
 				<p>You have the right to:</p>
 				<ul className="space-y-2">
 					<li className="flex items-start">
@@ -97,17 +97,17 @@ export default function PrivacyPage() {
 						<span>Opt-out of system diagnostics.</span>
 					</li>
 				</ul>
-			</LegalArticle>
+			</LegalCard>
 
-			<LegalArticle title="Changes to This Policy">
+			<LegalCard title="Changes to This Policy">
 				<p>
 					We may update this privacy policy from time to time. We will notify
 					you of any changes by posting the new policy on this page and updating
 					the "Updated" date at the top of this policy.
 				</p>
-			</LegalArticle>
+			</LegalCard>
 
-			<LegalArticle title="Contact Us">
+			<LegalCard title="Contact Us">
 				<p>
 					If you have any questions about this privacy policy, please contact us
 					at{" "}
@@ -119,7 +119,7 @@ export default function PrivacyPage() {
 					</a>
 					.
 				</p>
-			</LegalArticle>
+			</LegalCard>
 		</LegalPageLayout>
 	);
 }

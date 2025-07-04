@@ -1,6 +1,3 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-
 # dependencies
 /node_modules
 /.pnp
@@ -30,8 +27,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+*.yaml
 
-# env files (can opt-in for committing if needed)
+# env files
 .env
 
 # vercel
@@ -40,14 +38,3 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
-
-# OpenNext
-/.open-next
-
-# wrangler files
-.wrangler
-.dev.vars*
-.env
-# Turborepo
-.turbo

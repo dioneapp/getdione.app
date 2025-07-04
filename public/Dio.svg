@@ -1,0 +1,8 @@
+<svg class="animate-float w-32 h-32 sm:w-40 sm:h-40 md:w-52 md:h-52 mt-8 sm:mt-0" width="525" height="555" viewBox="0 0 525 555" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Dione mascot logo" role="img">
+	<circle cx="262.5" cy="262.5" r="262.5" fill="white"></circle>
+	<circle cx="164" cy="506" r="49" fill="white"></circle>
+	<circle cx="359" cy="506" r="49" fill="white"></circle>
+	<circle cx="105.483" cy="202.109" r="23.3512" fill="#080808"></circle>
+	<circle cx="294.161" cy="202.109" r="23.3512" fill="#080808"></circle>
+	<rect x="148" y="179" width="104.613" height="46.7025" rx="23.3512" fill="#080808" />
+</svg> 

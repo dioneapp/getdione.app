@@ -4,13 +4,12 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Check, LogOut, X as XIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import AccountInfo from "@/components/profile/AccountInfo";
-import ProfileBio from "@/components/profile/ProfileBio";
-import ProfileHeader from "@/components/profile/ProfileHeader";
-import ProfileStates from "@/components/profile/ProfileStates";
-import type { ExtendedUser } from "@/types/database";
-import { createSupabaseBrowserClient } from "@/utils/supabase/browser-client";
-import useSession from "@/utils/supabase/use-session";
+import AccountBio from "@/components/profile/account-bio";
+import AccountHeader from "@/components/profile/account-header";
+import AccountInfo from "@/components/profile/account-info";
+import AccountStates from "@/components/profile/account-states";
+import { supabase } from "@/utils/database";
+import useUser from "@/utils/use-user";
 
 // character limits
 const CHAR_LIMITS = {
@@ -22,8 +21,7 @@ const CHAR_LIMITS = {
 
 export default function ProfilePage() {
 	const router = useRouter();
-	const supabase = createSupabaseBrowserClient();
-	const { session, profile, isLoading, error: sessionError } = useSession();
+	const { user, loading: userLoading } = useUser();
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const [isDeleting, setIsDeleting] = useState(false);
@@ -43,24 +41,25 @@ export default function ProfilePage() {
 
 	// handle auth redirect
 	useEffect(() => {
-		if (!isLoading && !session) {
+		if (userLoading) return;
+		if (!user?.id) {
 			router.push("/auth/login");
 		}
-	}, [session, isLoading, router]);
+	}, [user, userLoading, router]);
 
 	// initialize form fields when profile loads
 	useEffect(() => {
-		if (profile) {
+		if (user) {
 			setEditedFields({
-				username: profile.username || "",
-				first_name: profile.first_name || "",
-				bio: profile.bio || "",
-				location: profile.location || "",
-				avatar_url: profile.avatar_url || "",
+				username: user.username || "",
+				first_name: user.first_name || "",
+				bio: user.bio || "",
+				location: user.location || "",
+				avatar_url: user.avatar_url || "",
 			});
 			setLoading(false);
 		}
-	}, [profile]);
+	}, [user]);
 
 	// handle field changes
 	const handleFieldChange = (
@@ -105,7 +104,7 @@ export default function ProfilePage() {
 					bio: editedFields.bio,
 					location: editedFields.location,
 				})
-				.eq("id", session?.user.id);
+				.eq("id", user.id);
 
 			if (updateError) {
 				// handle duplicate username error
@@ -123,11 +122,11 @@ export default function ProfilePage() {
 			}
 
 			// update local profile state
-			if (profile) {
-				profile.username = editedFields.username;
-				profile.first_name = editedFields.first_name;
-				profile.bio = editedFields.bio;
-				profile.location = editedFields.location;
+			if (user) {
+				user.username = editedFields.username;
+				user.first_name = editedFields.first_name;
+				user.bio = editedFields.bio;
+				user.location = editedFields.location;
 			}
 
 			setIsEditing(false);
@@ -151,23 +150,17 @@ export default function ProfilePage() {
 
 	// handle sign out
 	const handleSignOut = async () => {
-		try {
-			await supabase.auth.signOut();
-			// force redirect to home page
-			window.location.href = "/";
-		} catch (err) {
-			console.error("Sign out error:", err);
-			// force redirect even if there's an error
-			window.location.href = "/";
-		}
+		await supabase.auth.signOut();
+		router.push("/auth/login");
+		router.refresh();
 	};
 
 	// show loading or error state
-	if (isLoading || loading || error || sessionError) {
+	if (loading || error) {
 		return (
-			<ProfileStates
-				loading={isLoading || loading}
-				error={error || sessionError?.message}
+			<AccountStates
+				loading={loading}
+				error={error}
 				onReturnHome={() => router.push("/auth/login")}
 			/>
 		);
@@ -180,16 +173,16 @@ export default function ProfilePage() {
 				<div className="w-full h-full group p-4 sm:p-6 rounded-xl border border-white/10 backdrop-blur-md bg-white/5 transition-all duration-300 shadow-lg shadow-black/10">
 					{/* profile header */}
 					<div className="flex flex-col gap-2">
-						<ProfileHeader
-							user={profile}
+						<AccountHeader
+							user={user}
 							isEditing={isEditing}
 							editedFields={editedFields}
 							onFieldChange={handleFieldChange}
 							fieldErrors={fieldErrors}
 							onEditClick={() => setIsEditing(true)}
 						/>
-						<ProfileBio
-							user={profile}
+						<AccountBio
+							user={user}
 							isEditing={isEditing}
 							editedBio={editedFields.bio}
 							onBioChange={(value) => handleFieldChange("bio", value)}
@@ -216,11 +209,11 @@ export default function ProfilePage() {
 										onClick={() => {
 											setIsEditing(false);
 											setEditedFields({
-												username: profile?.username || "",
-												first_name: profile?.first_name || "",
-												bio: profile?.bio || "",
-												location: profile?.location || "",
-												avatar_url: profile?.avatar_url || "",
+												username: user?.username || "",
+												first_name: user?.first_name || "",
+												bio: user?.bio || "",
+												location: user?.location || "",
+												avatar_url: user?.avatar_url || "",
 											});
 										}}
 										className="px-3 py-1.5 bg-gradient-to-r from-white/10 to-white/5 text-white rounded-lg hover:from-white/20 hover:to-white/10 transition-all duration-300 flex items-center gap-1.5 text-sm cursor-pointer"
@@ -235,10 +228,10 @@ export default function ProfilePage() {
 
 					{/* account info section */}
 					<AccountInfo
-						user={profile}
+						user={user}
 						showEmail
-						email={profile?.email}
-						lastSignInAt={session?.user?.last_sign_in_at}
+						email={user?.email}
+						lastSignInAt={user?.last_sign_in_at}
 					/>
 
 					{/* account actions */}

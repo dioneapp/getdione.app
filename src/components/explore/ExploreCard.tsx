@@ -19,7 +19,7 @@ interface CardProps {
 	updated_at: string;
 }
 
-export default function Card({
+export default function ExploreCard({
 	id,
 	name,
 	description,

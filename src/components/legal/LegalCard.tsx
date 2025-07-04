@@ -1,11 +1,11 @@
 import type { ReactNode } from "react";
 
-interface LegalArticleProps {
+interface LegalCardProps {
 	title: string;
 	children: ReactNode;
 }
 
-export default function LegalArticle({ title, children }: LegalArticleProps) {
+export default function LegalCard({ title, children }: LegalCardProps) {
 	return (
 		<article className="group p-6 rounded-xl border border-white/10 backdrop-blur-md bg-white/5 hover:bg-white/10 transition-all duration-300 shadow-lg">
 			<h2 className="text-xl sm:text-2xl font-medium text-white mb-4">

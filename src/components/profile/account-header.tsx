@@ -1,9 +1,8 @@
 import { Edit, MapPin } from "lucide-react";
 import Image from "next/image";
-import type { ExtendedUser } from "@/types/database";
 
 interface ProfileHeaderProps {
-	user: ExtendedUser | null;
+	user: any | null;
 	isEditing?: boolean;
 	editedFields?: {
 		username: string;

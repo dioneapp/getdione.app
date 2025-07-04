@@ -1,4 +1,5 @@
-import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { createBrowserClient } from "@supabase/ssr";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
 // create mock client when supabase credentials are not provided
 const mockClient = {
@@ -27,16 +28,8 @@ const mockClient = {
 // use real client if credentials are provided, otherwise use mock
 export const supabase =
 	process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_KEY
-		? createClient(
+		? createBrowserClient(
 				process.env.NEXT_PUBLIC_SUPABASE_URL,
 				process.env.NEXT_PUBLIC_SUPABASE_KEY,
-				{
-					auth: {
-						autoRefreshToken: true,
-						persistSession: true,
-						flowType: "pkce",
-						detectSessionInUrl: false,
-					},
-				},
 			)
 		: mockClient;
