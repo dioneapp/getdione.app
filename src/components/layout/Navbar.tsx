@@ -10,6 +10,7 @@ const links = [
 	{ label: "Explore", href: "/explore" },
 	{ label: "Changelog", href: "/changelog" },
 	{ label: "Documentation", href: "https://docs.getdione.app", external: true },
+	{ label: "Moderation", href: "/moderation", moderator: true },
 ];
 
 export default function Navbar() {
@@ -60,16 +61,18 @@ export default function Navbar() {
 					</div>
 					<div className="flex items-center gap-3">
 						<div className="hidden md:flex items-center gap-6">
-							{links.map((link) => (
-								<Link
-									key={link.href}
-									href={link.href}
-									target={link.external ? "_blank" : undefined}
-									className="text-sm text-white/70 hover:text-white transition-colors"
-								>
-									{link.label}
-								</Link>
-							))}
+							{links
+								.filter((link) => !link.moderator || user?.moderator)
+								.map((link) => (
+									<Link
+										key={link.href}
+										href={link.href}
+										target={link.external ? "_blank" : undefined}
+										className="text-sm text-white/70 hover:text-white transition-colors"
+									>
+										{link.label}
+									</Link>
+								))}
 						</div>
 						<div className="h-6 w-[1px] bg-white/10 hidden md:block" />
 						{!user ? (

@@ -100,7 +100,7 @@ export default function RootLayout({
 
 			{/* google tag manager noscript fallback */}
 
-			<body className={`${poppins.variable} antialiased`}>
+			<body className={`${poppins.variable} antialiased min-h-screen`}>
 				<Background />
 				<Navbar />
 				{children}

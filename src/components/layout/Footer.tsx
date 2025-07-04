@@ -70,7 +70,7 @@ const footerData = {
 
 export default function Footer() {
 	return (
-		<footer className="w-full relative bg-black/20 backdrop-blur-sm z-20">
+		<footer className="w-full relative bg-black/20 backdrop-blur-sm z-20 mt-auto">
 			<div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
 
 			<div className="container mx-auto px-4 py-12">
