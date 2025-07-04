@@ -4,12 +4,23 @@ import LoginOptions from "@/components/auth/LoginOptions";
 import LoginTerms from "@/components/auth/LoginTerms";
 import LoginWelcome from "@/components/auth/LoginWelcome";
 import { supabase } from "@/utils/database";
+import useUser from "@/utils/use-user";
 import { Provider } from "@supabase/supabase-js";
 import { useSearchParams } from "next/navigation";
+import { useEffect } from "react";
+import { redirect } from "next/navigation";
 
 export default function LoginPage() {
+	const { user } = useUser();
 	const searchParams = useSearchParams();
 	const isAppLogin = searchParams.get("app") === "true";
+
+
+	useEffect(() => {
+		if (user && !isAppLogin) {
+			redirect("/profile");
+		}
+	}, [user]);
 	
 	const handleLogin = async (provider: Provider) => {
 		try {
