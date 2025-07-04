@@ -2,9 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import useUser from "@/utils/use-user";
-import UsersTab from "@/components/moderation/users-tab";
 import ScriptsTab from "@/components/moderation/scripts-tab";
+import UsersTab from "@/components/moderation/users-tab";
+import useUser from "@/utils/use-user";
 
 // tabs for different moderation sections
 const TABS = [
@@ -75,8 +75,7 @@ export default function ModerationPanel() {
 	// show nothing if not moderator
 	if (!user?.moderator) {
 		return (
-			<div className="flex flex-col items-center w-full min-h-screen justify-center p-12 pt-6 relative">
-			</div>
+			<div className="flex flex-col items-center w-full min-h-screen justify-center p-12 pt-6 relative"></div>
 		);
 	}
 

@@ -1,9 +1,15 @@
-import { supabase } from "@/utils/database";
-import { Check, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Pencil } from "lucide-react";
-import { useState } from "react";
-import { useEffect } from "react";
-import LoadingSkeleton from "./loading-skeleton";
 import { AnimatePresence, motion } from "framer-motion";
+import {
+	Check,
+	ChevronDown,
+	ChevronLeft,
+	ChevronRight,
+	ChevronUp,
+	Pencil,
+} from "lucide-react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/utils/database";
+import LoadingSkeleton from "./loading-skeleton";
 
 // add type for script data
 type Script = {

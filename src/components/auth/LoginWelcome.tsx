@@ -1,11 +1,7 @@
 import Image from "next/image";
 import React from "react";
 
-export default function LoginWelcome({
-	isAppLogin,
-}: {
-	isAppLogin: boolean;
-}) {
+export default function LoginWelcome({ isAppLogin }: { isAppLogin: boolean }) {
 	return (
 		<div className="flex flex-col gap-1 items-center">
 			<Image

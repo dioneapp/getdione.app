@@ -4,12 +4,12 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Check, LogOut, X as XIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import useUser from "@/utils/use-user";
-import { supabase } from "@/utils/database";
-import AccountInfo from "@/components/profile/account-info";
 import AccountBio from "@/components/profile/account-bio";
 import AccountHeader from "@/components/profile/account-header";
+import AccountInfo from "@/components/profile/account-info";
 import AccountStates from "@/components/profile/account-states";
+import { supabase } from "@/utils/database";
+import useUser from "@/utils/use-user";
 
 // character limits
 const CHAR_LIMITS = {
@@ -21,7 +21,7 @@ const CHAR_LIMITS = {
 
 export default function ProfilePage() {
 	const router = useRouter();
-    const { user, loading: userLoading } = useUser();
+	const { user, loading: userLoading } = useUser();
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const [isDeleting, setIsDeleting] = useState(false);
@@ -41,7 +41,7 @@ export default function ProfilePage() {
 
 	// handle auth redirect
 	useEffect(() => {
-        if (userLoading) return;
+		if (userLoading) return;
 		if (!user?.id) {
 			router.push("/auth/login");
 		}
@@ -151,7 +151,7 @@ export default function ProfilePage() {
 	// handle sign out
 	const handleSignOut = async () => {
 		await supabase.auth.signOut();
-		router.push('/auth/login');
+		router.push("/auth/login");
 		router.refresh();
 	};
 

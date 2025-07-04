@@ -76,14 +76,14 @@ export default function Navbar() {
 						</div>
 						<div className="h-6 w-[1px] bg-white/10 hidden md:block" />
 						{!user ? (
-						<Link
-							href="/auth/login"
-							className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 text-white hover:bg-white/10 transition-all duration-300"
-						>
-							<User className="w-5 h-5" />
-							<span className="text-sm font-medium">Log In</span>
-						</Link>
-						): (
+							<Link
+								href="/auth/login"
+								className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 text-white hover:bg-white/10 transition-all duration-300"
+							>
+								<User className="w-5 h-5" />
+								<span className="text-sm font-medium">Log In</span>
+							</Link>
+						) : (
 							<Link
 								href="/profile"
 								className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 text-white hover:bg-white/10 transition-all duration-300"

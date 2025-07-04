@@ -1,12 +1,12 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+import { use, useEffect, useState } from "react";
 import ProfileBio from "@/components/profile/account-bio";
 import ProfileHeader from "@/components/profile/account-header";
 import AccountInfo from "@/components/profile/account-info";
 import ProfileStates from "@/components/profile/account-states";
 import { supabase } from "@/utils/database";
-import { useRouter } from "next/navigation";
-import { use, useEffect, useState } from "react";
 
 // public fields that are safe to expose
 const PUBLIC_FIELDS = [
