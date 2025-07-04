@@ -1,8 +1,15 @@
-import { useState, useEffect } from "react";
-import { supabase } from "@/utils/database";
-import Image from "next/image";
-import { Check, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Pencil } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
+import {
+	Check,
+	ChevronDown,
+	ChevronLeft,
+	ChevronRight,
+	ChevronUp,
+	Pencil,
+} from "lucide-react";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import { supabase } from "@/utils/database";
 import LoadingSkeleton from "./loading-skeleton";
 
 export default function UsersTab() {
@@ -13,9 +20,7 @@ export default function UsersTab() {
 	const [totalCount, setTotalCount] = useState(0);
 	const [expandedUser, setExpandedUser] = useState<string | null>(null);
 	const [editingUser, setEditingUser] = useState<string | null>(null);
-	const [editedUserData, setEditedUserData] = useState<any | null>(
-		null,
-	);
+	const [editedUserData, setEditedUserData] = useState<any | null>(null);
 	const [sortField, setSortField] = useState("created_at");
 	const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
 	const itemsPerPage = 10;
@@ -267,11 +272,10 @@ export default function UsersTab() {
 																type="text"
 																value={editedUserData?.username || ""}
 																onChange={(e) =>
-																	setEditedUserData(
-																		(prev: any | null) =>
-																			prev
-																				? { ...prev, username: e.target.value }
-																				: null,
+																	setEditedUserData((prev: any | null) =>
+																		prev
+																			? { ...prev, username: e.target.value }
+																			: null,
 																	)
 																}
 																className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50"
@@ -289,11 +293,10 @@ export default function UsersTab() {
 																type="email"
 																value={editedUserData?.email || ""}
 																onChange={(e) =>
-																	setEditedUserData(
-																		(prev: any | null) =>
-																			prev
-																				? { ...prev, email: e.target.value }
-																				: null,
+																	setEditedUserData((prev: any | null) =>
+																		prev
+																			? { ...prev, email: e.target.value }
+																			: null,
 																	)
 																}
 																className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50"
@@ -311,14 +314,13 @@ export default function UsersTab() {
 																type="text"
 																value={editedUserData?.first_name || ""}
 																onChange={(e) =>
-																	setEditedUserData(
-																		(prev: any | null) =>
-																			prev
-																				? {
-																						...prev,
-																						first_name: e.target.value,
-																					}
-																				: null,
+																	setEditedUserData((prev: any | null) =>
+																		prev
+																			? {
+																					...prev,
+																					first_name: e.target.value,
+																				}
+																			: null,
 																	)
 																}
 																className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50"
@@ -336,11 +338,10 @@ export default function UsersTab() {
 																type="text"
 																value={editedUserData?.location || ""}
 																onChange={(e) =>
-																	setEditedUserData(
-																		(prev: any | null) =>
-																			prev
-																				? { ...prev, location: e.target.value }
-																				: null,
+																	setEditedUserData((prev: any | null) =>
+																		prev
+																			? { ...prev, location: e.target.value }
+																			: null,
 																	)
 																}
 																className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50"
@@ -360,11 +361,10 @@ export default function UsersTab() {
 														<textarea
 															value={editedUserData?.bio || ""}
 															onChange={(e) =>
-																setEditedUserData(
-																	(prev: any | null) =>
-																		prev
-																			? { ...prev, bio: e.target.value }
-																			: null,
+																setEditedUserData((prev: any | null) =>
+																	prev
+																		? { ...prev, bio: e.target.value }
+																		: null,
 																)
 															}
 															className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50"
@@ -384,11 +384,10 @@ export default function UsersTab() {
 																	: user.moderator
 															}
 															onChange={(e) =>
-																setEditedUserData(
-																	(prev: any | null) =>
-																		prev
-																			? { ...prev, moderator: e.target.checked }
-																			: null,
+																setEditedUserData((prev: any | null) =>
+																	prev
+																		? { ...prev, moderator: e.target.checked }
+																		: null,
 																)
 															}
 															disabled={editingUser !== user.id}
@@ -405,11 +404,10 @@ export default function UsersTab() {
 																	: user.publisher
 															}
 															onChange={(e) =>
-																setEditedUserData(
-																	(prev: any | null) =>
-																		prev
-																			? { ...prev, publisher: e.target.checked }
-																			: null,
+																setEditedUserData((prev: any | null) =>
+																	prev
+																		? { ...prev, publisher: e.target.checked }
+																		: null,
 																)
 															}
 															disabled={editingUser !== user.id}
@@ -426,11 +424,10 @@ export default function UsersTab() {
 																	: user.tester
 															}
 															onChange={(e) =>
-																setEditedUserData(
-																	(prev: any | null) =>
-																		prev
-																			? { ...prev, tester: e.target.checked }
-																			: null,
+																setEditedUserData((prev: any | null) =>
+																	prev
+																		? { ...prev, tester: e.target.checked }
+																		: null,
 																)
 															}
 															disabled={editingUser !== user.id}
