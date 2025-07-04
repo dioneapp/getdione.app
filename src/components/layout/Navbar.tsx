@@ -4,6 +4,7 @@ import { Menu, User, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRef, useState } from "react";
+import useUser from "@/utils/use-user";
 
 const links = [
 	{ label: "Explore", href: "/explore" },
@@ -12,6 +13,7 @@ const links = [
 ];
 
 export default function Navbar() {
+	const { user } = useUser();
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const menuToggleRef = useRef<HTMLButtonElement>(null);
 
@@ -70,6 +72,7 @@ export default function Navbar() {
 							))}
 						</div>
 						<div className="h-6 w-[1px] bg-white/10 hidden md:block" />
+						{!user ? (
 						<Link
 							href="/auth/login"
 							className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 text-white hover:bg-white/10 transition-all duration-300"
@@ -77,6 +80,27 @@ export default function Navbar() {
 							<User className="w-5 h-5" />
 							<span className="text-sm font-medium">Log In</span>
 						</Link>
+						): (
+							<Link
+								href="/profile"
+								className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 text-white hover:bg-white/10 transition-all duration-300"
+							>
+								{user.avatar_url ? (
+									<Image
+										src={user.avatar_url}
+										alt="Profile"
+										width={24}
+										height={24}
+										className="rounded-full"
+									/>
+								) : (
+									<div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-white text-sm">
+										{user.username?.charAt(0).toUpperCase()}
+									</div>
+								)}
+								<span className="text-sm font-medium">{user.username}</span>
+							</Link>
+						)}
 						<Link
 							href="https://discord.gg/JSAszyCEW5"
 							target="_blank"
