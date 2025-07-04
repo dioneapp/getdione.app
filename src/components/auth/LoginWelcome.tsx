@@ -1,7 +1,11 @@
 import Image from "next/image";
 import React from "react";
 
-export default function LoginWelcome() {
+export default function LoginWelcome({
+	isAppLogin,
+}: {
+	isAppLogin: boolean;
+}) {
 	return (
 		<div className="flex flex-col gap-1 items-center">
 			<Image
@@ -13,7 +17,7 @@ export default function LoginWelcome() {
 				priority
 			/>
 			<h1 className="text-white text-3xl font-semibold flex items-center gap-2">
-				Log In to Dione
+				{isAppLogin ? "Continue to" : "Log In to"} Dione
 			</h1>
 			<span className="text-xs text-white/40 mt-2">
 				open-source means you own your data
