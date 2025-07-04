@@ -87,7 +87,9 @@ export default function ProfilePage() {
 				errors.username = `Username must be ${CHAR_LIMITS.username} characters or less`;
 			}
 
-			if (editedFields.first_name.length > CHAR_LIMITS.first_name) {
+			if (!editedFields.first_name.trim()) {
+				errors.first_name = "First name is required";
+			} else if (editedFields.first_name.length > CHAR_LIMITS.first_name) {
 				errors.first_name = `First name must be ${CHAR_LIMITS.first_name} characters or less`;
 			}
 
