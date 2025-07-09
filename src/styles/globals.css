@@ -16,9 +16,6 @@ body {
 	color: var(--foreground);
 	font-family: var(--font-poppins);
 	min-height: 100vh;
-}
-
-.no-select {
 	user-select: none;
 	-webkit-user-select: none;
 	-moz-user-select: none;
