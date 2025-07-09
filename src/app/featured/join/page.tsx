@@ -1,8 +1,8 @@
 "use client";
 
-import { sendFeaturedWebhook } from "@/app/server/webhook";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { sendFeaturedWebhook } from "@/app/server/webhook";
 import FeaturedJoin from "@/components/featured/FeaturedJoin";
 
 // form submission handler

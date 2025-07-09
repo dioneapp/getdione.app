@@ -20,4 +20,4 @@ export default function FeaturedSuccess() {
 			</div>
 		</main>
 	);
-} 
+}
