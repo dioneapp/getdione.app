@@ -7,6 +7,7 @@ export type Release = {
 	body: string;
 	published_at: string;
 	html_url: string;
+	prerelease: boolean;
 };
 
 export async function getReleases(): Promise<{
