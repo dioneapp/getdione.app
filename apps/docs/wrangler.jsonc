@@ -1,7 +1,7 @@
 {
-    "name": "docs-getdione-app",
-    "compatibility_date": "2025-06-29",
-    "assets": {
-      "directory": "./dist"
-    }
-  }
+	"name": "docs-getdione-app",
+	"compatibility_date": "2025-06-29",
+	"assets": {
+		"directory": "./dist"
+	}
+}
