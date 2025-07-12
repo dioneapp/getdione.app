@@ -164,17 +164,19 @@ export default function Navbar() {
 					<X className="w-5 h-5" />
 				</button>
 				<div className="flex flex-col items-center justify-center h-full gap-8">
-					{links.map((link) => (
-						<Link
-							key={link.href}
-							href={link.href}
-							target={link.external ? "_blank" : undefined}
-							onClick={toggleMenu}
-							className="text-xl text-white/70 hover:text-white transition-colors"
-						>
-							{link.label}
-						</Link>
-					))}
+					{links
+						.filter((link) => !link.moderator || user?.moderator)
+						.map((link) => (
+							<Link
+								key={link.href}
+								href={link.href}
+								target={link.external ? "_blank" : undefined}
+								onClick={toggleMenu}
+								className="text-xl text-white/70 hover:text-white transition-colors"
+							>
+								{link.label}
+							</Link>
+						))}
 					<Link
 						href="/auth/login"
 						onClick={toggleMenu}
