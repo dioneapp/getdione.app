@@ -108,16 +108,6 @@ export default function RootLayout({
 				<Databuddy
 					clientId={process.env.NEXT_PUBLIC_DATABUDDY_CLIENT_ID!}
 					disabled={process.env.NODE_ENV === "development"}
-					trackHashChanges={true}
-					trackAttributes={true}
-					trackOutgoingLinks={true}
-					trackInteractions={true}
-					trackEngagement={true}
-					trackScrollDepth={true}
-					trackExitIntent={true}
-					trackBounceRate={true}
-					trackWebVitals={true}
-					trackErrors={true}
 					enableBatching={true}
 				/>
 			</body>
