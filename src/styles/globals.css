@@ -16,11 +16,6 @@ body {
 	color: var(--foreground);
 	font-family: var(--font-poppins);
 	min-height: 100vh;
-	user-select: none;
-	-webkit-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	-o-user-select: none;
 }
 
 /* animations */
