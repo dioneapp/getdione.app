@@ -4,13 +4,19 @@
 > next build
 
  ⚠ Found lockfile missing swc dependencies, run next locally to automatically patch
+⚠ No build cache found. Please configure build caching for faster rebuilds. Read more: https://nextjs.org/docs/messages/no-cache
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
    ▲ Next.js 15.3.4
 
    Creating an optimized production build ...
  ⚠ Found lockfile missing swc dependencies, run next locally to automatically patch
  ⚠ Found lockfile missing swc dependencies, run next locally to automatically patch
  ⚠ Found lockfile missing swc dependencies, run next locally to automatically patch
- ✓ Compiled successfully in 0ms
+ ✓ Compiled successfully in 2000ms
    Linting and checking validity of types     ✓ Linting and checking validity of types 
    Collecting page data     ✓ Collecting page data 
  ✓ Generating static pages (4/4)
