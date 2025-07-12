@@ -23,7 +23,11 @@ cd getdione.app
 # install dependencies
 pnpm install
 
-# run development servers
+# copy environment variables template
+cp .env.example .env
+
+# edit .env file with your configuration
+# then run development servers
 pnpm dev
 ```
 
@@ -41,6 +45,22 @@ pnpm --filter api dev
 # run docs
 pnpm --filter docs dev
 ```
+
+## Environment Variables
+
+All applications share the same environment variables configured in a single `.env` file at the root level. This follows Turborepo best practices for environment variable management.
+
+Copy `.env.example` to `.env` and configure the following variables:
+
+- `BETA_DISCORD_WEBHOOK_URL` - Discord webhook URL for beta submissions
+- `FEATURED_DISCORD_WEBHOOK_URL` - Discord webhook URL for featured submissions  
+- `GITHUB_TOKEN` - GitHub personal access token for API access
+- `NEXT_PUBLIC_SUPABASE_URL` - Supabase project URL (public)
+- `NEXT_PUBLIC_SUPABASE_KEY` - Supabase anonymous key (public)
+- `SUPABASE_URL` - Supabase project URL (server-side)
+- `SUPABASE_ANON_KEY` - Supabase anonymous key (server-side)
+
+Variables prefixed with `NEXT_PUBLIC_` are available in the browser for the Next.js web application.
 
 ## License
 
