@@ -1,47 +1,47 @@
-# Dione Website
+# Dione Platform
 
-A modern web application built with Next.js, TypeScript, Supabase and Tailwind CSS.
+A comprehensive platform for script management and execution, built with modern web technologies and deployed on Cloudflare's edge network.
 
-## Getting Started
+## Components
 
-1. Fork the repository
-2. Clone the repository:
+### Web Application (`apps/web`)
+A modern web application built with Next.js, TypeScript, Supabase and Tailwind CSS. Provides the main user interface for script discovery, installation, and management.
+
+### API Service (`apps/api`)
+A high-performance API service for the Dione platform, built with Hono.js and deployed on Cloudflare Workers. Provides backend functionality for script management, user authentication, and real-time communication.
+
+### Documentation Site (`apps/docs`)
+A modern documentation site built with Astro, TypeScript, and Tailwind CSS. Provides comprehensive guides, tutorials, and API documentation for developers and users.
+
+## Installation
+
 ```bash
-git clone https://github.com/yourusername/getdione.app.git
+# clone the repository
+git clone https://github.com/dioneapp/getdione.app
 cd getdione.app
-```
 
-3. Install dependencies:
-```bash
+# install dependencies
 pnpm install
-```
 
-4. Copy the environment variables:
-```bash
-cp .env.example .env
-```
-
-5. Start the development server:
-```bash
+# run development servers
 pnpm dev
 ```
 
-The site will be available at `http://localhost:3000`
+## Development
 
-## Available Scripts
+This is a monorepo using pnpm workspaces. Each component can be developed independently:
 
-- `pnpm dev` - Start development server
-- `pnpm build` - Build for production
-- `pnpm preview` - Preview production build
-- `pnpm format` - Format code
-- `pnpm lint` - Run type checking and linting
+```bash
+# run web app
+pnpm --filter web dev
 
-## Deploy
-We use Cloudflare Workers to deploy the site.
- 
-- `pnpm deploy` - Deploy to production
+# run api
+pnpm --filter api dev
 
+# run docs
+pnpm --filter docs dev
+```
 
 ## License
 
-This project is licensed under the terms of the license included in the repository.
+This project is licensed under the terms of the MIT license included in the repository.
