@@ -1,0 +1,26 @@
+{
+	"name": "docs",
+	"type": "module",
+	"version": "0.0.1",
+	"scripts": {
+		"dev": "astro dev",
+		"build": "astro build",
+		"preview": "astro preview",
+		"astro": "astro",
+		"check": "pnpm biome check --write ."
+	},
+	"engines": {
+		"node": ">=18.20.8"
+	},
+	"dependencies": {
+		"@astrojs/cloudflare": "^12.5.1",
+		"@astrojs/tailwind": "^6.0.2",
+		"@tailwindcss/typography": "^0.5.16",
+		"astro": "^5.7.5",
+		"marked": "^15.0.11",
+		"tailwindcss": "^3.4.17"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.9.4"
+	}
+}

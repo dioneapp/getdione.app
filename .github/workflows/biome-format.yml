@@ -28,7 +28,7 @@ jobs:
         run: npm install
 
       - name: Run Biome format and lint
-        run: biome check --write ./src || true
+        run: biome check --write ./apps || true
 
       - name: Commit changes
         id: commitback

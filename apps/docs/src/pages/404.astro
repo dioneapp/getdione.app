@@ -1,0 +1,63 @@
+---
+import DocsLayout from "../layouts/DocsLayout.astro";
+
+const frontmatter = {
+	title: "Page Not Found",
+};
+---
+
+<DocsLayout frontmatter={frontmatter}>
+  <div
+    class="flex flex-col items-center w-full h-[80vh] justify-center p-12 relative"
+  >
+
+    <div class="text-center z-5 animate-fade-in">
+      <h3
+        class="text-2xl font-semibold text-white tracking-tight text-balance text-center mb-4"
+      >
+        Page not found
+      </h3>
+      <p class="text-white/70 mb-8 max-w-md text-balance mx-auto">
+        The page you're looking for doesn't exist or has been moved to another
+        location.
+      </p>
+    </div>
+  </div>
+
+  <style>
+    @keyframes float {
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+
+    .animate-float {
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes fade-in {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-fade-in {
+      animation: fade-in 0.6s ease-out;
+    }
+  </style>
+
+  <script>
+    if (window.location.pathname.startsWith("/docs")) {
+      window.location.href = "/docs/";
+    }
+  </script>
+</DocsLayout>
