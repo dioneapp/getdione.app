@@ -1,6 +1,12 @@
 import { ArrowRight } from "lucide-react";
 
-export default function FeaturedJoin({ error, handleSubmit }: { error: string; handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void }) {
+export default function FeaturedJoin({
+	error,
+	handleSubmit,
+}: {
+	error: string;
+	handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+}) {
 	return (
 		<main>
 			<div className="relative flex flex-col items-center justify-center min-h-[100dvh] px-4 sm:px-8 pt-24 sm:pt-32 pb-16">
@@ -23,7 +29,7 @@ export default function FeaturedJoin({ error, handleSubmit }: { error: string; h
 					</div>
 				)}
 
-<form
+				<form
 					onSubmit={handleSubmit}
 					className="w-full max-w-xl bg-white/10 backdrop-blur-md rounded-xl p-6 sm:p-8 border border-white/10"
 				>
@@ -358,4 +364,4 @@ export default function FeaturedJoin({ error, handleSubmit }: { error: string; h
 			</div>
 		</main>
 	);
-} 
+}

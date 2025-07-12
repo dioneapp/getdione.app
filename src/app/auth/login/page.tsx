@@ -2,7 +2,7 @@
 
 import type { Provider } from "@supabase/supabase-js";
 import { redirect, useSearchParams } from "next/navigation";
-import { useEffect, Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import LoginOptions from "@/components/auth/LoginOptions";
 import LoginTerms from "@/components/auth/LoginTerms";
 import LoginWelcome from "@/components/auth/LoginWelcome";
