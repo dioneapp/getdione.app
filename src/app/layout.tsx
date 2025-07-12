@@ -2,10 +2,10 @@ import type { Metadata, Viewport } from "next";
 import { Poppins } from "next/font/google";
 import Script from "next/script";
 import "@/styles/globals.css";
+import { Databuddy } from "@databuddy/sdk";
 import Background from "@/components/layout/Background";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
-import { Databuddy } from "@databuddy/sdk";
 
 const poppins = Poppins({
 	subsets: ["latin"],
@@ -98,7 +98,7 @@ export default function RootLayout({
 			<Script id="ga-script" strategy="afterInteractive">
 				{GA_SCRIPT}
 			</Script>
-			
+
 			<body className={`${poppins.variable} antialiased min-h-screen`}>
 				<Background />
 				<Navbar />
