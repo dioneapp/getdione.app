@@ -98,6 +98,25 @@ export default function RootLayout({
 				{GA_SCRIPT}
 			</Script>
 
+			{/* databuddy analytics */}
+			<script
+			    src="https://cdn.databuddy.cc/databuddy.js"
+			    data-client-id="8BfVPY6P64vdd9uSjIYWF"
+			    data-track-hash-changes="true"
+			    data-track-attributes="true"
+			    data-track-outgoing-links="true"
+			    data-track-interactions="true"
+			    data-track-engagement="true"
+			    data-track-scroll-depth="true"
+			    data-track-exit-intent="true"
+			    data-track-bounce-rate="true"
+			    data-track-web-vitals="true"
+			    data-track-errors="true"
+			    data-enable-batching="true"
+			    crossorigin="anonymous"
+			    async
+			  ></script>
+
 			{/* google tag manager noscript fallback */}
 
 			<body className={`${poppins.variable} antialiased min-h-screen`}>
