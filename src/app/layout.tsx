@@ -106,7 +106,8 @@ export default function RootLayout({
 				<Footer />
 				{/* databuddy analytics */}
 				<Databuddy
-					clientId="8BfVPY6P64vdd9uSjIYWF"
+					clientId={process.env.NEXT_PUBLIC_DATABUDDY_CLIENT_ID!}
+					disabled={process.env.NODE_ENV === "development"}
 					trackHashChanges={true}
 					trackAttributes={true}
 					trackOutgoingLinks={true}
