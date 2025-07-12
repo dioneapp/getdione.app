@@ -1,6 +1,19 @@
 # Dione Website
 
-A modern web application built with Next.js, TypeScript, Supabase and Tailwind CSS.
+A modern monorepo web application built with Next.js, TypeScript, Supabase, Tailwind CSS, and Turborepo.
+
+## Monorepo Structure
+
+This repository is organized as a monorepo using Turborepo:
+
+```
+├── apps/
+│   └── web/          # Main Next.js application
+├── packages/         # Shared packages (future)
+├── .env              # Shared environment variables
+├── turbo.json        # Turborepo configuration
+└── package.json      # Root package.json with workspaces
+```
 
 ## Getting Started
 
@@ -13,7 +26,7 @@ cd getdione.app
 
 3. Install dependencies:
 ```bash
-pnpm install
+npm install
 ```
 
 4. Copy the environment variables:
@@ -23,23 +36,27 @@ cp .env.example .env
 
 5. Start the development server:
 ```bash
-pnpm dev
+npm run dev
 ```
 
 The site will be available at `http://localhost:3000`
 
 ## Available Scripts
 
-- `pnpm dev` - Start development server
-- `pnpm build` - Build for production
-- `pnpm preview` - Preview production build
-- `pnpm format` - Format code
-- `pnpm lint` - Run type checking and linting
+- `npm run dev` - Start development server for all apps
+- `npm run build` - Build all apps for production
+- `npm run preview` - Preview production build
+- `npm run lint` - Run type checking and linting
+- `npm run deploy` - Deploy to production
+
+## Environment Variables
+
+All applications in this monorepo share the same environment variables located in the root `.env` file. This simplifies configuration management and ensures consistency across all apps.
 
 ## Deploy
 We use Cloudflare Workers to deploy the site.
  
-- `pnpm deploy` - Deploy to production
+- `npm run deploy` - Deploy to production
 
 
 ## License

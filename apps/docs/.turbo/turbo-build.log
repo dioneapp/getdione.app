@@ -1,0 +1,30 @@
+
+
+> docs@1.0.0 build
+> next build
+
+ ⚠ Found lockfile missing swc dependencies, run next locally to automatically patch
+   ▲ Next.js 15.3.4
+
+   Creating an optimized production build ...
+ ⚠ Found lockfile missing swc dependencies, run next locally to automatically patch
+ ⚠ Found lockfile missing swc dependencies, run next locally to automatically patch
+ ⚠ Found lockfile missing swc dependencies, run next locally to automatically patch
+ ✓ Compiled successfully in 0ms
+   Linting and checking validity of types     ✓ Linting and checking validity of types 
+   Collecting page data     ✓ Collecting page data 
+ ✓ Generating static pages (4/4)
+   Collecting build traces     ✓ Collecting build traces 
+   Finalizing page optimization     ✓ Finalizing page optimization 
+
+Route (app)                                 Size  First Load JS
+┌ ○ /                                      140 B         101 kB
+└ ○ /_not-found                            975 B         102 kB
++ First Load JS shared by all             101 kB
+  ├ chunks/315-bef25216bbb6cce4.js       46.3 kB
+  ├ chunks/87c73c54-c06bf96ac97e82fd.js  53.2 kB
+  └ other shared chunks (total)          1.87 kB
+
+
+○  (Static)  prerendered as static content
+
