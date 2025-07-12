@@ -5,6 +5,7 @@ import "@/styles/globals.css";
 import Background from "@/components/layout/Background";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
+import { Databuddy } from "@databuddy/sdk";
 
 const poppins = Poppins({
 	subsets: ["latin"],
@@ -97,33 +98,27 @@ export default function RootLayout({
 			<Script id="ga-script" strategy="afterInteractive">
 				{GA_SCRIPT}
 			</Script>
-
-			{/* databuddy analytics */}
-			<Script
-			    src="https://cdn.databuddy.cc/databuddy.js"
-			    data-client-id="8BfVPY6P64vdd9uSjIYWF"
-			    data-track-hash-changes="true"
-			    data-track-attributes="true"
-			    data-track-outgoing-links="true"
-			    data-track-interactions="true"
-			    data-track-engagement="true"
-			    data-track-scroll-depth="true"
-			    data-track-exit-intent="true"
-			    data-track-bounce-rate="true"
-			    data-track-web-vitals="true"
-			    data-track-errors="true"
-			    data-enable-batching="true"
-			    crossOrigin="anonymous"
-			    async
-			  ></Script>
-
-			{/* google tag manager noscript fallback */}
-
+			
 			<body className={`${poppins.variable} antialiased min-h-screen`}>
 				<Background />
 				<Navbar />
 				{children}
 				<Footer />
+				{/* databuddy analytics */}
+				<Databuddy
+					clientId="8BfVPY6P64vdd9uSjIYWF"
+					trackHashChanges={true}
+					trackAttributes={true}
+					trackOutgoingLinks={true}
+					trackInteractions={true}
+					trackEngagement={true}
+					trackScrollDepth={true}
+					trackExitIntent={true}
+					trackBounceRate={true}
+					trackWebVitals={true}
+					trackErrors={true}
+					enableBatching={true}
+				/>
 			</body>
 		</html>
 	);

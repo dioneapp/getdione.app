@@ -12,6 +12,7 @@
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "dependencies": {
+    "@databuddy/sdk": "^1.4.0",
     "@opennextjs/cloudflare": "^1.3.1",
     "@supabase/ssr": "^0.6.1",
     "@supabase/supabase-js": "^2.50.2",
