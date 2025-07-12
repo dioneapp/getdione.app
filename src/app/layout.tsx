@@ -99,7 +99,7 @@ export default function RootLayout({
 			</Script>
 
 			{/* databuddy analytics */}
-			<script
+			<Script
 			    src="https://cdn.databuddy.cc/databuddy.js"
 			    data-client-id="8BfVPY6P64vdd9uSjIYWF"
 			    data-track-hash-changes="true"
@@ -113,9 +113,9 @@ export default function RootLayout({
 			    data-track-web-vitals="true"
 			    data-track-errors="true"
 			    data-enable-batching="true"
-			    crossorigin="anonymous"
+			    crossOrigin="anonymous"
 			    async
-			  ></script>
+			  ></Script>
 
 			{/* google tag manager noscript fallback */}
 
