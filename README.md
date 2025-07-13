@@ -17,7 +17,7 @@ A modern documentation site built with Astro, TypeScript, and Tailwind CSS. Prov
 
 ```bash
 # clone the repository
-git clone https://github.com/dioneapp/getdione.app.git
+git clone https://github.com/dioneapp/getdione.app
 cd getdione.app
 
 # install dependencies
