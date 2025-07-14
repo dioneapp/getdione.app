@@ -18,6 +18,7 @@ The configuration file should follow this structure:
 
 ```json
 {
+  "requirements": { ... },
   "dependencies": { ... },
   "installation": [ ... ],
   "start": [ ... ]
@@ -25,6 +26,26 @@ The configuration file should follow this structure:
 ```
 
 Each section is explained in detail below.
+
+---
+
+## Requirements
+
+This section lists all system requirements necessary to run an app. Dione will look to see if that app is compatible with your device, if it is not compatible it will display a message.
+
+### Format
+
+* **Key**: the requirement name (e.g., `gpus`)
+* **Value**: an array of strings that specifies the required GPU vendors (e.g., `nvidia`, `amd`)
+
+### Example
+
+```json
+"requirements": {
+    "gpus": ["nvidia", "amd"],
+    "os": ["windows","linux"]
+}
+```
 
 ---
 
@@ -172,6 +193,10 @@ This section defines how to launch the application after installation.
 
 ```json
 {
+  "requirements": {
+    "gpus": ["nvidia", "amd"],
+    "os": ["windows", "linux"]
+  },
   "dependencies": {
     "git": { "version": "latest" },
     "uv": { "version": "latest" }
