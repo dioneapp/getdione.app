@@ -5,7 +5,7 @@ export default function ReleaseList({ releases }: { releases: Release[] }) {
 	if (!releases.length) {
 		return (
 			<p className="text-center text-sm text-white/70 justify-center items-center mt-auto mb-24 flex">
-				no releases found.
+				No releases found.
 			</p>
 		);
 	}

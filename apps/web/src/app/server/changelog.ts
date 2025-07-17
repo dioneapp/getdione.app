@@ -16,22 +16,23 @@ export async function getReleases(): Promise<{
 }> {
 	const token = process.env.GITHUB_TOKEN;
 
-	if (!token) {
-		console.error("No GitHub token configured");
-		return { error: "No GitHub token configured" };
+	const headers: Record<string, string> = {
+		Accept: "application/vnd.github+json",
+		"X-GitHub-Api-Version": "2022-11-28",
+		"User-Agent": "dioneapp",
+	};
+	if (token) {
+		headers["Authorization"] = `Bearer ${token}`;
+	} else {
+		console.warn("No GitHub token, using limited unauthenticated requests");
 	}
 
 	try {
 		const response = await fetch(
 			"https://api.github.com/repos/dioneapp/dioneapp/releases",
 			{
-				headers: {
-					Accept: "application/vnd.github+json",
-					Authorization: `Bearer ${token}`,
-					"X-GitHub-Api-Version": "2022-11-28",
-					"User-Agent": "dioneapp",
-				},
-				next: { revalidate: 3600 }, // cache for 1h
+				headers,
+				next: { revalidate: 3600 }, // cache 1h
 			},
 		);
 
