@@ -1,16 +1,15 @@
-import { supabase } from "@/utils/database";
-
 export async function getScripts() {
-	const { data, error } = await supabase
-		.from("scripts")
-		.select("*")
-		.order("created_at", { ascending: false })
-		.limit(24);
-
-	if (error) {
-		console.error("Error fetching scripts:", error);
+	try {
+		const limit = process.env.NODE_ENV === "development" ? 10 : 50;
+		const res = await fetch(`https://api.getdione.app/v1/scripts?limit=${limit}`, {
+			headers: { "Accept": "application/json" },
+			cache: "no-store",
+		});
+		if (!res.ok) throw new Error(`failed to fetch: ${res.status}`);
+		const data = await res.json();
+		return data;
+	} catch (err) {
+		console.error("Error fetching scripts:", err);
 		return [];
 	}
-
-	return data;
 }
