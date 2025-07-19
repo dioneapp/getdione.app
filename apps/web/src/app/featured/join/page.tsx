@@ -79,15 +79,15 @@ async function submitForm(formData: FormData) {
 		],
 	};
 
- const response = await fetch("/api/featured-webhook", {
-   method: "POST",
-   headers: { "Content-Type": "application/json" },
-   body: JSON.stringify(webhookBody),
- });
- const result = await response.json();
- if (!result.success) {
-   throw new Error("Failed to submit application");
- }
+	const response = await fetch("/api/featured-webhook", {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify(webhookBody),
+	});
+	const result = await response.json();
+	if (!result.success) {
+		throw new Error("Failed to submit application");
+	}
 }
 
 export default function FeaturedJoinPage() {

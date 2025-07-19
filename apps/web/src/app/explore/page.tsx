@@ -3,7 +3,7 @@ import ExploreGrid from "@/components/explore/ExploreGrid";
 import ExploreHeader from "@/components/explore/ExploreHeader";
 import { getScripts } from "@/utils/getScripts";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export default async function ExplorePage() {
 	const scripts = await getScripts();
