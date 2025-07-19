@@ -15,7 +15,7 @@
 		"@databuddy/sdk": "^1.4.0",
 		"@opennextjs/cloudflare": "^1.5.1",
 		"@supabase/ssr": "^0.6.1",
-		"@supabase/supabase-js": "^2.50.2",
+		"@supabase/supabase-js": "^2.52.0",
 		"@tailwindcss/typography": "^0.5.16",
 		"framer-motion": "^12.20.0",
 		"lucide-react": "^0.525.0",
