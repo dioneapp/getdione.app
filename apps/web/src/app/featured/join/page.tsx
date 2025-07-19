@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { sendFeaturedWebhook } from "@/app/server/webhook";
+// import { sendFeaturedWebhook } from "@/app/server/webhook";
 import FeaturedJoin from "@/components/featured/FeaturedJoin";
 
 // form submission handler
@@ -79,10 +79,15 @@ async function submitForm(formData: FormData) {
 		],
 	};
 
-	const result = await sendFeaturedWebhook(webhookBody);
-	if (!result.success) {
-		throw new Error("Failed to submit application");
-	}
+ const response = await fetch("/api/featured-webhook", {
+   method: "POST",
+   headers: { "Content-Type": "application/json" },
+   body: JSON.stringify(webhookBody),
+ });
+ const result = await response.json();
+ if (!result.success) {
+   throw new Error("Failed to submit application");
+ }
 }
 
 export default function FeaturedJoinPage() {
