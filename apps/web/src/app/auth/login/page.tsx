@@ -12,7 +12,7 @@ import useUser from "@/utils/use-user";
 function LoginContent() {
 	const { user } = useUser();
 	const searchParams = useSearchParams();
-	const isAppLogin = searchParams.get("app") === "true";
+	const isAppLogin = searchParams?.get("app") === "true";
 
 	useEffect(() => {
 		if (user && !isAppLogin) {
