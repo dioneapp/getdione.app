@@ -3,9 +3,9 @@ import createClient from "@/utils/supabase/server";
 
 export async function GET(request: Request, context: any) {
 	const { searchParams, origin } = new URL(request.url);
-	const real = await context.params;
+	const { params } = context;
 
-	const isApp = real.params.includes("app");
+	const isApp = Array.isArray(params) ? params.includes("app") : false;
 	const code = searchParams.get("code");
 
 	if (code) {
