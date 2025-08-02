@@ -179,4 +179,11 @@ This section defines how to launch the application after installation.
 
 Create a folder named `melotts` and place the `dione.json` file inside it.
 
-To add your application to Dione, submit a pull request to the [Official Dione Scripts](https://github.com/dioneapp/official-scripts) repository.
+---
+
+## Submitting Your Script
+
+*We're currently building a better submit system. This will provide a more streamlined experience for script creators. Stay tuned for updates on our new submission system!*
+
+For now, to add your application to Dione, submit a pull request to the [Official Dione Scripts](https://github.com/dioneapp/official-scripts) repository.
+

@@ -8,7 +8,7 @@ layout: ../../layouts/DocsLayout.astro
 
 Dione is available for Windows, macOS, and Linux. You can download the latest version from our GitHub releases page.
 
-<a href="https://github.com/dioneapp/dioneapp/releases" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center gap-2 text-lg w-full bg-white hover:bg-white/80 transition-colors duration-400 rounded-full text-black font-semibold py-2 text-center">
+<a href="https://github.com/dioneapp/dioneapp/releases" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center gap-2 text-lg w-full border-2 border-white hover:bg-white/10 transition-all duration-300 rounded-full text-white font-semibold py-3 px-6 text-center no-underline">
     Download from GitHub
 </a>
 
