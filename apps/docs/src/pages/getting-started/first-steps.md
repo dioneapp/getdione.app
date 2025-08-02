@@ -12,7 +12,7 @@ After installation you will see the page below. **Let's get started!**
 ![Onboarding](/images/onboarding.png)
 
 ### Login
-To use Dione in its alpha version you need to connect your Google, Discord or Github account. For more information about how we treat your data, [read our privacy policy](/privacy-policy).
+To use Dione in its alpha version you need to connect your Google, Discord or Github account. For more information about how we treat your data, [read our privacy policy](https://getdione.app/legal/privacy-policy).
 
 Click the Login button and wait for your default browser to open automatically.
 Log in using your preferred account, and once you're done, your browser will prompt you to open the application — click Accept.
