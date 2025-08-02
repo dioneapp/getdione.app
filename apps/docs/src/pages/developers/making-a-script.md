@@ -47,6 +47,8 @@ This section lists all system requirements necessary to run an app. Dione will l
 }
 ```
 
+If an array is empty, it indicates that there are no restrictions for that particular requirement (i.e., any GPU or OS is supported).
+
 ---
 
 ## Dependencies
