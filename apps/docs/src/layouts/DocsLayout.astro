@@ -67,8 +67,10 @@ const sections = Object.entries(docs).reduce(
 
 // sort sections and pages
 const sectionPriority: Record<string, number> = {
-	developers: 99,
-	troubleshooting: 100,
+	"getting-started": 1,
+	"user-guide": 2,
+	"developer-guide": 3,
+	troubleshooting: 4,
 };
 
 const orderedSections = Object.entries(sections)
@@ -80,9 +82,9 @@ const orderedSections = Object.entries(sections)
 	.reduce(
 		(acc, [section, data]) => {
 			data.pages.sort((a, b) => a.order - b.order);
-			Object.keys(data.subsections).forEach((subsection) => {
+			for (const subsection of Object.keys(data.subsections)) {
 				data.subsections[subsection].sort((a, b) => a.order - b.order);
-			});
+			}
 			acc[section] = data;
 			return acc;
 		},

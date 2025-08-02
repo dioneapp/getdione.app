@@ -1,18 +1,22 @@
 ---
-title: Common issues
+title: Common Issues
 order: 1
 layout: ../../layouts/DocsLayout.astro
 ---
 
-# Common issues
+# Common Issues
 
-## Login button doesn't work
-This problem occurs when Dione is not able to find the default browser or none exists.
+## Login Button Doesn't Work
+
+This issue can occur if Dione is unable to detect your default web browser.
 
 ![Login button doesn't work](/images/login-button-doesnt-work.png)
 
-**It has an easy solution!** Just go back, click the “Copy link” button, open your browser manually, and paste the link into the address bar. Then follow the login process as [usual](/docs/getting-started/first-steps#login).
+**Solution:**
+1.  Go back to the previous screen and click the "Copy link" button.
+2.  Open your web browser manually and paste the link into the address bar.
+3.  Follow the on-screen instructions to complete the login process.
 
 <div class="bg-orange-300/10 rounded backdrop-blur-3xl p-4 text-sm text-neutral-300">
-  <strong>Never share this link with anyone.</strong> It could put your account at risk.
+  <strong>Warning:</strong> Never share this link with anyone, as it could compromise your account security.
 </div>
