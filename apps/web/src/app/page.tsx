@@ -85,49 +85,48 @@ const features = [
 // FAQ data
 const faq = [
 	{
-	  question: "What is Dione?",
-	  answer:
-		"Dione is a platform designed to help you easily discover, install, and manage open-source AI apps. It offers a clean interface, streamlined workflows, and a growing library of tools to make running local AI apps simple and accessible.",
+		question: "What is Dione?",
+		answer:
+			"Dione is a platform designed to help you easily discover, install, and manage open-source AI apps. It offers a clean interface, streamlined workflows, and a growing library of tools to make running local AI apps simple and accessible.",
 	},
 	{
-	  question: "Is Dione free to use?",
-	  answer:
-		"Yes, Dione is completely free and open-source. Everyone is welcome to use it, contribute to it, and build on top of it.",
+		question: "Is Dione free to use?",
+		answer:
+			"Yes, Dione is completely free and open-source. Everyone is welcome to use it, contribute to it, and build on top of it.",
 	},
 	{
-	  question: "Will Dione remain free?",
-	  answer:
-		"We have no plans to charge for core features or introduce invasive monetization. That goes against our values. Since Dione is open-source and self-hostable, it simply wouldn't make sense.",
+		question: "Will Dione remain free?",
+		answer:
+			"We have no plans to charge for core features or introduce invasive monetization. That goes against our values. Since Dione is open-source and self-hostable, it simply wouldn't make sense.",
 	},
 	{
-	  question: "Do I need to log in to use Dione?",
-	  answer:
-		"No login is required. Your experience won't be limited if you choose not to log in. Logging in provides optional benefits like device sync, but even self-hosting requires no keys or complex setup, we've worked hard to keep it truly open and hassle-free.",
+		question: "Do I need to log in to use Dione?",
+		answer:
+			"No login is required. Your experience won't be limited if you choose not to log in. Logging in provides optional benefits like device sync, but even self-hosting requires no keys or complex setup, we've worked hard to keep it truly open and hassle-free.",
 	},
 	{
-	  question: "What is the current state of Dione?",
-	  answer:
-		"Dione is in early public beta. While many features are already working, you may encounter bugs or rough edges. We're actively improving the platform based on user feedback.",
+		question: "What is the current state of Dione?",
+		answer:
+			"Dione is in early public beta. While many features are already working, you may encounter bugs or rough edges. We're actively improving the platform based on user feedback.",
 	},
 	{
-	  question: "Which platforms are supported?",
-	  answer:
-		"Dione currently supports Windows. macOS and Linux versions are in active development, and full cross-platform support is a top priority.",
+		question: "Which platforms are supported?",
+		answer:
+			"Dione currently supports Windows. macOS and Linux versions are in active development, and full cross-platform support is a top priority.",
 	},
 	{
-	  question: "Where can I get help or report bugs?",
-	  answer:
-		"You can join our Discord community to ask questions, report bugs, or share feedback. We're active and always listening.",
+		question: "Where can I get help or report bugs?",
+		answer:
+			"You can join our Discord community to ask questions, report bugs, or share feedback. We're active and always listening.",
 	},
 	{
-	  question: "Can I contribute to Dione?",
-	  answer:
-		"Absolutely! Whether you want to improve the core app or create installation scripts, contributions are welcome. Help with macOS and Linux support is especially appreciated.",
+		question: "Can I contribute to Dione?",
+		answer:
+			"Absolutely! Whether you want to improve the core app or create installation scripts, contributions are welcome. Help with macOS and Linux support is especially appreciated.",
 	},
 	{
-	  question: "What makes Dione different from other platforms?",
-	  answer:
-		"Dione stands out with its clean UI, ease of use, lightweight install system, frequent updates, and a beginner-friendly scripting language for adding apps. It's built with a community-first approach that prioritizes simplicity, transparency, and extensibility.",
+		question: "What makes Dione different from other platforms?",
+		answer:
+			"Dione stands out with its clean UI, ease of use, lightweight install system, frequent updates, and a beginner-friendly scripting language for adding apps. It's built with a community-first approach that prioritizes simplicity, transparency, and extensibility.",
 	},
-  ];
-  
+];
