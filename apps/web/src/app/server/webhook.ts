@@ -1,6 +1,6 @@
 "use server";
 
-export async function sendWebhook(data: any) {
+export async function sendWebhook(data: unknown) {
 	try {
 		const response = await fetch(process.env.BETA_DISCORD_WEBHOOK_URL!, {
 			method: "POST",
@@ -19,7 +19,7 @@ export async function sendWebhook(data: any) {
 	}
 }
 
-export async function sendFeaturedWebhook(data: any) {
+export async function sendFeaturedWebhook(data: unknown) {
 	try {
 		const response = await fetch(process.env.FEATURED_DISCORD_WEBHOOK_URL!, {
 			method: "POST",

@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
 				{ status: 500 },
 			);
 		}
-	} catch (error) {
+	} catch {
 		return NextResponse.json(
 			{ error: "Internal server error" },
 			{ status: 500 },

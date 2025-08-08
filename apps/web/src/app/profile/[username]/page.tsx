@@ -21,12 +21,24 @@ const PUBLIC_FIELDS = [
 	"moderator",
 ] as const;
 
+type PublicUserProfile = {
+    username: string;
+    first_name: string | null;
+    bio: string | null;
+    location: string | null;
+    avatar_url: string | null;
+    created_at: string;
+    tester: boolean | null;
+    publisher: boolean | null;
+    moderator: boolean | null;
+};
+
 export default function UserProfilePage({
 	params,
 }: {
 	params: Promise<{ username: string }>;
 }) {
-	const [user, setUser] = useState<any | null>(null);
+	const [user, setUser] = useState<PublicUserProfile | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const { username } = use(params);
@@ -85,7 +97,7 @@ export default function UserProfilePage({
 		return () => {
 			mounted = false;
 		};
-	}, [username, supabase, router]);
+	}, [username, router]);
 
 	// show loading or error state (but not for user not found)
 	if (loading || error) {

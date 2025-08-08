@@ -17,7 +17,7 @@ export default function ModerationPanel() {
 	const { user, loading: isLoading, error: sessionError } = useUser();
 	const [activeTab, setActiveTab] =
 		useState<(typeof TABS)[number]["id"]>("users");
-	const [error, setError] = useState<string | null>(null);
+	const [error] = useState<string | null>(null);
 
 	// handle auth and moderator checks
 	useEffect(() => {

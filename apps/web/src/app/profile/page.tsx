@@ -8,6 +8,7 @@ import AccountBio from "@/components/profile/account-bio";
 import AccountHeader from "@/components/profile/account-header";
 import AccountInfo from "@/components/profile/account-info";
 import AccountStates from "@/components/profile/account-states";
+import ProfileScriptsTab from "@/components/profile/scripts-tab";
 import { supabase } from "@/utils/database";
 import useUser from "@/utils/use-user";
 
@@ -38,6 +39,7 @@ export default function ProfilePage() {
 		username: "",
 		first_name: "",
 	});
+  const [activeTab, setActiveTab] = useState<"profile" | "scripts">("profile");
 
 	// handle auth redirect
 	useEffect(() => {
@@ -173,6 +175,24 @@ export default function ProfilePage() {
 			{/* main container */}
 			<div className="h-fit w-full flex max-w-xl">
 				<div className="w-full h-full group p-4 sm:p-6 rounded-xl border border-white/10 backdrop-blur-md bg-white/5 transition-all duration-300 shadow-lg shadow-black/10">
+					{/* tabs */}
+					<div className="flex gap-4 border-b border-white/10 mb-6">
+						<button
+							onClick={() => setActiveTab("profile")}
+							className={`px-4 py-2 -mb-px cursor-pointer ${activeTab === "profile" ? "border-b-2 border-white text-white" : "text-white/60 hover:text-white"}`}
+						>
+							Profile
+						</button>
+						<button
+							onClick={() => setActiveTab("scripts")}
+							className={`px-4 py-2 -mb-px cursor-pointer ${activeTab === "scripts" ? "border-b-2 border-white text-white" : "text-white/60 hover:text-white"}`}
+						>
+							Scripts
+						</button>
+					</div>
+
+					{activeTab === "profile" && (
+					<>
 					{/* profile header */}
 					<div className="flex flex-col gap-2">
 						<AccountHeader
@@ -251,35 +271,21 @@ export default function ProfilePage() {
 						>
 							Delete Account
 						</button>
-					</div>
+						</div>
+						</>
+						)}
+					{activeTab === "scripts" && <ProfileScriptsTab />}
 				</div>
 			</div>
 
-			{/* delete confirmation modal */}
 			{showDeleteModal && (
 				<div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
 					<div className="bg-white/10 border border-white/20 rounded-xl p-6 max-w-md w-full mx-4">
-						<h3 className="text-white text-xl font-semibold mb-4">
-							Delete Account
-						</h3>
-						<p className="text-white/70 mb-6">
-							Are you sure you want to delete your account? This action cannot
-							be undone.
-						</p>
+						<h3 className="text-white text-xl font-semibold mb-4">Delete Account</h3>
+						<p className="text-white/70 mb-6">Are you sure you want to delete your account? This action cannot be undone.</p>
 						<div className="flex gap-4">
-							<button
-								onClick={() => setShowDeleteModal(false)}
-								className="flex-1 px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 cursor-pointer"
-							>
-								Cancel
-							</button>
-							<button
-								onClick={handleDeleteAccount}
-								disabled={isDeleting}
-								className="flex-1 px-4 py-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 disabled:opacity-50 cursor-pointer"
-							>
-								{isDeleting ? "Deleting..." : "Delete Account"}
-							</button>
+							<button onClick={() => setShowDeleteModal(false)} className="flex-1 px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 cursor-pointer">Cancel</button>
+							<button onClick={handleDeleteAccount} disabled={isDeleting} className="flex-1 px-4 py-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 disabled:opacity-50 cursor-pointer">{isDeleting ? "Deleting..." : "Delete Account"}</button>
 						</div>
 					</div>
 				</div>

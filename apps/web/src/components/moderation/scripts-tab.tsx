@@ -13,12 +13,19 @@ import LoadingSkeleton from "./loading-skeleton";
 
 // add type for script data
 type Script = {
-	id: string;
-	name: string;
-	author: string;
-	description: string;
-	logo_url?: string;
-	created_at: string;
+    id: string;
+    name: string;
+    author: string;
+    description: string;
+    logo_url?: string;
+    created_at: string;
+    updated_at?: string;
+    script_url?: string;
+    version?: string;
+    tags?: string;
+    pending_review?: boolean;
+    status?: string | null;
+    review_feedback?: string | null;
 };
 
 export default function ScriptsTab() {
@@ -33,6 +40,7 @@ export default function ScriptsTab() {
 	const [sortField, setSortField] = useState("created_at");
 	const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
 	const itemsPerPage = 10;
+    const [moderationFeedback, setModerationFeedback] = useState<Record<string, string>>({});
 
 	// sort options for scripts
 	const sortOptions = [
@@ -108,6 +116,32 @@ export default function ScriptsTab() {
 			throw error;
 		}
 	};
+
+    const takeModerationAction = async (
+        script: Script,
+        action: "ACCEPTED" | "CHANGES_REQUESTED" | "DENIED",
+    ) => {
+        try {
+            const update = {
+                pending_review: false,
+                status: action,
+                review_feedback: moderationFeedback[script.id] || null,
+            } as Partial<Script>;
+
+            const { error } = await supabase
+                .from("scripts")
+                .update(update)
+                .eq("id", script.id);
+            if (error) throw error;
+
+            setScripts((prev) =>
+                prev.map((s) => (s.id === script.id ? { ...s, ...update } : s)),
+            );
+        } catch (err) {
+            console.error("Error moderating script:", err);
+            alert("Failed to update status. Try again.");
+        }
+    };
 
 	const startEditing = (script: Script) => {
 		setEditingScript(script.id);
@@ -279,7 +313,7 @@ export default function ScriptsTab() {
 														)}
 													</div>
 												</div>
-												<div>
+                                                <div>
 													<label className="block text-sm text-white/60 mb-1">
 														Description
 													</label>
@@ -300,6 +334,51 @@ export default function ScriptsTab() {
 														<p className="text-white">{script.description}</p>
 													)}
 												</div>
+
+                                                {/* moderation status & actions */}
+                                                <div className="rounded-lg bg-white/5 border border-white/10 p-3">
+                                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                                        <div className="text-sm text-white/70">
+                                                            Status: {script.pending_review ? "Pending review" : script.status || "—"}
+                                                        </div>
+                                                    </div>
+                                                    {script.pending_review && (
+                                                        <div className="mt-3 space-y-3">
+                                                            <textarea
+                                                                rows={3}
+                                                                value={moderationFeedback[script.id] || ""}
+                                                                onChange={(e) =>
+                                                                    setModerationFeedback((p) => ({
+                                                                        ...p,
+                                                                        [script.id]: e.target.value,
+                                                                    }))
+                                                                }
+                                                                placeholder="optional feedback to the author"
+                                                                className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+                                                            />
+                                                            <div className="flex flex-col sm:flex-row gap-2 sm:justify-end">
+                                                                <button
+                                                                    onClick={() => takeModerationAction(script, "ACCEPTED")}
+                                                                    className="w-full sm:w-auto shrink-0 py-2 px-4 flex items-center justify-center gap-2 rounded-full bg-white font-semibold text-[#080808] cursor-pointer hover:bg-white/90 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/50 shadow-lg border border-black/10"
+                                                                >
+                                                                    <Check className="w-4 h-4" /> Accept
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => takeModerationAction(script, "CHANGES_REQUESTED")}
+                                                                    className="w-full sm:w-auto px-4 py-2 bg-white/10 hover:bg-white/20 rounded text-white transition-colors cursor-pointer"
+                                                                >
+                                                                    Request changes
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => takeModerationAction(script, "DENIED")}
+                                                                    className="w-full sm:w-auto px-4 py-2 bg-white/10 hover:bg-white/20 rounded text-white transition-colors cursor-pointer"
+                                                                >
+                                                                    Deny
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </div>
 
 												<div className="flex flex-col sm:flex-row justify-end gap-3 mt-4">
 													{editingScript === script.id ? (

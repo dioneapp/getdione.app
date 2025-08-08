@@ -53,7 +53,7 @@ export default function PrivacyPage() {
 				<p>
 					We use Supabase as our database provider and authentication service.
 					All data is stored securely and processed in accordance with industry
-					standards. For more information about Supabase's security practices,
+					standards. For more information about Supabase&rsquo;s security practices,
 					we encourage you to visit their websites.
 				</p>
 			</LegalCard>
@@ -103,7 +103,7 @@ export default function PrivacyPage() {
 				<p>
 					We may update this privacy policy from time to time. We will notify
 					you of any changes by posting the new policy on this page and updating
-					the "Updated" date at the top of this policy.
+					the &quot;Updated&quot; date at the top of this policy.
 				</p>
 			</LegalCard>
 
