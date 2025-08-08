@@ -268,7 +268,7 @@ export default function ProfileScriptsTab() {
         <div className="flex flex-col sm:flex-row gap-4">
           <input
             type="text"
-            placeholder="search your scripts..."
+            placeholder="Search your scripts..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="flex-1 px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/40"
@@ -481,8 +481,8 @@ export default function ProfileScriptsTab() {
 
       {/* script modal */}
       {showNewModal && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-[#0b0b0b] border border-white/10 rounded-xl p-6 max-w-lg w-full mx-auto shadow-2xl">
+        <div className="fixed inset-0 bg-black/10 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-[#0b0b0b]/90 border border-white/10 rounded-xl p-6 max-w-lg w-full mx-auto shadow-2xl">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-white text-xl font-semibold">Submit Script</h3>
               <button
