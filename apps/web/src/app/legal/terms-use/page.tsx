@@ -6,10 +6,10 @@ export default function TermsPage() {
 		<LegalPageLayout title="Terms of Use" updatedDate="June 11, 2025">
 			<LegalCard title="Service Overview">
 				<p>
-					Dione (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;) is a software installation platform that
-					facilitates access to open-source artificial intelligence
-					applications. We provide a technical interface to streamline the
-					installation process of publicly available AI tools.
+					Dione (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;) is a
+					software installation platform that facilitates access to open-source
+					artificial intelligence applications. We provide a technical interface
+					to streamline the installation process of publicly available AI tools.
 				</p>
 			</LegalCard>
 
@@ -24,11 +24,11 @@ export default function TermsPage() {
 
 			<LegalCard title="Disclaimer of Warranties">
 				<p>
-					The platform is provided &quot;as is&quot; and &quot;as available&quot; without any
-					warranties of any kind. We do not guarantee the functionality,
-					reliability, or availability of any third-party tools accessible
-					through our platform. Users acknowledge that they use these tools at
-					their own risk.
+					The platform is provided &quot;as is&quot; and &quot;as
+					available&quot; without any warranties of any kind. We do not
+					guarantee the functionality, reliability, or availability of any
+					third-party tools accessible through our platform. Users acknowledge
+					that they use these tools at their own risk.
 				</p>
 			</LegalCard>
 
@@ -75,7 +75,7 @@ export default function TermsPage() {
 					<li className="flex items-start">
 						<span className="text-white/80 mr-2">•</span>
 						<span>
-					Any modifications or discontinuation of tools by their respective
+							Any modifications or discontinuation of tools by their respective
 							authors.
 						</span>
 					</li>
