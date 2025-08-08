@@ -53,8 +53,8 @@ export default function PrivacyPage() {
 				<p>
 					We use Supabase as our database provider and authentication service.
 					All data is stored securely and processed in accordance with industry
-					standards. For more information about Supabase&rsquo;s security practices,
-					we encourage you to visit their websites.
+					standards. For more information about Supabase&rsquo;s security
+					practices, we encourage you to visit their websites.
 				</p>
 			</LegalCard>
 

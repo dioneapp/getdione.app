@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import createClient from "@/utils/supabase/server";
 
 export async function GET(
-    request: Request,
-    context: { params: { params: string[] } },
+	request: Request,
+	context: { params: { params: string[] } },
 ) {
 	const { searchParams, origin } = new URL(request.url);
 	const real = await context.params;

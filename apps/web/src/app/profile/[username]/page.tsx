@@ -22,15 +22,15 @@ const PUBLIC_FIELDS = [
 ] as const;
 
 type PublicUserProfile = {
-    username: string;
-    first_name: string | null;
-    bio: string | null;
-    location: string | null;
-    avatar_url: string | null;
-    created_at: string;
-    tester: boolean | null;
-    publisher: boolean | null;
-    moderator: boolean | null;
+	username: string;
+	first_name: string | null;
+	bio: string | null;
+	location: string | null;
+	avatar_url: string | null;
+	created_at: string;
+	tester: boolean | null;
+	publisher: boolean | null;
+	moderator: boolean | null;
 };
 
 export default function UserProfilePage({
