@@ -10,6 +10,7 @@ import {
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { supabase } from "@/utils/database";
+import useUser from "@/utils/use-user";
 import LoadingSkeleton from "./loading-skeleton";
 
 export default function UsersTab() {
@@ -24,6 +25,11 @@ export default function UsersTab() {
 	const [sortField, setSortField] = useState("created_at");
 	const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
 	const itemsPerPage = 10;
+    const { user: currentUser, loading: userLoading } = useUser();
+
+	// unified button style for moderation panel
+	const buttonClass =
+		"px-4 py-2 text-sm font-medium bg-white text-[#080808] hover:bg-white/90 transition-colors cursor-pointer disabled:opacity-60 inline-flex items-center justify-center gap-1.5 leading-none whitespace-nowrap rounded-full border border-black/10";
 
 	// sort options for users
 	const sortOptions = [
@@ -134,8 +140,8 @@ export default function UsersTab() {
 	};
 
 	const startEditing = (user: any) => {
-		// allow editing if user is moderator
-		if (user?.moderator) {
+		// allow editing if current logged-in user is a moderator
+		if (currentUser?.moderator) {
 			setEditingUser(user.id);
 			setEditedUserData(user);
 		}
@@ -442,7 +448,7 @@ export default function UsersTab() {
 														<>
 															<button
 																onClick={cancelEditing}
-																className="w-full sm:w-auto px-4 py-3 hover:text-white/70 rounded-lg text-white/80 transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
+								className={`${buttonClass} w-full sm:w-auto`}
 															>
 																Cancel
 															</button>
@@ -451,26 +457,25 @@ export default function UsersTab() {
 																	editedUserData &&
 																	handleSaveUser(editedUserData)
 																}
-																className="w-full sm:w-auto shrink-0 py-2 px-4 flex items-center justify-center gap-2 rounded-full bg-white font-semibold text-[#080808] cursor-pointer hover:bg-white/90 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/50 shadow-lg border border-black/10"
+								className={`${buttonClass} w-full sm:w-auto`}
 															>
 																<Check className="w-4 h-4" />
 																Save Changes
 															</button>
 														</>
-													) : user?.moderator ? (
+					) : currentUser?.moderator ? (
 														<button
 															onClick={() => startEditing(user)}
-															className="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-white/80 hover:text-white transition-all duration-200 flex items-center gap-2 cursor-pointer"
+							className={buttonClass}
 														>
 															<Pencil className="w-4 h-4" />
 															Edit Details
 														</button>
-													) : (
-														<div className="text-white/60 text-sm truncate">
-															You need moderator privileges to edit user
-															profiles
-														</div>
-													)}
+                    ) : !userLoading ? (
+                        <div className="text-white/60 text-sm truncate">
+                            You need moderator privileges to edit user profiles
+                        </div>
+                    ) : null}
 												</div>
 											</div>
 										</motion.div>
@@ -488,24 +493,24 @@ export default function UsersTab() {
 							users
 						</div>
 						<div className="flex gap-2">
-							<button
-								onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-								disabled={currentPage === 1}
-								className="p-2 bg-white/10 hover:bg-white/20 rounded text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
-								title="Previous Page"
-							>
-								<ChevronLeft className="w-5 h-5" />
-							</button>
-							<button
-								onClick={() =>
-									setCurrentPage((p) => Math.min(totalPages, p + 1))
-								}
-								disabled={currentPage === totalPages}
-								className="p-2 bg-white/10 hover:bg-white/20 rounded text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
-								title="Next Page"
-							>
-								<ChevronRight className="w-5 h-5" />
-							</button>
+					<button
+						onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+						disabled={currentPage === 1}
+						className="p-2 bg-white/10 hover:bg-white/20 rounded text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
+						title="Previous Page"
+					>
+						<ChevronLeft className="w-5 h-5" />
+					</button>
+					<button
+						onClick={() =>
+							setCurrentPage((p) => Math.min(totalPages, p + 1))
+						}
+						disabled={currentPage === totalPages}
+						className="p-2 bg-white/10 hover:bg-white/20 rounded text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
+						title="Next Page"
+					>
+						<ChevronRight className="w-5 h-5" />
+					</button>
 						</div>
 					</div>
 				</>

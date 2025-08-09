@@ -6,6 +6,10 @@ import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/utils/database";
 import useUser from "@/utils/use-user";
 
+type CommitHashHistory =
+    | string
+    | { [k: string]: string | { version: string; hash: string } };
+
 type UserScript = {
 	id: string;
 	name: string;
@@ -14,7 +18,7 @@ type UserScript = {
 	logo_url?: string;
 	version: string;
 	tags?: string;
-	commit_hash: string;
+    commit_hash: CommitHashHistory;
 	author?: string;
 	author_url?: string;
 	pending_review?: boolean;
@@ -54,9 +58,29 @@ export default function ProfileScriptsTab() {
 	const [editedScript, setEditedScript] = useState<UserScript | null>(null);
 	const [showNewModal, setShowNewModal] = useState(false);
 	const [creating, setCreating] = useState(false);
+	const [currentPage, setCurrentPage] = useState(1);
+	const [totalCount, setTotalCount] = useState(0);
+	const itemsPerPage = 10;
+
+	function buildCommitHistoryWithPending(
+		existing: CommitHashHistory,
+		version: string,
+		hash: string,
+	): CommitHashHistory {
+		if (existing && typeof existing === "object") {
+			const base: Record<string, string | { version: string; hash: string }> = {};
+			Object.entries(existing as any).forEach(([k, v]) => {
+				if (k === "__pending") return;
+				if (typeof v === "string") base[k] = v;
+			});
+			base["__pending"] = { version, hash };
+			return base;
+		}
+		return { __pending: { version, hash } } as any;
+	}
 
 	// new script form state
-	const [newScript, setNewScript] = useState<NewScriptInput>({
+    const [newScript, setNewScript] = useState<NewScriptInput>({
 		name: "",
 		description: "",
 		script_url: "",
@@ -67,17 +91,10 @@ export default function ProfileScriptsTab() {
 	});
 	const [newErrors, setNewErrors] = useState<Record<string, string>>({});
 
-	const filteredScripts = useMemo(() => {
-		if (!searchQuery) return scripts;
-		const q = searchQuery.toLowerCase();
-		return scripts.filter(
-			(s) =>
-				s.name?.toLowerCase().includes(q) ||
-				s.description?.toLowerCase().includes(q) ||
-				s.tags?.toLowerCase().includes(q) ||
-				s.version?.toLowerCase().includes(q),
-		);
-	}, [scripts, searchQuery]);
+	// reset to first page on new search
+	useEffect(() => {
+		setCurrentPage(1);
+	}, [searchQuery]);
 
 	useEffect(() => {
 		if (userLoading) return;
@@ -88,11 +105,33 @@ export default function ProfileScriptsTab() {
 			try {
 				setLoading(true);
 				setError(null);
-				const { data, error } = await supabase
+				// count query (with optional search filter)
+				const countQuery = supabase
+					.from("scripts")
+					.select("*", { count: "exact", head: true })
+					.eq("author", user.username);
+				if (searchQuery) {
+					(countQuery as any).or(
+						`name.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%,tags.ilike.%${searchQuery}%,version.ilike.%${searchQuery}%`,
+					);
+				}
+				const { count, error: countError } = (await countQuery) as any;
+				if (countError) throw countError;
+				if (!cancelled) setTotalCount(count || 0);
+
+				// paginated data query
+				let dataQuery = supabase
 					.from("scripts")
 					.select("*")
 					.eq("author", user.username)
-					.order("created_at", { ascending: false });
+					.order("created_at", { ascending: false })
+					.range((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage - 1);
+				if (searchQuery) {
+					(dataQuery as any).or(
+						`name.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%,tags.ilike.%${searchQuery}%,version.ilike.%${searchQuery}%`,
+					);
+				}
+				const { data, error } = await dataQuery;
 				if (error) throw error;
 				if (!cancelled) setScripts(data || []);
 			} catch (err) {
@@ -109,50 +148,112 @@ export default function ProfileScriptsTab() {
 		return () => {
 			cancelled = true;
 		};
-	}, [user, userLoading]);
+	}, [user, userLoading, currentPage, searchQuery]);
 
-	const startEditing = (s: UserScript) => {
-		setEditingScriptId(s.id);
-		setEditedScript({ ...s });
-		setExpandedScript(s.id);
-	};
+    const startEditing = (s: UserScript) => {
+        if (s.status === "DENIED") {
+            setError("Denied scripts cannot be edited. Please submit a new version.");
+            return;
+        }
+        // prepare clean edit state: blank version and commit input, preserve history
+        const baseHistory =
+            s.commit_hash && typeof s.commit_hash === "object"
+                ? (Object.fromEntries(
+                      Object.entries(s.commit_hash as any).filter(([k]) => k !== "__pending"),
+                  ) as CommitHashHistory)
+                : ("" as CommitHashHistory);
+
+        setEditingScriptId(s.id);
+        setEditedScript({
+            ...s,
+            version: "",
+            commit_hash: baseHistory,
+        });
+        setExpandedScript(s.id);
+    };
 
 	const cancelEditing = () => {
 		setEditingScriptId(null);
 		setEditedScript(null);
 	};
 
-	const saveEdits = async () => {
+    const saveEdits = async () => {
 		if (!editedScript) return;
-		// basic validation
+        if (editedScript.status === "DENIED") {
+            setError("Denied scripts cannot be edited. Please submit a new version.");
+            return;
+        }
+        // basic validation
 		const errs: Record<string, string> = {};
 		if (!editedScript.name?.trim()) errs.name = "required";
 		if (!editedScript.description?.trim()) errs.description = "required";
 		if (!editedScript.script_url?.trim()) errs.script_url = "required";
 		if (!editedScript.version?.trim()) errs.version = "required";
-		if (!editedScript.commit_hash?.trim()) errs.commit_hash = "required";
-		if (
-			editedScript.commit_hash &&
-			!validateCommitHash(editedScript.commit_hash)
-		) {
-			errs.commit_hash = "invalid hash";
-		}
+    // commit: support string or history object. For edits we use __pending to avoid losing history.
+    const nextPendingHash =
+        typeof editedScript.commit_hash === "string"
+            ? editedScript.commit_hash
+            : (editedScript.commit_hash as any)?.__pending?.hash || "";
+    if (!nextPendingHash.trim()) errs.commit_hash = "required";
+    if (nextPendingHash && !validateCommitHash(nextPendingHash)) {
+        errs.commit_hash = "invalid hash";
+    }
 
 		if (Object.keys(errs).length) {
-			setError("please fix the highlighted fields");
+			setError("Please fill missing fields");
 			return;
 		}
 
-		try {
+        // prevent reusing an existing version mapping (including previous current version)
+        {
+            const original = scripts.find((s) => s.id === editedScript.id);
+            const existingVersions = new Set<string>();
+            if (original?.version) existingVersions.add(original.version);
+            if (original?.commit_hash && typeof original.commit_hash === "object") {
+                Object.keys(original.commit_hash as any)
+                    .filter((k) => k !== "__pending")
+                    .forEach((k) => existingVersions.add(k));
+            }
+            if (existingVersions.has(editedScript.version)) {
+                setError("This version already exists for this script. Please bump the version.");
+                return;
+            }
+        }
+
+        // prevent reusing a commit hash already linked to any existing version
+        {
+            const original = scripts.find((s) => s.id === editedScript.id);
+            const usedHashes = new Set<string>();
+            if (typeof original?.commit_hash === "string") {
+                usedHashes.add(original.commit_hash);
+            } else if (original?.commit_hash && typeof original.commit_hash === "object") {
+                Object.entries(original.commit_hash as any)
+                    .filter(([k]) => k !== "__pending")
+                    .forEach(([, v]) => {
+                        if (typeof v === "string") usedHashes.add(v);
+                    });
+            }
+            if (usedHashes.has(nextPendingHash)) {
+                setError("This commit hash is already used by another version. Please use a new commit hash.");
+                return;
+            }
+        }
+
+        try {
 			setError(null);
-			const updateData: Partial<UserScript> = {
+		const updateData: Partial<UserScript> = {
 				name: editedScript.name,
 				description: editedScript.description,
 				script_url: editedScript.script_url,
 				logo_url: editedScript.logo_url || undefined,
 				version: editedScript.version,
 				tags: editedScript.tags || undefined,
-				commit_hash: editedScript.commit_hash,
+			// enforce single pending by normalizing to a single __pending entry
+			commit_hash: buildCommitHistoryWithPending(
+				editedScript.commit_hash,
+				editedScript.version,
+				nextPendingHash,
+			),
 				// re-open review on edit
 				pending_review: true,
 				status: "PENDING_REVIEW",
@@ -170,12 +271,39 @@ export default function ProfileScriptsTab() {
 				),
 			);
 			cancelEditing();
+
+            // best-effort webhook notification
+            try {
+                const body = {
+                    embeds: [
+                        {
+                            title: "Script Re-Submitted for Review",
+                            color: 0xfee75c,
+                            fields: [
+                                { name: "Name", value: editedScript.name, inline: true },
+                                { name: "Author", value: editedScript.author || "n/a", inline: true },
+                                { name: "Version", value: editedScript.version || "n/a", inline: true },
+                                { name: "Commit", value: nextPendingHash || "n/a", inline: true },
+                                { name: "ID", value: editedScript.id },
+                            ],
+                            timestamp: new Date().toISOString(),
+                        },
+                    ],
+                };
+                await fetch("/api/scripts-webhook", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(body),
+                });
+            } catch {
+                // ignore webhook errors
+            }
 		} catch (err) {
 			setError(err instanceof Error ? err.message : "failed to save");
 		}
 	};
 
-	const openNewModal = () => {
+    const openNewModal = () => {
 		setNewScript({
 			name: "",
 			description: "",
@@ -189,11 +317,11 @@ export default function ProfileScriptsTab() {
 		setShowNewModal(true);
 	};
 
-	const submitNew = async (e: React.FormEvent) => {
+    const submitNew = async (e: React.FormEvent) => {
 		e.preventDefault();
 		if (!user) return;
 
-		const errs: Record<string, string> = {};
+        const errs: Record<string, string> = {};
 		if (!newScript.name?.trim()) errs.name = "required";
 		if (newScript.name && newScript.name.length > 50)
 			errs.name = "max 50 characters";
@@ -212,10 +340,19 @@ export default function ProfileScriptsTab() {
 			errs.commit_hash = "invalid hash";
 		}
 
-		setNewErrors(errs);
-		if (Object.keys(errs).length) return;
+        setNewErrors(errs);
+        if (Object.keys(errs).length) return;
 
-		try {
+        // prevent multiple submissions while one is pending review
+        const hasPending = scripts.some(
+            (s) => s.pending_review || s.status === "PENDING_REVIEW",
+        );
+        if (hasPending) {
+            setError("You already have a submission pending review. Please wait until it is processed before submitting another update.");
+            return;
+        }
+
+        try {
 			setCreating(true);
 			const author = user.username || user.first_name || "anonymous";
 			const authorUrl = `${window.location.origin}/profile/${user.username}`;
@@ -231,7 +368,8 @@ export default function ProfileScriptsTab() {
 				logo_url: newScript.logo_url,
 				version: newScript.version,
 				tags: newScript.tags,
-				commit_hash: newScript.commit_hash,
+                // store as JSON mapping version -> hash
+                commit_hash: { [newScript.version]: newScript.commit_hash } as any,
 				author,
 				author_url: authorUrl,
 				likes: 0,
@@ -243,13 +381,36 @@ export default function ProfileScriptsTab() {
 			});
 			if (error) throw error;
 
-			// refresh list
-			const { data } = await supabase
-				.from("scripts")
-				.select("*")
-				.eq("author", author)
-				.order("created_at", { ascending: false });
-			setScripts(data || []);
+            // best-effort webhook notification
+            try {
+                const body = {
+                    embeds: [
+                        {
+                            title: "New Script Submitted for Review",
+                            color: 0xfee75c,
+                            fields: [
+                                { name: "Name", value: newScript.name, inline: true },
+                                { name: "Author", value: author, inline: true },
+                                { name: "Version", value: newScript.version || "n/a", inline: true },
+                                { name: "Commit", value: newScript.commit_hash || "n/a", inline: true },
+                                { name: "Script URL", value: newScript.script_url || "n/a" },
+                                { name: "ID", value: generatedId },
+                            ],
+                            timestamp: new Date().toISOString(),
+                        },
+                    ],
+                };
+                await fetch("/api/scripts-webhook", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(body),
+                });
+            } catch {
+                // ignore webhook errors
+            }
+
+            // refresh list (first page)
+            setCurrentPage(1);
 			setShowNewModal(false);
 		} catch (err) {
 			const e = err as any;
@@ -266,7 +427,7 @@ export default function ProfileScriptsTab() {
 					e?.message || e?.hint || "submission failed. check fields and auth",
 				);
 			}
-		} finally {
+        } finally {
 			setCreating(false);
 		}
 	};
@@ -284,7 +445,7 @@ export default function ProfileScriptsTab() {
 					/>
 					<button
 						onClick={openNewModal}
-						className="w-full sm:w-auto shrink-0 py-2 px-4 flex items-center justify-center gap-2 rounded-full bg-white font-semibold text-[#080808] cursor-pointer hover:bg-white/90 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/50 shadow-lg border border-black/10"
+						className="w-full sm:w-auto shrink-0 py-2 px-4 flex items-center justify-center gap-2 rounded-xl bg-white font-semibold text-[#080808] cursor-pointer hover:bg-white/90 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/50 shadow-lg border border-black/10"
 					>
 						<Plus className="w-4 h-4" />
 						Submit Script
@@ -297,15 +458,15 @@ export default function ProfileScriptsTab() {
 				)}
 			</div>
 
-			{loading ? (
+            {loading ? (
 				<div className="text-white/60">loading...</div>
 			) : (
-				<motion.div
+                <motion.div
 					initial={{ opacity: 0 }}
 					animate={{ opacity: 1 }}
 					className="space-y-4"
 				>
-					{filteredScripts.map((script) => (
+                    {scripts.map((script: UserScript) => (
 						<motion.div
 							key={script.id}
 							initial={{ opacity: 0, y: 20 }}
@@ -346,30 +507,36 @@ export default function ProfileScriptsTab() {
 												{script.description}
 											</p>
 											<div className="text-xs text-white/50 mt-1 flex gap-2 flex-wrap">
-												<span>version {script.version}</span>
-												{script.tags && <span>• {script.tags}</span>}
+												<span>v{script.version}</span>
+												{script.tags && <span>{script.tags.charAt(0).toUpperCase() + script.tags.slice(1)}</span>}
 												{script.pending_review ? (
 													<span className="text-yellow-300/80">
-														• pending review
+													Pending review
 													</span>
 												) : script.status ? (
 													<span className="text-white/70">
-														• {script.status.toLowerCase()}
+													 {script.status}
 													</span>
 												) : null}
 											</div>
 										</div>
 									</div>
-									<button
-										onClick={(e) => {
-											e.stopPropagation();
-											startEditing(script);
-										}}
-										className="px-3 py-1.5 bg-white/5 hover:bg-white/10 rounded-lg text-white/80 hover:text-white transition-all duration-200 flex items-center gap-2 cursor-pointer"
-									>
-										<Pencil className="w-4 h-4" />
-										Edit
-									</button>
+                                    {script.status !== "DENIED" ? (
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                startEditing(script);
+                                            }}
+                                            className="px-3 py-1.5 bg-white/5 hover:bg-white/10 rounded-lg text-white/80 hover:text-white transition-all duration-200 flex items-center gap-2 cursor-pointer"
+                                        >
+                                            <Pencil className="w-4 h-4" />
+                                            Edit
+                                        </button>
+                                    ) : (
+                                        <span className="px-3 py-1.5 text-xs text-red-300/80 bg-red-400/10 border border-red-400/20 rounded-lg">
+                                            Denied
+                                        </span>
+                                    )}
 								</div>
 							</div>
 
@@ -425,7 +592,8 @@ export default function ProfileScriptsTab() {
 																		: prev,
 																)
 															}
-															className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+                                                        className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+                                                        placeholder="e.g. 1.0.1"
 														/>
 													</div>
 													<div className="sm:col-span-2">
@@ -497,50 +665,93 @@ export default function ProfileScriptsTab() {
 														/>
 													</div>
 													<div>
-														<label className="block text-sm text-white/60 mb-1">
-															Commit hash
-														</label>
-														<input
-															type="text"
-															value={editedScript?.commit_hash || ""}
-															onChange={(e) =>
-																setEditedScript((prev) =>
-																	prev
-																		? { ...prev, commit_hash: e.target.value }
-																		: prev,
-																)
-															}
-															className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50"
-															placeholder="e.g. 7-40 hex chars"
-														/>
+                                <label className="block text-sm text-white/60 mb-1">Commit hash</label>
+                                <input
+                                    type="text"
+                                    value={
+                                        typeof editedScript?.commit_hash === "string"
+                                            ? (editedScript?.commit_hash as string)
+                                            : ((editedScript?.commit_hash as any)?.__pending?.hash || "")
+                                    }
+                                    onChange={(e) =>
+                                        setEditedScript((prev) =>
+                                            prev
+                                                ? {
+                                                      ...prev,
+                                                      commit_hash:
+                                                          typeof prev.commit_hash === "object"
+                                                              ? {
+                                                                    ...(prev.commit_hash as Record<string, string>),
+                                                                    __pending: { version: prev.version, hash: e.target.value },
+                                                                }
+                                                              : e.target.value,
+                                                  }
+                                                : prev,
+                                        )
+                                    }
+                                    className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+                                    placeholder="e.g. 7-40 hex chars"
+                                />
 													</div>
 												</div>
 											) : (
-												<div className="text-white/70 text-sm">
-													commit: {script.commit_hash}
-												</div>
+                                            <div className="text-white/70 text-sm">
+                                                {typeof script.commit_hash === "string" ? (
+                                                    <>Commit: <span className="font-mono">{script.commit_hash}</span></>
+                                                ) : (
+                                                    <div className="flex flex-wrap items-center gap-2">
+                                                        {(() => {
+                                                            const all = Object.entries(script.commit_hash || {}).filter(
+                                                                ([k]) => k !== "__pending",
+                                                            );
+                                                            const visible = all.slice(-10);
+                                                            return (
+                                                                <>
+                                                                    {visible.map(([ver, hash]) => (
+                                                                        <span
+                                                                            key={`${ver}-${String(hash)}`}
+                                                                            className="px-2 py-1 text-xs rounded-full bg-white/5 border border-white/10 text-white/80"
+                                                                        >
+                                                                            v{ver} • <span className="font-mono">{String(hash)}</span>
+                                                                        </span>
+                                                                    ))}
+                                                                    {all.length > visible.length && (
+                                                                        <span className="px-2 py-1 text-xs rounded-full bg-white/5 border border-white/10 text-white/60">
+                                                                            +{all.length - visible.length} more
+                                                                        </span>
+                                                                    )}
+                                                                </>
+                                                            );
+                                                        })()}
+                                                        {Boolean((script.commit_hash as any)?.__pending?.hash) && (
+                                                            <span className="px-2 py-1 text-xs rounded-full bg-yellow-400/10 border border-yellow-400/30 text-yellow-200">
+                                                                v{(script.commit_hash as any).__pending?.version} • <span className="font-mono">{(script.commit_hash as any).__pending?.hash}</span>
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </div>
 											)}
 
-											<div className="flex flex-col sm:flex-row justify-end gap-3 mt-2">
+                                            <div className="mt-8 flex flex-col items-center gap-2">
 												{editingScriptId === script.id ? (
 													<>
-														<button
-															onClick={cancelEditing}
-															className="w-full sm:w-auto px-4 py-3 hover:text-white/70 rounded-lg text-white/80 transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
-														>
-															Cancel
-														</button>
 														<button
 															onClick={saveEdits}
 															className="w-full sm:w-auto shrink-0 py-2 px-4 flex items-center justify-center gap-2 rounded-full bg-white font-semibold text-[#080808] cursor-pointer hover:bg-white/90 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/50 shadow-lg border border-black/10"
 														>
-															<Check className="w-4 h-4" /> Save changes for
-															review
+                                                            <Check className="w-4 h-4" /> Save changes for review
 														</button>
+                                                        <button
+                                                            onClick={cancelEditing}
+                                                            className="p-1 text-white hover:text-white/80 rounded-full cursor-pointer"
+                                                        >
+                                                            Cancel
+                                                        </button>
 													</>
 												) : (
 													<div className="text-white/50 text-sm">
-														last updated:{" "}
+														Last updated:{" "}
 														{script.updated_at?.slice(0, 10) ||
 															script.created_at?.slice(0, 10) ||
 															"n/a"}
@@ -550,10 +761,40 @@ export default function ProfileScriptsTab() {
 										</div>
 									</motion.div>
 								)}
+
+            {/* pagination */}
+            {!loading && totalCount > itemsPerPage && (
+                <div className="mt-6 flex items-center justify-between">
+                    <div className="text-white/60 text-sm">
+                        Showing {(currentPage - 1) * itemsPerPage + 1}–
+                        {Math.min(currentPage * itemsPerPage, totalCount)} of {totalCount}
+                    </div>
+                    <div className="flex gap-2">
+                        <button
+                            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                            disabled={currentPage === 1}
+                            className="px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            Prev
+                        </button>
+                        <button
+                            onClick={() =>
+                                setCurrentPage((p) =>
+                                    Math.min(Math.ceil(totalCount / itemsPerPage), p + 1),
+                                )
+                            }
+                            disabled={currentPage >= Math.ceil(totalCount / itemsPerPage)}
+                            className="px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            Next
+                        </button>
+                    </div>
+                </div>
+            )}
 							</AnimatePresence>
 						</motion.div>
 					))}
-					{!filteredScripts.length && (
+                    {!scripts.length && (
 						<div className="text-white/60 text-sm">
 							No scripts yet. Submit your first one.
 						</div>

@@ -1,11 +1,12 @@
 import { AnimatePresence, motion } from "framer-motion";
 import {
-	Check,
-	ChevronDown,
-	ChevronLeft,
-	ChevronRight,
-	ChevronUp,
-	Pencil,
+    Check,
+    ChevronDown,
+    ChevronLeft,
+    ChevronRight,
+    ChevronUp,
+    Pencil,
+    X as XIcon,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/utils/database";
@@ -13,19 +14,20 @@ import LoadingSkeleton from "./loading-skeleton";
 
 // add type for script data
 type Script = {
-	id: string;
-	name: string;
-	author: string;
-	description: string;
-	logo_url?: string;
-	created_at: string;
-	updated_at?: string;
-	script_url?: string;
-	version?: string;
-	tags?: string;
-	pending_review?: boolean;
-	status?: string | null;
-	review_feedback?: string | null;
+    id: string;
+    name: string;
+    author: string;
+    description: string;
+    logo_url?: string;
+    created_at: string;
+    updated_at?: string;
+    script_url?: string;
+    version?: string;
+    tags?: string;
+    pending_review?: boolean;
+    status?: string | null;
+    review_feedback?: string | null;
+    commit_hash?: string | Record<string, string> | null;
 };
 
 export default function ScriptsTab() {
@@ -43,6 +45,13 @@ export default function ScriptsTab() {
 	const [moderationFeedback, setModerationFeedback] = useState<
 		Record<string, string>
 	>({});
+    const [actionLoading, setActionLoading] = useState<Record<string, boolean>>(
+        {},
+    );
+
+	// unified button style for moderation panel
+	const buttonClass =
+		"px-4 py-2 text-sm font-medium bg-white text-[#080808] hover:bg-white/90 transition-colors cursor-pointer disabled:opacity-60 inline-flex items-center justify-center gap-1.5 leading-none whitespace-nowrap rounded-full border border-black/10";
 
 	// sort options for scripts
 	const sortOptions = [
@@ -96,7 +105,7 @@ export default function ScriptsTab() {
 
 	const totalPages = Math.ceil(totalCount / itemsPerPage);
 
-	const handleSaveScript = async (updatedScript: Script) => {
+    const handleSaveScript = async (updatedScript: Script) => {
 		try {
 			const { error } = await supabase
 				.from("scripts")
@@ -119,31 +128,152 @@ export default function ScriptsTab() {
 		}
 	};
 
-	const takeModerationAction = async (
-		pending_review: boolean,
-		script: Script,
-		action: "ACCEPTED" | "CHANGES_REQUESTED" | "DENIED",
-	) => {
-		try {
-			const update = {
-				pending_review: pending_review,
-				status: action,
-				review_feedback: moderationFeedback[script.id] || null,
-			} as Partial<Script>;
-			const { error } = await supabase
-				.from("scripts")
-				.update(update)
-				.eq("id", script.id);
-			if (error) throw error;
+    const takeModerationAction = async (
+        pending_review: boolean,
+        script: Script,
+        action: "ACCEPTED" | "CHANGES_REQUESTED" | "DENIED",
+    ) => {
+        setActionLoading((p) => ({ ...p, [script.id]: true }));
+        try {
+            // always refetch latest for safety (commit history / pending data)
+            const { data: fresh, error: fetchErr } = await supabase
+                .from("scripts")
+                .select("*")
+                .eq("id", script.id)
+                .single();
+            if (fetchErr) throw fetchErr;
 
-			setScripts((prev) =>
-				prev.map((s) => (s.id === script.id ? { ...s, ...update } : s)),
-			);
-		} catch (err) {
-			console.error("Error moderating script:", err);
-			alert("Failed to update status. Try again.");
-		}
-	};
+            let nextUpdate: Partial<Script> = {
+                pending_review,
+                status: action,
+                review_feedback: moderationFeedback[script.id] || null,
+            };
+
+            if (action === "ACCEPTED") {
+                const currentVersion = fresh.version as string | undefined;
+                const currentCommit = fresh.commit_hash as
+                    | string
+                    | Record<string, string>
+                    | null;
+
+                // detect pending candidate
+                let pendingVersion: string | undefined = undefined;
+                let pendingHash: string | undefined = undefined;
+
+                if (currentCommit && typeof currentCommit === "object") {
+                    const pending = (currentCommit as any)["__pending"] as
+                        | { version?: string; hash?: string }
+                        | undefined;
+                    if (pending?.version && pending?.hash) {
+                        pendingVersion = pending.version;
+                        pendingHash = pending.hash;
+                    }
+                } else if (typeof currentCommit === "string") {
+                    pendingVersion = currentVersion;
+                    pendingHash = currentCommit;
+                }
+
+                if (pendingVersion && pendingHash) {
+                    const baseHistory: Record<string, string> =
+                        currentCommit && typeof currentCommit === "object"
+                            ? Object.fromEntries(
+                                  Object.entries(currentCommit as Record<string, string>).filter(
+                                      ([k]) => k !== "__pending",
+                                  ),
+                              )
+                            : {};
+
+                    const newHistory: Record<string, string> = {
+                        ...baseHistory,
+                        [pendingVersion]: pendingHash,
+                    };
+
+                    nextUpdate.commit_hash = newHistory as any;
+                }
+            }
+
+            if (action === "DENIED") {
+                // clean pending candidate if present
+                const currentCommit = fresh.commit_hash as
+                    | string
+                    | Record<string, string>
+                    | null;
+                if (currentCommit && typeof currentCommit === "object") {
+                    const baseHistory = Object.fromEntries(
+                        Object.entries(currentCommit as Record<string, string>).filter(
+                            ([k]) => k !== "__pending",
+                        ),
+                    );
+                    nextUpdate.commit_hash = baseHistory as any;
+                }
+            }
+
+            const { error } = await supabase
+                .from("scripts")
+                .update(nextUpdate)
+                .eq("id", script.id);
+            if (error) throw error;
+
+            setScripts((prev) =>
+                prev.map((s) => (s.id === script.id ? { ...s, ...nextUpdate } : s)),
+            );
+
+            // fire discord webhook (best-effort)
+            try {
+                const color =
+                    action === "ACCEPTED"
+                        ? 0x57f287
+                        : action === "DENIED"
+                          ? 0xed4245
+                          : 0xfee75c;
+                const pending = typeof fresh.commit_hash === "object"
+                    ? (fresh.commit_hash as any)["__pending"]
+                    : undefined;
+                const commitForMsg =
+                    typeof fresh.commit_hash === "string"
+                        ? fresh.commit_hash
+                        : pending?.hash || "n/a";
+                const body = {
+                    embeds: [
+                        {
+                            title:
+                                action === "ACCEPTED"
+                                    ? "Script Accepted"
+                                    : action === "DENIED"
+                                      ? "Script Denied"
+                                      : "Changes Requested",
+                            color,
+                            fields: [
+                                { name: "Name", value: fresh.name, inline: true },
+                                { name: "Author", value: fresh.author || "n/a", inline: true },
+                                { name: "Version", value: fresh.version || "n/a", inline: true },
+                                { name: "Commit", value: commitForMsg || "n/a", inline: true },
+                                { name: "Status", value: action, inline: true },
+                                {
+                                    name: "Feedback",
+                                    value: moderationFeedback[script.id] || "—",
+                                },
+                                { name: "ID", value: script.id },
+                            ],
+                            timestamp: new Date().toISOString(),
+                        },
+                    ],
+                };
+                await fetch("/api/scripts-webhook", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(body),
+                });
+            } catch (e) {
+                console.warn("discord webhook failed", e);
+            }
+        } catch (err) {
+            console.error("Error moderating script:", err);
+            alert("Failed to update status. Try again.");
+        } finally {
+            setActionLoading((p) => ({ ...p, [script.id]: false }));
+        }
+    };
 
 	const startEditing = (script: Script) => {
 		setEditingScript(script.id);
@@ -246,17 +376,34 @@ export default function ScriptsTab() {
 													</div>
 												)}
 											</div>
-											<div>
-												<h3 className="text-lg font-medium text-white truncate">
-													{script.name}
-												</h3>
-												<p className="text-white/60 truncate">
-													by {script.author}
-												</p>
-												<p className="text-white/60 text-sm line-clamp-1">
-													{script.description}
-												</p>
-											</div>
+                                            <div>
+                                                <h3 className="text-lg font-medium text-white truncate">
+                                                    {script.name}
+                                                </h3>
+                                                <p className="text-white/60 truncate">
+                                                    by {script.author}
+                                                </p>
+                                                <p className="text-white/60 text-sm line-clamp-1">
+                                                    {script.description}
+                                                </p>
+                                                <div className="mt-1 flex gap-2 flex-wrap">
+                                                    {script.pending_review && script.status === "PENDING_REVIEW" && (
+                                                        <span className="text-[10px] px-2 py-0.5 rounded-full border border-yellow-400/30 text-yellow-300/90 bg-yellow-400/10">
+                                                            Requires review
+                                                        </span>
+                                                    )}
+                                                    {script.status === "CHANGES_REQUESTED" && (
+                                                        <span className="text-[10px] px-2 py-0.5 rounded-full border border-orange-400/30 text-orange-300/90 bg-orange-400/10">
+                                                            Changes requested
+                                                        </span>
+                                                    )}
+                                                    {script.status === "DENIED" && (
+                                                        <span className="text-[10px] px-2 py-0.5 rounded-full border border-red-400/30 text-red-300/90 bg-red-400/10">
+                                                            Denied
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </div>
 										</div>
 									</div>
 								</div>
@@ -337,78 +484,136 @@ export default function ScriptsTab() {
 													)}
 												</div>
 
-												{/* moderation status & actions */}
-												<div className="rounded-lg bg-white/5 border border-white/10 p-3">
-													<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-														<div className="text-sm text-white/70">
-															Status:{" "}
-															{script.pending_review
-																? "Pending review"
-																: script.status || "—"}
-														</div>
-													</div>
-													{script.pending_review && (
-														<div className="mt-3 space-y-3">
-															<textarea
-																rows={3}
-																value={moderationFeedback[script.id] || ""}
-																onChange={(e) =>
-																	setModerationFeedback((p) => ({
-																		...p,
-																		[script.id]: e.target.value,
-																	}))
-																}
-																placeholder="optional feedback to the author"
-																className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50"
-															/>
-															<div className="flex flex-col sm:flex-row gap-2 sm:justify-end">
-																<button
-																	onClick={() =>
-																		takeModerationAction(
-																			false,
-																			script,
-																			"ACCEPTED",
-																		)
-																	}
-																	className="w-full sm:w-auto shrink-0 py-2 px-4 flex items-center justify-center gap-2 rounded-full bg-white font-semibold text-[#080808] cursor-pointer hover:bg-white/90 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/50 shadow-lg border border-black/10"
-																>
-																	<Check className="w-4 h-4" /> Accept
-																</button>
-																<button
-																	onClick={() =>
-																		takeModerationAction(
-																			true,
-																			script,
-																			"CHANGES_REQUESTED",
-																		)
-																	}
-																	className="w-full sm:w-auto px-4 py-2 bg-white/10 hover:bg-white/20 rounded text-white transition-colors cursor-pointer"
-																>
-																	Request changes
-																</button>
-																<button
-																	onClick={() =>
-																		takeModerationAction(
-																			false,
-																			script,
-																			"DENIED",
-																		)
-																	}
-																	className="w-full sm:w-auto px-4 py-2 bg-white/10 hover:bg-white/20 rounded text-white transition-colors cursor-pointer"
-																>
-																	Deny
-																</button>
-															</div>
-														</div>
-													)}
-												</div>
+                                                {/* version, commit history and link */}
+                                                <div className="rounded-lg bg-white/5 border border-white/10 p-3 space-y-2">
+                                                    <div className="text-sm text-white/70">
+                                                        <span className="text-white/60">Script link:</span>{" "}
+                                                        {script.script_url ? (
+                                                            <a
+                                                                href={script.script_url}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                className="underline decoration-white/30 hover:decoration-white text-white"
+                                                            >
+                                                                Open
+                                                            </a>
+                                                        ) : (
+                                                            <span className="text-white/50">n/a</span>
+                                                        )}
+                                                    </div>
+                                                    <div className="text-sm text-white/70">
+                                                        <span className="text-white/60">Version to review:</span>{" "}
+                                                        <span className="text-white">{script.version || "n/a"}</span>
+                                                    </div>
+                                                    <div className="flex flex-wrap items-center gap-2">
+                                                        {(() => {
+                                                            const ch: any = script.commit_hash as any;
+                                                            if (!ch) return null;
+                                                            if (typeof ch === "string") {
+                                                                return (
+                                                                    <span className="px-2 py-1 text-xs rounded-full bg-yellow-400/10 border border-yellow-400/30 text-yellow-200">
+                                                                        v{script.version || "n/a"} • <span className="font-mono">{ch}</span>
+                                                                    </span>
+                                                                );
+                                                            }
+                                                            const all = Object.entries(ch).filter(([k]) => k !== "__pending");
+                                                            const visible = all.slice(-10);
+                                                            return (
+                                                                <>
+                                                                    {visible.map(([ver, hash]) => (
+                                                                        <span
+                                                                            key={`${ver}-${String(hash)}`}
+                                                                            className="px-2 py-1 text-xs rounded-full bg-white/5 border border-white/10 text-white/80"
+                                                                        >
+                                                                            v{ver} • <span className="font-mono">{String(hash)}</span>
+                                                                        </span>
+                                                                    ))}
+                                                                    {all.length > visible.length && (
+                                                                        <span className="px-2 py-1 text-xs rounded-full bg-white/5 border border-white/10 text-white/60">
+                                                                            +{all.length - visible.length} more
+                                                                        </span>
+                                                                    )}
+                                                                    {ch?.__pending?.hash && (
+                                                                        <span className="px-2 py-1 text-xs rounded-full bg-yellow-400/10 border border-yellow-400/30 text-yellow-200">
+                                                                            v{ch.__pending?.version} • <span className="font-mono">{ch.__pending?.hash}</span>
+                                                                        </span>
+                                                                    )}
+                                                                </>
+                                                            );
+                                                        })()}
+                                                    </div>
+                                                </div>
+
+                                                {/* moderation status & actions */}
+                                                {script.pending_review && (
+                                                    <div className="rounded-lg bg-white/5 border border-white/10 p-3 mt-3 space-y-3">
+                                                        <textarea
+                                                            rows={3}
+                                                            value={moderationFeedback[script.id] || ""}
+                                                            onChange={(e) =>
+                                                                setModerationFeedback((p) => ({
+                                                                    ...p,
+                                                                    [script.id]: e.target.value,
+                                                                }))
+                                                            }
+                                                            placeholder="Optional feedback to the author..."
+                                                            className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+                                                        />
+                                                        <div className="flex flex-col sm:flex-row gap-2 sm:justify-end">
+                                                            <div className="flex w-full sm:w-auto items-center gap-1">
+                                                                <button
+                                                                    onClick={() =>
+                                                                        takeModerationAction(
+                                                                            false,
+                                                                            script,
+                                                                            "DENIED",
+                                                                        )
+                                                                    }
+                                                                    disabled={!!actionLoading[script.id]}
+                                                                    className={buttonClass}
+                                                                >
+                                                                    <XIcon className="w-3.5 h-3.5" />
+                                                                    Deny
+                                                                </button>
+                                                                <button
+                                                                    onClick={() =>
+                                                                        takeModerationAction(
+                                                                            true,
+                                                                            script,
+                                                                            "CHANGES_REQUESTED",
+                                                                        )
+                                                                    }
+                                                                    disabled={!!actionLoading[script.id]}
+                                                                    className={buttonClass}
+                                                                >
+                                                                    <Pencil className="w-3.5 h-3.5" />
+                                                                    Request changes
+                                                                </button>
+                                                                <button
+                                                                    onClick={() =>
+                                                                        takeModerationAction(
+                                                                            false,
+                                                                            script,
+                                                                            "ACCEPTED",
+                                                                        )
+                                                                    }
+                                                                    disabled={!!actionLoading[script.id]}
+                                                                    className={buttonClass}
+                                                                >
+                                                                    <Check className="w-3.5 h-3.5" />
+                                                                    {actionLoading[script.id] ? "Updating..." : "Accept"}
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )}
 
 												<div className="flex flex-col sm:flex-row justify-end gap-3 mt-4">
 													{editingScript === script.id ? (
 														<>
 															<button
 																onClick={cancelEditing}
-																className="w-full sm:w-auto px-4 py-3 hover:text-white/70 rounded-lg text-white/80 transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
+									className={`${buttonClass} w-full sm:w-auto`}
 															>
 																Cancel
 															</button>
@@ -417,7 +622,7 @@ export default function ScriptsTab() {
 																	editedScriptData &&
 																	handleSaveScript(editedScriptData)
 																}
-																className="w-full sm:w-auto shrink-0 py-2 px-4 flex items-center justify-center gap-2 rounded-full bg-white font-semibold text-[#080808] cursor-pointer hover:bg-white/90 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/50 shadow-lg border border-black/10"
+									className={`${buttonClass} w-full sm:w-auto`}
 															>
 																<Check className="w-4 h-4" />
 																Save Changes
@@ -426,7 +631,7 @@ export default function ScriptsTab() {
 													) : (
 														<button
 															onClick={() => startEditing(script)}
-															className="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-white/80 hover:text-white transition-all duration-200 flex items-center gap-2 cursor-pointer"
+								className={buttonClass}
 														>
 															<Pencil className="w-4 h-4" />
 															Edit Details
@@ -449,24 +654,24 @@ export default function ScriptsTab() {
 							scripts
 						</div>
 						<div className="flex gap-2">
-							<button
-								onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-								disabled={currentPage === 1}
-								className="p-2 bg-white/10 hover:bg-white/20 rounded text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
-								title="Previous Page"
-							>
-								<ChevronLeft className="w-5 h-5" />
-							</button>
-							<button
-								onClick={() =>
-									setCurrentPage((p) => Math.min(totalPages, p + 1))
-								}
-								disabled={currentPage === totalPages}
-								className="p-2 bg-white/10 hover:bg-white/20 rounded text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
-								title="Next Page"
-							>
-								<ChevronRight className="w-5 h-5" />
-							</button>
+					<button
+						onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+						disabled={currentPage === 1}
+						className="p-2 bg-white/10 hover:bg-white/20 rounded text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
+						title="Previous Page"
+					>
+						<ChevronLeft className="w-5 h-5" />
+					</button>
+					<button
+						onClick={() =>
+							setCurrentPage((p) => Math.min(totalPages, p + 1))
+						}
+						disabled={currentPage === totalPages}
+						className="p-2 bg-white/10 hover:bg-white/20 rounded text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
+						title="Next Page"
+					>
+						<ChevronRight className="w-5 h-5" />
+					</button>
 						</div>
 					</div>
 				</>
