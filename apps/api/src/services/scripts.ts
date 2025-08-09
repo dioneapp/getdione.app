@@ -46,6 +46,7 @@ export const getFilteredEntries = async (
 		.from("scripts")
 		.select("*")
 		.neq("pending_review", true)
+		.neq("status", "DENIED")
 		.range(startIndex, endIndex - 1);
 
 	if (search) {

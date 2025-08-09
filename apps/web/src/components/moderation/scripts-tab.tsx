@@ -120,22 +120,22 @@ export default function ScriptsTab() {
 	};
 
 	const takeModerationAction = async (
+		pending_review: boolean,
 		script: Script,
 		action: "ACCEPTED" | "CHANGES_REQUESTED" | "DENIED",
 	) => {
 		try {
 			const update = {
-				pending_review: false,
+				pending_review: pending_review,
 				status: action,
 				review_feedback: moderationFeedback[script.id] || null,
 			} as Partial<Script>;
-
 			const { error } = await supabase
 				.from("scripts")
 				.update(update)
-				.eq("id", script.id);
+				.eq("id", script.id)
 			if (error) throw error;
-
+			
 			setScripts((prev) =>
 				prev.map((s) => (s.id === script.id ? { ...s, ...update } : s)),
 			);
@@ -364,7 +364,7 @@ export default function ScriptsTab() {
 															<div className="flex flex-col sm:flex-row gap-2 sm:justify-end">
 																<button
 																	onClick={() =>
-																		takeModerationAction(script, "ACCEPTED")
+																		takeModerationAction(false ,script, "ACCEPTED")
 																	}
 																	className="w-full sm:w-auto shrink-0 py-2 px-4 flex items-center justify-center gap-2 rounded-full bg-white font-semibold text-[#080808] cursor-pointer hover:bg-white/90 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/50 shadow-lg border border-black/10"
 																>
@@ -373,6 +373,7 @@ export default function ScriptsTab() {
 																<button
 																	onClick={() =>
 																		takeModerationAction(
+																			true,
 																			script,
 																			"CHANGES_REQUESTED",
 																		)
@@ -383,7 +384,7 @@ export default function ScriptsTab() {
 																</button>
 																<button
 																	onClick={() =>
-																		takeModerationAction(script, "DENIED")
+																		takeModerationAction(false, script, "DENIED")
 																	}
 																	className="w-full sm:w-auto px-4 py-2 bg-white/10 hover:bg-white/20 rounded text-white transition-colors cursor-pointer"
 																>
