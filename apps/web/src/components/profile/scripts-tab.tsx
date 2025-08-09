@@ -22,7 +22,7 @@ type UserScript = {
 	author?: string;
 	author_url?: string;
 	pending_review?: boolean;
-	status?: string | null;
+    status?: string | Record<string, string | [string, string]> | null;
 	review_feedback?: string | null;
 	created_at?: string;
 	updated_at?: string;
@@ -58,9 +58,65 @@ export default function ProfileScriptsTab() {
 	const [editedScript, setEditedScript] = useState<UserScript | null>(null);
 	const [showNewModal, setShowNewModal] = useState(false);
 	const [creating, setCreating] = useState(false);
+    const [deleting, setDeleting] = useState<Record<string, boolean>>({});
 	const [currentPage, setCurrentPage] = useState(1);
 	const [totalCount, setTotalCount] = useState(0);
 	const itemsPerPage = 10;
+    // used to force re-fetch when we need a refresh without changing page/search
+    const [refreshTick, setRefreshTick] = useState(0);
+
+    function getActiveVersionAndStatus(s: UserScript): { version?: string; status?: string; hash?: string } {
+        const statusMap: Record<string, string> | undefined =
+            s.status && typeof s.status === "object" ? (s.status as any) : undefined;
+        const ch: any = s.commit_hash as any;
+        const pendingVersion: string | undefined =
+            ch && typeof ch === "object" && ch.__pending?.version
+                ? (ch.__pending.version as string)
+                : undefined;
+        // If there is a pending submission, always treat status as PENDING_REVIEW
+        if (pendingVersion) {
+            return { version: pendingVersion, status: "PENDING_REVIEW", hash: (ch.__pending?.hash as string) };
+        }
+        const currentVersion = s.version as string | undefined;
+        const activeVersion = currentVersion || undefined;
+        const mappedRaw = activeVersion && statusMap ? (statusMap as any)[activeVersion] : undefined;
+        let mappedStatus: string | undefined = undefined;
+        let hash: string | undefined = undefined;
+        if (Array.isArray(mappedRaw)) {
+            mappedStatus = mappedRaw[0];
+            hash = mappedRaw[1];
+        } else if (typeof mappedRaw === "string") {
+            mappedStatus = mappedRaw;
+        }
+        const flatStatus = typeof s.status === "string" ? (s.status as string) : undefined;
+        return { version: activeVersion, status: mappedStatus || flatStatus, hash };
+    }
+
+    function getStatusForVersion(s: UserScript, version?: string): string | undefined {
+        if (!version) return undefined;
+        if (s.status && typeof s.status === "object") {
+            const map = s.status as Record<string, string | [string, string]>;
+            const raw = map[version];
+            return Array.isArray(raw) ? raw[0] : raw;
+        }
+        if (typeof s.status === "string" && version === s.version) {
+            return s.status as string;
+        }
+        return undefined;
+    }
+
+    function versionBadgeClasses(status?: string): string {
+        switch (status) {
+            case "ACCEPTED":
+                return "bg-green-400/10 border border-green-400/30 text-green-200";
+            case "DENIED":
+                return "bg-red-400/10 border border-red-400/30 text-red-200";
+            case "CHANGES_REQUESTED":
+                return "bg-orange-400/10 border border-orange-400/30 text-orange-200";
+            default:
+                return "bg-white/5 border border-white/10 text-white/80";
+        }
+    }
 
 	function buildCommitHistoryWithPending(
 		existing: CommitHashHistory,
@@ -148,14 +204,15 @@ export default function ProfileScriptsTab() {
 		return () => {
 			cancelled = true;
 		};
-	}, [user, userLoading, currentPage, searchQuery]);
+	}, [user, userLoading, currentPage, searchQuery, refreshTick]);
 
     const startEditing = (s: UserScript) => {
-        if (s.status === "DENIED") {
+        const { version: activeVersion, status: activeStatus } = getActiveVersionAndStatus(s);
+        if (activeStatus === "DENIED") {
             setError("Denied scripts cannot be edited. Please submit a new version.");
             return;
         }
-        // prepare clean edit state: blank version and commit input, preserve history
+        // prepare clean edit state: clear pending; keep history without __pending
         const baseHistory =
             s.commit_hash && typeof s.commit_hash === "object"
                 ? (Object.fromEntries(
@@ -163,10 +220,12 @@ export default function ProfileScriptsTab() {
                   ) as CommitHashHistory)
                 : ("" as CommitHashHistory);
 
+        const editingVersion = activeStatus === "CHANGES_REQUESTED" && activeVersion ? activeVersion : "";
+
         setEditingScriptId(s.id);
         setEditedScript({
             ...s,
-            version: "",
+            version: editingVersion,
             commit_hash: baseHistory,
         });
         setExpandedScript(s.id);
@@ -204,9 +263,12 @@ export default function ProfileScriptsTab() {
 			return;
 		}
 
-        // prevent reusing an existing version mapping (including previous current version)
+        // prevent reusing an existing version unless changes were requested for that version
         {
             const original = scripts.find((s) => s.id === editedScript.id);
+            const { version: activeVersion, status: activeStatus } = original
+                ? getActiveVersionAndStatus(original)
+                : { version: undefined, status: undefined };
             const existingVersions = new Set<string>();
             if (original?.version) existingVersions.add(original.version);
             if (original?.commit_hash && typeof original.commit_hash === "object") {
@@ -214,7 +276,9 @@ export default function ProfileScriptsTab() {
                     .filter((k) => k !== "__pending")
                     .forEach((k) => existingVersions.add(k));
             }
-            if (existingVersions.has(editedScript.version)) {
+            const isReusingActiveWithCR =
+                activeStatus === "CHANGES_REQUESTED" && editedScript.version === activeVersion;
+            if (!isReusingActiveWithCR && editedScript.version && existingVersions.has(editedScript.version)) {
                 setError("This version already exists for this script. Please bump the version.");
                 return;
             }
@@ -240,7 +304,7 @@ export default function ProfileScriptsTab() {
         }
 
         try {
-			setError(null);
+            setError(null);
 		const updateData: Partial<UserScript> = {
 				name: editedScript.name,
 				description: editedScript.description,
@@ -255,14 +319,18 @@ export default function ProfileScriptsTab() {
 				nextPendingHash,
 			),
 				// re-open review on edit
-				pending_review: true,
-				status: "PENDING_REVIEW",
+                pending_review: true,
+                // keep per-version history; set this version to PENDING_REVIEW with hash
+                status: {
+                    ...(typeof editedScript.status === "object" ? (editedScript.status as any) : {}),
+                    [editedScript.version]: ["PENDING_REVIEW", nextPendingHash],
+                } as any,
 			};
 
-			const { error } = await supabase
-				.from("scripts")
-				.update(updateData)
-				.eq("id", editedScript.id);
+            const { error } = await supabase
+                .from("scripts")
+                .update(updateData)
+                .eq("id", editedScript.id);
 			if (error) throw error;
 
 			setScripts((prev) =>
@@ -316,6 +384,25 @@ export default function ProfileScriptsTab() {
 		setNewErrors({});
 		setShowNewModal(true);
 	};
+
+    const deleteScript = async (s: UserScript) => {
+        if (!s?.id) return;
+        const confirmed = window.confirm(`Delete script "${s.name}"? This cannot be undone.`);
+        if (!confirmed) return;
+        try {
+            setDeleting((m) => ({ ...m, [s.id]: true }));
+            const { error } = await supabase
+                .from("scripts")
+                .delete()
+                .eq("id", s.id);
+            if (error) throw error;
+            setScripts((prev) => prev.filter((x) => x.id !== s.id));
+        } catch (err) {
+            setError(err instanceof Error ? err.message : "failed to delete");
+        } finally {
+            setDeleting((m) => ({ ...m, [s.id]: false }));
+        }
+    };
 
     const submitNew = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -377,7 +464,7 @@ export default function ProfileScriptsTab() {
 				featured: false,
 				official: false,
 				pending_review: true,
-				status: "PENDING_REVIEW",
+				status: { [newScript.version]: ["PENDING_REVIEW", newScript.commit_hash] } as any,
 			});
 			if (error) throw error;
 
@@ -409,9 +496,10 @@ export default function ProfileScriptsTab() {
                 // ignore webhook errors
             }
 
-            // refresh list (first page)
+            // refresh list (first page) and force re-fetch
             setCurrentPage(1);
-			setShowNewModal(false);
+            setRefreshTick((t) => t + 1);
+            setShowNewModal(false);
 		} catch (err) {
 			const e = err as any;
 			console.error("submit script error:", e);
@@ -509,34 +597,54 @@ export default function ProfileScriptsTab() {
 											<div className="text-xs text-white/50 mt-1 flex gap-2 flex-wrap">
 												<span>v{script.version}</span>
 												{script.tags && <span>{script.tags.charAt(0).toUpperCase() + script.tags.slice(1)}</span>}
-												{script.pending_review ? (
-													<span className="text-yellow-300/80">
-													Pending review
-													</span>
-												) : script.status ? (
-													<span className="text-white/70">
-													 {script.status}
-													</span>
-												) : null}
+                                                {(() => {
+                                                    const { status } = getActiveVersionAndStatus(script);
+                                                    if (status === "CHANGES_REQUESTED") {
+                                                        return <span className="text-orange-300/80">Changes requested</span>;
+                                                    }
+                                                    if (status === "DENIED") {
+                                                        return <span className="text-red-300/80">Denied</span>;
+                                                    }
+                                                    if (status === "ACCEPTED") {
+                                                        return <span className="text-green-300/80">Accepted</span>;
+                                                    }
+                                                    if (script.pending_review || status === "PENDING_REVIEW") {
+                                                        return <span className="text-yellow-300/80">Pending review</span>;
+                                                    }
+                                                    return null;
+                                                })()}
 											</div>
 										</div>
 									</div>
-                                    {script.status !== "DENIED" ? (
-                                        <button
+                                    <div className="flex items-center gap-2">
+                                        {script.status !== "DENIED" ? (
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    startEditing(script);
+                                                }}
+                                                className="px-3 py-1.5 bg-white/5 hover:bg-white/10 rounded-lg text-white/80 hover:text-white transition-all duration-200 flex items-center gap-2 cursor-pointer"
+                                            >
+                                                <Pencil className="w-4 h-4" />
+                                                Edit
+                                            </button>
+                                        ) : (
+                                            <span className="px-3 py-1.5 text-xs text-red-300/80 bg-red-400/10 border border-red-400/20 rounded-lg">
+                                                Denied
+                                            </span>
+                                        )}
+                                      {/* <button
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                startEditing(script);
+                                                deleteScript(script);
                                             }}
-                                            className="px-3 py-1.5 bg-white/5 hover:bg-white/10 rounded-lg text-white/80 hover:text-white transition-all duration-200 flex items-center gap-2 cursor-pointer"
+                                            disabled={!!deleting[script.id]}
+                                            className="px-3 py-1.5 bg-red-500/10 hover:bg-red-500/20 rounded-lg text-red-300 hover:text-red-200 transition-all duration-200 cursor-pointer border border-red-500/20"
+                                            title="Delete script"
                                         >
-                                            <Pencil className="w-4 h-4" />
-                                            Edit
-                                        </button>
-                                    ) : (
-                                        <span className="px-3 py-1.5 text-xs text-red-300/80 bg-red-400/10 border border-red-400/20 rounded-lg">
-                                            Denied
-                                        </span>
-                                    )}
+                                            {deleting[script.id] ? "Deleting..." : "Delete"}
+                                        </button>*/}
+                                    </div>
 								</div>
 							</div>
 
@@ -550,14 +658,18 @@ export default function ProfileScriptsTab() {
 										className="border-t border-white/10"
 									>
 										<div className="p-4 space-y-4">
-											{script.review_feedback && (
-												<div className="text-sm text-white/70 bg-white/5 border border-white/10 rounded-lg p-3">
-													<span className="text-white/60">
-														moderator feedback:
-													</span>{" "}
-													{script.review_feedback}
-												</div>
-											)}
+                                            {(() => {
+                                                const { status } = getActiveVersionAndStatus(script);
+                                                if (status === "CHANGES_REQUESTED" && script.review_feedback) {
+                                                    return (
+                                                        <div className="text-sm text-white/70 bg-white/5 border border-white/10 rounded-lg p-3">
+                                                            <span className="text-white/60">Changes requested:</span>{" "}
+                                                            {script.review_feedback}
+                                                        </div>
+                                                    );
+                                                }
+                                                return null;
+                                            })()}
 
 											{editingScriptId === script.id ? (
 												<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -707,14 +819,17 @@ export default function ProfileScriptsTab() {
                                                             const visible = all.slice(-10);
                                                             return (
                                                                 <>
-                                                                    {visible.map(([ver, hash]) => (
-                                                                        <span
-                                                                            key={`${ver}-${String(hash)}`}
-                                                                            className="px-2 py-1 text-xs rounded-full bg-white/5 border border-white/10 text-white/80"
-                                                                        >
-                                                                            v{ver} • <span className="font-mono">{String(hash)}</span>
-                                                                        </span>
-                                                                    ))}
+                                                                    {visible.map(([ver, hash]) => {
+                                                                        const status = getStatusForVersion(script, String(ver));
+                                                                        return (
+                                                                            <span
+                                                                                key={`${ver}-${String(hash)}`}
+                                                                                className={`px-2 py-1 text-xs rounded-full ${versionBadgeClasses(status)}`}
+                                                                            >
+                                                                                v{ver} • <span className="font-mono">{String(hash)}</span>
+                                                                            </span>
+                                                                        );
+                                                                    })}
                                                                     {all.length > visible.length && (
                                                                         <span className="px-2 py-1 text-xs rounded-full bg-white/5 border border-white/10 text-white/60">
                                                                             +{all.length - visible.length} more
@@ -906,11 +1021,11 @@ export default function ProfileScriptsTab() {
 									<input
 										type="text"
 										value={newScript.version}
-										onChange={(e) =>
-											setNewScript((p) => ({ ...p, version: e.target.value }))
-										}
+										readOnly
+										disabled
 										required
-										className={`w-full px-4 py-2 bg-white/10 border ${newErrors.version ? "border-red-500/50" : "border-white/20"} rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50`}
+										title="Initial version is fixed to 1.0.0"
+										className={`w-full px-4 py-2 bg-white/10 border ${newErrors.version ? "border-red-500/50" : "border-white/20"} rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50 cursor-not-allowed opacity-70`}
 										placeholder="1.0.0"
 									/>
 								</div>
