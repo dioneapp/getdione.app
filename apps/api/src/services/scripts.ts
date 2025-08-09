@@ -45,6 +45,7 @@ export const getFilteredEntries = async (
 	let query = supabase
 		.from("scripts")
 		.select("*")
+		.neq("pending_review", true)
 		.range(startIndex, endIndex - 1);
 
 	if (search) {
