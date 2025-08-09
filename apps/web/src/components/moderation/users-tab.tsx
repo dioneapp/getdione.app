@@ -25,7 +25,7 @@ export default function UsersTab() {
 	const [sortField, setSortField] = useState("created_at");
 	const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
 	const itemsPerPage = 10;
-    const { user: currentUser, loading: userLoading } = useUser();
+	const { user: currentUser, loading: userLoading } = useUser();
 
 	// unified button style for moderation panel
 	const buttonClass =
@@ -448,7 +448,7 @@ export default function UsersTab() {
 														<>
 															<button
 																onClick={cancelEditing}
-								className={`${buttonClass} w-full sm:w-auto`}
+																className={`${buttonClass} w-full sm:w-auto`}
 															>
 																Cancel
 															</button>
@@ -457,25 +457,26 @@ export default function UsersTab() {
 																	editedUserData &&
 																	handleSaveUser(editedUserData)
 																}
-								className={`${buttonClass} w-full sm:w-auto`}
+																className={`${buttonClass} w-full sm:w-auto`}
 															>
 																<Check className="w-4 h-4" />
 																Save Changes
 															</button>
 														</>
-					) : currentUser?.moderator ? (
+													) : currentUser?.moderator ? (
 														<button
 															onClick={() => startEditing(user)}
-							className={buttonClass}
+															className={buttonClass}
 														>
 															<Pencil className="w-4 h-4" />
 															Edit Details
 														</button>
-                    ) : !userLoading ? (
-                        <div className="text-white/60 text-sm truncate">
-                            You need moderator privileges to edit user profiles
-                        </div>
-                    ) : null}
+													) : !userLoading ? (
+														<div className="text-white/60 text-sm truncate">
+															You need moderator privileges to edit user
+															profiles
+														</div>
+													) : null}
 												</div>
 											</div>
 										</motion.div>
@@ -493,24 +494,24 @@ export default function UsersTab() {
 							users
 						</div>
 						<div className="flex gap-2">
-					<button
-						onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-						disabled={currentPage === 1}
-						className="p-2 bg-white/10 hover:bg-white/20 rounded text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
-						title="Previous Page"
-					>
-						<ChevronLeft className="w-5 h-5" />
-					</button>
-					<button
-						onClick={() =>
-							setCurrentPage((p) => Math.min(totalPages, p + 1))
-						}
-						disabled={currentPage === totalPages}
-						className="p-2 bg-white/10 hover:bg-white/20 rounded text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
-						title="Next Page"
-					>
-						<ChevronRight className="w-5 h-5" />
-					</button>
+							<button
+								onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+								disabled={currentPage === 1}
+								className="p-2 bg-white/10 hover:bg-white/20 rounded text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
+								title="Previous Page"
+							>
+								<ChevronLeft className="w-5 h-5" />
+							</button>
+							<button
+								onClick={() =>
+									setCurrentPage((p) => Math.min(totalPages, p + 1))
+								}
+								disabled={currentPage === totalPages}
+								className="p-2 bg-white/10 hover:bg-white/20 rounded text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
+								title="Next Page"
+							>
+								<ChevronRight className="w-5 h-5" />
+							</button>
 						</div>
 					</div>
 				</>
