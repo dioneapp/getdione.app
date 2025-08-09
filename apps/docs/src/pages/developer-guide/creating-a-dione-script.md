@@ -59,6 +59,18 @@ This section lists external dependencies required by the application. Dione ensu
 -   **Key**: The dependency name (e.g., `git`).
 -   **Value**: An object specifying the version.
 
+### Available Dependencies
+
+The following dependencies are available for use in Dione scripts:
+
+- **git**: Git version control system
+- **conda**: Conda package and environment manager
+- **uv**: Fast Python package installer and resolver
+- **ffmpeg**: Multimedia framework for audio/video processing
+- **node**: Node.js JavaScript runtime
+- **pnpm**: Fast, disk space efficient package manager
+- **build_tools**: Visual Studio Build Tools for Windows
+
 ### Example
 
 ```json
@@ -186,4 +198,3 @@ Create a folder named `melotts` and place the `dione.json` file inside it.
 *We're currently building a better submit system. This will provide a more streamlined experience for script creators. Stay tuned for updates on our new submission system!*
 
 For now, to add your application to Dione, submit a pull request to the [Official Dione Scripts](https://github.com/dioneapp/official-scripts) repository.
-
