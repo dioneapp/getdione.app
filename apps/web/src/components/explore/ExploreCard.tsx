@@ -39,12 +39,12 @@ export default function ExploreCard({
 			onClick={() => (window.location.href = `dione://download=${id}`)}
 			className="group relative p-6 rounded-xl border border-white/10 backdrop-blur-md bg-white/5 hover:bg-white/10 transition-all duration-300 shadow-lg cursor-pointer w-full h-full flex flex-col"
 		>
-			{banner_url && (
+			{/* {banner_url && (
 				<div
 					className="absolute top-0 left-0 w-full h-24 rounded-t-xl bg-cover bg-center bg-no-repeat blur-xl opacity-40 -z-10"
 					style={{ backgroundImage: `url(${banner_url})` }}
 				/>
-			)}
+			)} */}
 
 			<div className="relative z-10 flex flex-col h-full">
 				<div className="flex items-center gap-4 mb-4">
@@ -72,7 +72,7 @@ export default function ExploreCard({
 					</p>
 
 					<div className="mt-auto pt-3">
-						<div className="flex justify-between items-center text-xs text-gray-500">
+						<div className="flex justify-between items-center text-xs text-neutral-400">
 							<div className="flex items-center gap-4">
 								{version && (
 									<span className="flex items-center">
@@ -86,10 +86,10 @@ export default function ExploreCard({
 							</div>
 
 							<div className="flex items-center gap-2">
-								<span className="flex items-center">
+								{/* <span className="flex items-center">
 									<ThumbsUp className="w-4 h-4 mr-1" />
 									{likes}
-								</span>
+								</span> */}
 								<span className="flex items-center">
 									<Download className="w-4 h-4 mr-1" />
 									{downloads}

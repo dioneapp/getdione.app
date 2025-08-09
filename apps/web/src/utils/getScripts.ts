@@ -1,6 +1,6 @@
 export async function getScripts() {
 	try {
-		const limit = process.env.NODE_ENV === "development" ? 10 : 50;
+		const limit = process.env.NODE_ENV === "development" ? 12 : 50;
 		const res = await fetch(
 			`https://api.getdione.app/v1/scripts?limit=${limit}`,
 			{
