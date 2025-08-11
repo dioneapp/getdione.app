@@ -1,10 +1,13 @@
+"use client";
+
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import React from "react";
 
 type FAQ = {
-	question: string;
-	answer: string;
+    question: string;
+    answer: string;
+    icon?: React.ReactNode;
 };
 
 type FAQProps = {
@@ -16,36 +19,59 @@ type FAQProps = {
 export default function FAQ({ faq, openItems, toggleItem }: FAQProps) {
 	return (
 		<section
-			className="w-full max-w-4xl mx-auto mt-16 px-4"
+            className="relative w-full max-w-4xl mx-auto px-4"
 			aria-labelledby="faq-heading"
 		>
-			<h2
-				id="faq-heading"
-				className="text-3xl sm:text-4xl font-semibold text-white text-center mb-12"
-			>
-				Frequently Asked Questions
-			</h2>
+            {/* decorative background */}
+            <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
+                <div className="center-radial-glow" />
+                <motion.div
+                    className="absolute -top-10 -right-20 h-64 w-64 rounded-full blur-3xl opacity-40"
+          
+                    animate={{ y: [0, -10, 0] }}
+                    transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+                />
+                <motion.div
+                    className="absolute -bottom-16 -left-24 h-72 w-72 rounded-full blur-3xl opacity-30"
+                    style={{
+                        background:
+                            "radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.18), transparent 60%)",
+                    }}
+                    animate={{ y: [0, 12, 0] }}
+                    transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+                />
+            </div>
 			<div className="grid gap-4">
 				{faq.map((item, index) => (
 					<article
 						key={index}
 						className={`group rounded-xl border border-white/10 hover:border-white/20 transition-all duration-300 overflow-hidden ${openItems.includes(index) ? "border-white/30" : ""}`}
 					>
-						<button
-							onClick={() => toggleItem(index)}
-							className="w-full p-6 text-left flex items-center justify-between text-white hover:text-white/90 transition-all duration-200 cursor-pointer"
-							aria-expanded={openItems.includes(index)}
-							aria-controls={`faq-answer-${index}`}
-						>
-							<span className="font-semibold text-lg pr-4 leading-tight">
-								{item.question}
-							</span>
-							<div className="flex-shrink-0 w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors duration-200">
-								<ChevronDown
-									className={`w-4 h-4 transition-transform duration-300 ${openItems.includes(index) ? "rotate-180" : ""}`}
-								/>
-							</div>
-						</button>
+                        <button
+                            onClick={() => toggleItem(index)}
+                            className="w-full p-6 text-left flex items-center justify-between text-white hover:text-white/90 transition-all duration-200 cursor-pointer"
+                            aria-expanded={openItems.includes(index)}
+                            aria-controls={`faq-answer-${index}`}
+                        >
+                            <div className="flex items-center gap-3 pr-4">
+                                {item.icon && (
+                                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-white/5 ring-1 ring-white/10 flex items-center justify-center">
+                                        {/* icon passed in via props */}
+                                        <span aria-hidden>
+                                            {item.icon}
+                                        </span>
+                                    </div>
+                                )}
+                                <span className="font-semibold text-lg leading-tight">
+                                    {item.question}
+                                </span>
+                            </div>
+                            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors duration-200">
+                                <ChevronDown
+                                    className={`w-4 h-4 transition-transform duration-300 ${openItems.includes(index) ? "rotate-180" : ""}`}
+                                />
+                            </div>
+                        </button>
 						<AnimatePresence initial={false}>
 							{openItems.includes(index) && (
 								<motion.div
