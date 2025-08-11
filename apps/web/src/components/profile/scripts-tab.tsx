@@ -480,7 +480,7 @@ export default function ProfileScriptsTab() {
 		try {
 			setCreating(true);
 			const author = user.username || user.first_name || "anonymous";
-			const authorUrl = `${window.location.origin}/profile/${user.username}`;
+			const authorUrl = `https://getdione.app/profile/${user.username}`;
 			const generatedId = crypto.randomUUID();
 			const { error } = await supabase.from("scripts").insert({
 				id: generatedId,
