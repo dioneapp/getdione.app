@@ -99,7 +99,7 @@ export default function RootLayout({
 				{GA_SCRIPT}
 			</Script>
 
-			<body className={`${poppins.variable} antialiased min-h-screen`}>
+            <body className={`${poppins.variable} antialiased min-h-screen flex flex-col`}>
 				<Background />
 				<Navbar />
 				{children}
