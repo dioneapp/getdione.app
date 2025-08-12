@@ -1,14 +1,10 @@
 import { NextResponse } from "next/server";
 import createClient from "@/utils/supabase/server";
 
-export async function GET(
-	request: Request,
-	context: { params: { params: string[] } },
-) {
+export async function GET(request: Request) {
 	const { searchParams, origin } = new URL(request.url);
-	const real = await context.params;
-
-	const isApp = real.params.includes("app");
+	const params = request.url.split("/auth/callback/")[1]?.split("?")[0]?.split("/") || [];
+	const isApp = params.includes("app");
 	const code = searchParams.get("code");
 
 	if (code) {
