@@ -45,13 +45,10 @@ export const getFilteredEntries = async (
 
 	let query = supabase
 		.from("scripts")
-		.select("*");
-		
-	query = query.or("status.is.null,status.not.cs.\"DENIED\"");
+		.select("*")
+		.eq("pending_review", "false")
 
-	if (!showPending) {
-		query = query.eq("pending_review", false);
-	}
+		.range(startIndex, endIndex - 1);
 
 	query = query.range(startIndex, endIndex - 1);
 
@@ -131,8 +128,18 @@ export const getFilteredEntries = async (
 		};
 	}
 
+	const filteredScripts = data.map(script => {
+		const filteredStatus = Object.fromEntries(
+		  Object.entries(script.status ?? {}).filter(
+			([_version, arr]) => Array.isArray(arr) && !arr.includes('DENIED')
+		  )
+		);
+		return { ...script, status: filteredStatus };
+	  });
+	  
+
 	return {
 		status: 200,
-		data: data || [],
+		data: filteredScripts || [],
 	};
 };
