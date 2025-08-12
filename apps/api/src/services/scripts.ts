@@ -20,6 +20,7 @@ export const getFilteredEntries = async (
 	search?: string,
 	featured?: string,
 	id?: string,
+	showPending?: boolean,
 ) => {
 	const supabase = initializeSupabase(c);
 
@@ -45,9 +46,12 @@ export const getFilteredEntries = async (
 	let query = supabase
 		.from("scripts")
 		.select("*")
-		.neq("pending_review", true)
 		.neq("status", "DENIED")
 		.range(startIndex, endIndex - 1);
+
+	if (!showPending) {
+		query = query.neq("pending_review", true);
+	}
 
 	if (search) {
 		const cleanSearch = search.replace(/ /g, "-");
