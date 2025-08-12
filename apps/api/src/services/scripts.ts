@@ -50,7 +50,7 @@ export const getFilteredEntries = async (
 		.range(startIndex, endIndex - 1);
 
 	if (!showPending) {
-		query = query.neq("pending_review", true);
+		query = query.neq("pending_review", "true");
 	}
 
 	if (search) {
