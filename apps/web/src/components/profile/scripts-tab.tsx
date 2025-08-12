@@ -5,6 +5,7 @@ import { Check, Pencil, Plus, X as XIcon } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/utils/database";
 import useUser from "@/utils/use-user";
+import { scriptsWebhookAction } from "@/app/actions";
 
 type CommitHashHistory =
 	| string
@@ -395,11 +396,7 @@ export default function ProfileScriptsTab() {
 						},
 					],
 				};
-				await fetch("/api/scripts-webhook", {
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify(body),
-				});
+				await scriptsWebhookAction(body);
 			} catch {
 				// ignore webhook errors
 			}
@@ -530,11 +527,7 @@ export default function ProfileScriptsTab() {
 						},
 					],
 				};
-				await fetch("/api/scripts-webhook", {
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify(body),
-				});
+				await scriptsWebhookAction(body);
 			} catch {
 				// ignore webhook errors
 			}

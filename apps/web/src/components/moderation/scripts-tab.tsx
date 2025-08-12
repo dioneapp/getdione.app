@@ -11,6 +11,7 @@ import {
 import { useEffect, useState } from "react";
 import { supabase } from "@/utils/database";
 import LoadingSkeleton from "./loading-skeleton";
+import { scriptsWebhookAction } from "@/app/actions";
 
 // add type for script data
 type Script = {
@@ -334,11 +335,7 @@ export default function ScriptsTab() {
 						},
 					],
 				};
-				await fetch("/api/scripts-webhook", {
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify(body),
-				});
+				await scriptsWebhookAction(body);
 			} catch (e) {
 				console.warn("discord webhook failed", e);
 			}

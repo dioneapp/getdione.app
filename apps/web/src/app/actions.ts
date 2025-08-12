@@ -1,6 +1,6 @@
 "use server";
 
-import { sendFeaturedWebhook } from "./server/webhook";
+import { sendFeaturedWebhook, sendScriptsWebhook } from "./server/webhook";
 
 export async function getScriptsAction(limit: number = 50) {
 	try {
@@ -32,6 +32,18 @@ export async function featuredWebhookAction(body: any) {
 			return { error: "Failed to submit webhook" };
 		}
 	} catch (error) {
+		return { error: "Internal server error" };
+	}
+}
+
+export async function scriptsWebhookAction(body: any) {
+	try {
+		const result = await sendScriptsWebhook(body);
+		if ((result as any).success) {
+			return { success: true };
+		}
+		return { error: "Failed to submit webhook" };
+	} catch {
 		return { error: "Internal server error" };
 	}
 }
