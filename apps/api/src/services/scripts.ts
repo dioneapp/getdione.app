@@ -47,11 +47,9 @@ export const getFilteredEntries = async (
 		.from("scripts")
 		.select("*")
 		.not("status", "cs", '"DENIED"')
+		.not("status", "cs", '"PENDING_REVIEW"')
+		.or("pending_review.eq.false,status.not.is.null")
 		.range(startIndex, endIndex - 1);
-
-	if (!showPending) {
-		query = query.filter("pending_review", "neq", true);
-	}
 
 	if (search) {
 		const cleanSearch = search.replace(/ /g, "-");
