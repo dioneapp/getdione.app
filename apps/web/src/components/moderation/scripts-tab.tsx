@@ -30,6 +30,33 @@ type Script = {
 	commit_hash?: string | Record<string, string> | null;
 };
 
+// naive semver comparator (major.minor.patch) used only to pick the latest key
+function compareSemver(a: string, b: string): number {
+  const parse = (v: string) => v
+    .split(".")
+    .slice(0, 3)
+    .map((part) => {
+      const n = parseInt(part.replace(/[^0-9]/g, ""), 10);
+      return Number.isFinite(n) ? n : 0;
+    });
+  const [a1, a2, a3] = parse(a);
+  const [b1, b2, b3] = parse(b);
+  if (a1 !== b1) return a1 - b1;
+  if (a2 !== b2) return a2 - b2;
+  if (a3 !== b3) return a3 - b3;
+  return 0;
+}
+
+function getLatestVersionFromHistory(
+  history: Record<string, string> | null | undefined,
+): string | undefined {
+  if (!history) return undefined;
+  const keys = Object.keys(history).filter((k) => k !== "__pending");
+  if (keys.length === 0) return undefined;
+  keys.sort(compareSemver);
+  return keys[keys.length - 1];
+}
+
 export default function ScriptsTab() {
 	const [scripts, setScripts] = useState<Script[]>([]);
 	const [loading, setLoading] = useState(true);
@@ -193,37 +220,47 @@ export default function ScriptsTab() {
 			}
 			(nextUpdate as any).status = existingStatusMap as any;
 
-			if (action === "ACCEPTED") {
-				if (pendingVersion && pendingHash) {
-					const baseHistory: Record<string, string> =
-						currentCommit && typeof currentCommit === "object"
-							? Object.fromEntries(
-									Object.entries(
-										currentCommit as Record<string, string>,
-									).filter(([k]) => k !== "__pending"),
-								)
-							: {};
+            if (action === "ACCEPTED") {
+                if (pendingVersion && pendingHash) {
+                    const baseHistory: Record<string, string> =
+                        currentCommit && typeof currentCommit === "object"
+                            ? Object.fromEntries(
+                                    Object.entries(
+                                        currentCommit as Record<string, string>,
+                                    ).filter(([k]) => k !== "__pending"),
+                                )
+                            : {};
 
-					const newHistory: Record<string, string> = {
-						...baseHistory,
-						[pendingVersion]: pendingHash,
-					};
+                    const newHistory: Record<string, string> = {
+                        ...baseHistory,
+                        [pendingVersion]: pendingHash,
+                    };
 
-					nextUpdate.commit_hash = newHistory as any;
-				}
-			}
+                    nextUpdate.commit_hash = newHistory as any;
+                    const latest = getLatestVersionFromHistory(newHistory);
+                    if (latest) {
+                        nextUpdate.version = latest;
+                    }
+                }
+            }
 
-			if (action === "DENIED") {
-				// clean pending candidate if present
-				if (currentCommit && typeof currentCommit === "object") {
-					const baseHistory = Object.fromEntries(
-						Object.entries(currentCommit as Record<string, string>).filter(
-							([k]) => k !== "__pending",
-						),
-					);
-					nextUpdate.commit_hash = baseHistory as any;
-				}
-			}
+            if (action === "DENIED") {
+                // clean pending candidate if present
+                if (currentCommit && typeof currentCommit === "object") {
+                    const baseHistory = Object.fromEntries(
+                        Object.entries(currentCommit as Record<string, string>).filter(
+                            ([k]) => k !== "__pending",
+                        ),
+                    );
+                    nextUpdate.commit_hash = baseHistory as any;
+                    const latest = getLatestVersionFromHistory(
+                        baseHistory as Record<string, string>,
+                    );
+                    if (latest) {
+                        nextUpdate.version = latest;
+                    }
+                }
+            }
 
 			// try to update with JSONB status; if column differs, fallback unchanged
 			let updateErr = null as any;
