@@ -18,7 +18,7 @@ function LoginContent() {
 		if (user && !isAppLogin) {
 			redirect("/profile");
 		}
-	}, [user]);
+	}, [user, isAppLogin]);
 
 	const handleLogin = async (provider: Provider) => {
 		try {

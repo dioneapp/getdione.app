@@ -7,6 +7,7 @@ scriptsRouter.get("/", async (c) => {
 	// pagination
 	const page = Number(c.req.query("page")) || 1;
 	const limit = Number(c.req.query("limit")) || 10;
+	const showPending = c.req.query("show_pending") === "true";
 
 	// filters
 	const tags = c.req.query("tags");
@@ -32,6 +33,7 @@ scriptsRouter.get("/", async (c) => {
 		query,
 		featured,
 		id,
+		showPending,
 	);
 
 	if (entries?.status && entries.status >= 400) {
