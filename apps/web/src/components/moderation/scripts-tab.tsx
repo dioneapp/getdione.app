@@ -9,9 +9,9 @@ import {
 	X as XIcon,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { scriptsWebhookAction } from "@/app/actions";
 import { supabase } from "@/utils/database";
 import LoadingSkeleton from "./loading-skeleton";
-import { scriptsWebhookAction } from "@/app/actions";
 
 // add type for script data
 type Script = {
