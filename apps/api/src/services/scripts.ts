@@ -50,7 +50,7 @@ export const getFilteredEntries = async (
 		
 	if (!showPending) {
 		query = query.not("status", "cs", '"PENDING_REVIEW"');
-		query = query.eq("pending_review", false);
+		query = query.or("pending_review.eq.false,pending_review.is.null");
 	}
 
 	query = query.range(startIndex, endIndex - 1);
