@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { getScriptsAction } from "@/app/actions";
 import ExploreCarousel from "./ExploreCarousel";
 import ExploreCarouselSkeleton from "./ExploreCarouselSkeleton";
-import { getScriptsAction } from "@/app/actions";
 
 type ScriptItem = {
 	id: number;
