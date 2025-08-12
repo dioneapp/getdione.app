@@ -2,9 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { featuredWebhookAction } from "@/app/actions";
 // import { sendFeaturedWebhook } from "@/app/server/webhook";
 import FeaturedJoin from "@/components/featured/FeaturedJoin";
-import { featuredWebhookAction } from "@/app/actions";
 
 // form submission handler
 async function submitForm(formData: FormData) {

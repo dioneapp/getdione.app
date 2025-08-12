@@ -1,26 +1,26 @@
-'use server'
+"use server";
 
 import { sendFeaturedWebhook } from "./server/webhook";
 
 export async function getScriptsAction(limit: number = 50) {
-  try {
-    const response = await fetch(
-      `https://api.getdione.app/v1/scripts?limit=${encodeURIComponent(String(limit))}`,
-      {
-        headers: { Accept: 'application/json' },
-        cache: 'no-store',
-      }
-    );
+	try {
+		const response = await fetch(
+			`https://api.getdione.app/v1/scripts?limit=${encodeURIComponent(String(limit))}`,
+			{
+				headers: { Accept: "application/json" },
+				cache: "no-store",
+			},
+		);
 
-    if (!response.ok) {
-      return [] as any[];
-    }
+		if (!response.ok) {
+			return [] as any[];
+		}
 
-    const data = await response.json();
-    return Array.isArray(data) ? data : [];
-  } catch (error) {
-    return [] as any[];
-  }
+		const data = await response.json();
+		return Array.isArray(data) ? data : [];
+	} catch (error) {
+		return [] as any[];
+	}
 }
 
 export async function featuredWebhookAction(body: any) {
@@ -35,5 +35,3 @@ export async function featuredWebhookAction(body: any) {
 		return { error: "Internal server error" };
 	}
 }
-
-
