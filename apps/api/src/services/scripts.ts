@@ -46,7 +46,7 @@ export const getFilteredEntries = async (
 	let query = supabase
 		.from("scripts")
 		.select("*")
-		.neq("status", "DENIED")
+		.neq("status", "\"DENIED\"")
 		.range(startIndex, endIndex - 1);
 
 	if (!showPending) {
