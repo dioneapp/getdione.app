@@ -47,10 +47,7 @@ export const getFilteredEntries = async (
 		.from("scripts")
 		.select("*")
 		.eq("pending_review", "false")
-
 		.range(startIndex, endIndex - 1);
-
-	query = query.range(startIndex, endIndex - 1);
 
 	if (search) {
 		const cleanSearch = search.replace(/ /g, "-");
