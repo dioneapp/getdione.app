@@ -1,5 +1,7 @@
 'use server'
 
+import { sendFeaturedWebhook } from "./server/webhook";
+
 export async function getScriptsAction(limit: number = 50) {
   try {
     const response = await fetch(
@@ -19,6 +21,19 @@ export async function getScriptsAction(limit: number = 50) {
   } catch (error) {
     return [] as any[];
   }
+}
+
+export async function featuredWebhookAction(body: any) {
+	try {
+		const result = await sendFeaturedWebhook(body);
+		if (result.success) {
+			return { success: true };
+		} else {
+			return { error: "Failed to submit webhook" };
+		}
+	} catch (error) {
+		return { error: "Internal server error" };
+	}
 }
 
 
