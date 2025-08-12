@@ -48,7 +48,7 @@ export default function Home() {
 				{/* App screenshot (hidden on mobile) */}
 				<section className="hidden sm:block w-full max-w-5xl mt-10 sm:mt-12">
 					<div className="relative">
-						<div className="h-full w-full rounded-xl overflow-hidden bg-gradient-to-b from-white/10 via-white/30 to-white/10 p-0.5 shadow-2	xl shadow-black">
+						<div className="h-full w-full rounded-xl overflow-hidden bg-gradient-to-b from-white/10 via-white/30 to-white/10 p-0.5 shadow-2xl shadow-black">
 						<div className="overflow-hidden">
 							<Image
 								src="/app.png"
