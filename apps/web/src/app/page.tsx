@@ -47,19 +47,21 @@ export default function Home() {
 
 				{/* App screenshot (hidden on mobile) */}
 				<section className="hidden sm:block w-full max-w-5xl mt-10 sm:mt-12">
-					<div className="relative rounded-[1.25rem] p-[3px] overflow-hidden bg-[linear-gradient(180deg,rgba(255,255,255,0.5),rgba(255,255,255,0.12))] shadow-[0_25px_100px_rgba(0,0,0,0.55)] [transform:rotateX(1.5deg)_rotateY(-2deg)] md:[transform:rotateX(2.5deg)_rotateY(-3deg)] [transform-style:preserve-3d] will-change-transform">
-						<div className="rounded-[1.15rem] overflow-hidden bg-white/5 backdrop-blur-sm ring-1 ring-white/15 [box-shadow:inset_0_1px_0_rgba(255,255,255,0.06)]">
-							<Image
-								src="/app.png"
-								alt="Dione app screenshot"
-								width={1195}
-								height={800}
-								quality={100}
-								unoptimized
-								priority
-								sizes="(max-width: 1024px) 100vw, 1024px"
-								className="w-full h-auto"
-							/>
+					<div className="relative">
+						<div className="h-full w-full rounded-xl overflow-hidden bg-gradient-to-b from-white/10 via-white/30 to-white/10 p-0.5 shadow-2xl shadow-black">
+							<div className="overflow-hidden">
+								<Image
+									src="/app.png"
+									alt="Dione app screenshot"
+									width={1195}
+									height={800}
+									quality={100}
+									unoptimized
+									priority
+									sizes="(max-width: 1024px) 100vw, 1024px"
+									className="w-full h-auto rounded-xl"
+								/>
+							</div>
 						</div>
 					</div>
 				</section>

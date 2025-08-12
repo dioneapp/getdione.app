@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { featuredWebhookAction } from "@/app/actions";
 // import { sendFeaturedWebhook } from "@/app/server/webhook";
 import FeaturedJoin from "@/components/featured/FeaturedJoin";
 
@@ -79,12 +80,7 @@ async function submitForm(formData: FormData) {
 		],
 	};
 
-	const response = await fetch("/api/featured-webhook", {
-		method: "POST",
-		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify(webhookBody),
-	});
-	const result = await response.json();
+	const result = await featuredWebhookAction(webhookBody);
 	if (!result.success) {
 		throw new Error("Failed to submit application");
 	}

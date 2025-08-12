@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { getScriptsAction } from "@/app/actions";
 import ExploreCarousel from "./ExploreCarousel";
 import ExploreCarouselSkeleton from "./ExploreCarouselSkeleton";
 
@@ -29,10 +30,8 @@ export default function AppCarousel() {
 		let cancelled = false;
 		const fetchScripts = async () => {
 			try {
-				const res = await fetch(`/api/scripts?limit=50`, { cache: "no-store" });
-				if (!res.ok) throw new Error("Failed to load scripts");
-				const data = await res.json();
-				if (!cancelled) setScripts(Array.isArray(data) ? data : []);
+				const res = await getScriptsAction();
+				if (!cancelled) setScripts(res);
 			} catch (e) {
 				if (!cancelled) setScripts([]);
 				console.error(e);

@@ -97,6 +97,7 @@ Each installation step is an object with the following fields:
     -   `version` (default: `latest`): The Python version.
 -   **`commands`**: A list of commands to execute. These can be simple strings or objects for platform-specific commands:
     -   `platform`: `windows`, `linux`, or `mac`.
+    -   `gpus`: `nvidia` or `amd`
     -   `command`: The command string for that platform.
 
 ### Example
