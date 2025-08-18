@@ -9,7 +9,7 @@ export default function FeaturedJoin({
 }) {
 	return (
 		<main>
-			<div className="relative flex flex-col items-center justify-center min-h-[100dvh] px-4 sm:px-8 pt-24 sm:pt-32 pb-16">
+			<div className="relative flex flex-col items-center justify-center min-h-[100dvh] px-4 sm:px-8 pt-16 sm:pt-20 pb-16">
 				<div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/20 pointer-events-none" />
 
 				<h1 className="text-4xl sm:text-5xl md:text-6xl font-semibold text-white tracking-tighter mt-6 text-balance text-center">

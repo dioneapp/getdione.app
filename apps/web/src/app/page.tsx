@@ -42,7 +42,7 @@ export default function Home() {
 
 	return (
 		<main>
-			<div className="relative flex flex-col items-center min-h-screen px-4 sm:px-8 pt-24 sm:pt-28 pb-10 gap-2">
+			<div className="relative flex flex-col items-center min-h-screen px-4 sm:px-8 pt-16 sm:pt-20 pb-10 gap-2">
 				<Hero />
 
 				{/* App screenshot (hidden on mobile) */}

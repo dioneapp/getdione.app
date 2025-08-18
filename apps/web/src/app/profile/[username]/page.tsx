@@ -106,7 +106,7 @@ export default function UserProfilePage({
 
 	// show profile
 	return (
-		<div className="flex flex-col items-center w-full min-h-[100dvh] justify-center p-4 sm:p-12 pt-16 sm:pt-24 relative">
+		<div className="flex flex-col items-center w-full min-h-[100dvh] justify-center p-4 sm:p-12 pt-12 sm:pt-16 relative">
 			{/* main container */}
 			<div className="h-fit w-full flex max-w-xl">
 				<div className="w-full h-full group p-4 sm:p-6 rounded-xl border border-white/10 backdrop-blur-md bg-white/5 transition-all duration-300 shadow-lg shadow-black/10">

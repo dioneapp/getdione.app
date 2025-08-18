@@ -3,22 +3,22 @@ import type { ReactNode } from "react";
 export default function ChangelogLayout({ children }: { children: ReactNode }) {
 	return (
 		<main>
-			<div className="relative flex flex-col items-center justify-center min-h-[100dvh] px-4 sm:px-8 pt-24 sm:pt-32 pb-16">
+			<div className="relative flex flex-col items-center justify-center min-h-[100dvh] px-3 sm:px-4 md:px-8 pt-12 sm:pt-16 md:pt-20 pb-12 sm:pb-16">
 				<div
 					className="absolute inset-0 bg-gradient-to-b from-transparent to-black/20 pointer-events-none"
 					aria-hidden="true"
 				></div>
-				<h1 className="text-5xl font-semibold text-white tracking-tighter mt-6 text-balance text-center">
+				<h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-white tracking-tighter mt-4 sm:mt-6 text-balance text-center">
 					Changelog
 				</h1>
 				<p
-					className="mt-4 mb-12 max-w-xl text-center text-base sm:text-lg text-white/80 leading-relaxed text-balance px-4"
+					className="mt-3 sm:mt-4 mb-8 sm:mb-12 max-w-xl text-center text-sm sm:text-base md:text-lg text-white/80 leading-relaxed text-balance px-2 sm:px-4"
 					style={{ textRendering: "optimizeLegibility" }}
 				>
 					Latest changes to Dione directly from GitHub.
 				</p>
 				{children}
-				<p className="text-center text-sm text-white/70 mt-8 max-md:text-balance">
+				<p className="text-center text-xs sm:text-sm text-white/70 mt-6 sm:mt-8 max-md:text-balance px-2">
 					Check out the{" "}
 					<a
 						href="https://github.com/dioneapp/dioneapp/releases"

@@ -80,7 +80,7 @@ export default function ModerationPanel() {
 	}
 
 	return (
-		<div className="flex flex-col items-center w-full min-h-screen pt-32 relative">
+		<div className="flex flex-col items-center w-full min-h-screen pt-20 relative">
 			{/* main container */}
 			<div className="h-fit w-full flex max-w-6xl overflow-hidden">
 				<div className="w-full max-h-[80dvh] overflow-y-auto group p-4 sm:p-6 rounded-xl border border-white/10 backdrop-blur-md bg-white/5 transition-all duration-300 shadow-lg shadow-black/10">

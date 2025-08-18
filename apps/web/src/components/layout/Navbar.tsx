@@ -38,7 +38,6 @@ export default function Navbar() {
 		<nav
 			className={`sticky top-0 w-full z-40 border-b border-white/10 ${isScrolled ? "backdrop-blur-md bg-white/[0.02]" : ""}`}
 		>
-			<div className="w-full h-px bg-white/10" aria-hidden="true" />
 			<div className="max-w-7xl mx-auto px-6 pt-6 pb-5">
 				<div className="grid grid-cols-3 items-center">
 					<div className="flex items-center gap-4">
