@@ -3,20 +3,20 @@ import React from "react";
 
 export default function LoginWelcome({ isAppLogin }: { isAppLogin: boolean }) {
 	return (
-		<div className="flex flex-col gap-1 items-center">
+		<div className="flex flex-col items-center text-center">
 			<Image
 				src="/Dio.svg"
 				alt="dione logo"
 				width={120}
 				height={120}
-				className="m-2 animate-float"
+				className="mb-4 animate-float"
 				priority
 			/>
-			<h1 className="text-white text-3xl font-semibold flex items-center gap-2">
+			<h1 className="text-white text-3xl sm:text-4xl font-semibold tracking-tight">
 				{isAppLogin ? "Continue to" : "Log In to"} Dione
 			</h1>
-			<span className="text-xs text-white/40 mt-2">
-				open-source means you own your data
+			<span className="text-sm text-white/50 mt-2">
+				Open-source means you own your data
 			</span>
 		</div>
 	);

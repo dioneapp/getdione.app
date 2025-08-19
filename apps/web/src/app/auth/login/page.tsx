@@ -38,8 +38,8 @@ function LoginContent() {
 	};
 
 	return (
-		<div className="h-fit w-full flex max-w-xl">
-			<div className="w-full h-full group p-6 rounded-xl border border-white/10 backdrop-blur-md bg-white/5 transition-all duration-300 shadow-lg">
+		<div className="w-full max-w-md">
+			<div className="w-full h-full group p-8 sm:p-10 rounded-2xl border border-white/10 backdrop-blur-md bg-white/5 transition-all duration-300 shadow-xl space-y-6">
 				<LoginWelcome isAppLogin={isAppLogin} />
 				<LoginOptions handleLogin={handleLogin} />
 				<LoginTerms />
@@ -51,7 +51,7 @@ function LoginContent() {
 export default function LoginPage() {
 	return (
 		<div
-			className="flex flex-col items-center w-full min-h-[100dvh] justify-center p-12 pt-6 relative"
+			className="flex flex-col items-center w-full min-h-[100dvh] justify-center px-4 sm:px-6 py-12 relative"
 			id="container"
 		>
 			<Suspense fallback={<div>Loading...</div>}>

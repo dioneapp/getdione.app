@@ -1,7 +1,7 @@
 export default function LoginTerms() {
 	return (
-		<div className="mt-4 text-center text-white/70 text-sm">
-			By logging in, you agree to our
+		<div className="mt-3 text-center text-white/60 text-xs whitespace-nowrap">
+			By continuing you agree to our
 			<a
 				href="/legal/terms-use"
 				target="_blank"
@@ -9,7 +9,7 @@ export default function LoginTerms() {
 				rel="noreferrer"
 			>
 				{" "}
-				Terms of Use
+				Terms
 			</a>{" "}
 			and
 			<a
@@ -19,7 +19,7 @@ export default function LoginTerms() {
 				rel="noreferrer"
 			>
 				{" "}
-				Privacy Policy
+				Privacy
 			</a>
 			.
 		</div>
