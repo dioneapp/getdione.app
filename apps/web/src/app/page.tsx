@@ -67,7 +67,7 @@ export default function Home() {
 				</section>
 
 				<p className="text-white/60 text-sm mt-4 text-center">
-					Dione is still in beta. Join Discord for updates.
+					Dione is still in beta. Join <a href="https://getdione.app/discord" className="text-white/300 hover:text-white transition-opacity duration-200 hover:underline">Discord</a> for updates.
 				</p>
 
 				{/* App carousel */}
