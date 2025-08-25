@@ -3,7 +3,12 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import type React from "react";
-import { useScrollAnimation, staggerContainerVariants, staggerItemVariants, defaultTransition } from "@/utils/use-scroll-animation";
+import {
+	defaultTransition,
+	staggerContainerVariants,
+	staggerItemVariants,
+	useScrollAnimation,
+} from "@/utils/use-scroll-animation";
 
 type FAQ = {
 	question: string;

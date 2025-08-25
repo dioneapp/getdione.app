@@ -125,15 +125,14 @@ export const getFilteredEntries = async (
 		};
 	}
 
-	const filteredScripts = data.map(script => {
+	const filteredScripts = data.map((script) => {
 		const filteredStatus = Object.fromEntries(
-		  Object.entries(script.status ?? {}).filter(
-			([_version, arr]) => Array.isArray(arr) && !arr.includes('DENIED')
-		  )
+			Object.entries(script.status ?? {}).filter(
+				([_version, arr]) => Array.isArray(arr) && !arr.includes("DENIED"),
+			),
 		);
 		return { ...script, status: filteredStatus };
-	  });
-	  
+	});
 
 	return {
 		status: 200,
