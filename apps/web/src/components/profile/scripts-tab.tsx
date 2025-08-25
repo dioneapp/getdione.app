@@ -3,9 +3,9 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Check, Pencil, Plus, X as XIcon } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { scriptsWebhookAction } from "@/app/actions";
 import { supabase } from "@/utils/database";
 import useUser from "@/utils/use-user";
-import { scriptsWebhookAction } from "@/app/actions";
 
 type CommitHashHistory =
 	| string

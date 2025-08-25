@@ -1,6 +1,11 @@
 import { motion } from "framer-motion";
 import type React from "react";
-import { useScrollAnimation, staggerContainerVariants, staggerItemVariants, defaultTransition } from "@/utils/use-scroll-animation";
+import {
+	defaultTransition,
+	staggerContainerVariants,
+	staggerItemVariants,
+	useScrollAnimation,
+} from "@/utils/use-scroll-animation";
 
 type Feature = {
 	title: string;
