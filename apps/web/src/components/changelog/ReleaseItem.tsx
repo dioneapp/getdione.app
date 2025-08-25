@@ -52,7 +52,6 @@ export default function ReleaseItem({ release }: ReleaseItemProps) {
 								{formatDate(release.published_at)}
 							</time>
 						</div>
-
 					</div>
 				</div>
 			</header>
@@ -77,7 +76,9 @@ export default function ReleaseItem({ release }: ReleaseItemProps) {
 							</h3>
 						),
 						p: ({ children }) => (
-							<p className="text-xs sm:text-sm text-white/70 mb-3 leading-relaxed">{children}</p>
+							<p className="text-xs sm:text-sm text-white/70 mb-3 leading-relaxed">
+								{children}
+							</p>
 						),
 						a: ({ href, children }) => (
 							<a
