@@ -62,23 +62,13 @@ export default function Home() {
 		return (
 			<main>
 				<div className="relative flex flex-col items-center min-h-screen px-4 sm:px-8 pt-16 sm:pt-20 pb-10 gap-2">
-					<motion.div
-						ref={heroAnimation.ref}
-						initial="hidden"
-						animate={heroAnimation.mainControls}
-						variants={fadeInUpVariants}
-						transition={slowTransition}
+					<div
 					>
 						<Hero />
-					</motion.div>
+					</div>
 
 					{/* App screenshot (hidden on mobile) */}
-					<motion.section 
-						ref={screenshotAnimation.ref}
-						initial="hidden"
-						animate={screenshotAnimation.mainControls}
-						variants={scaleInVariants}
-						transition={defaultTransition}
+					<motion.section
 						className="hidden sm:block w-full max-w-5xl mt-10 sm:mt-12"
 					>
 						<div className="relative">
