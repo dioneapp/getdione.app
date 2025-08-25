@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import type React from "react";
+import { useScrollAnimation, staggerContainerVariants, staggerItemVariants, defaultTransition } from "@/utils/use-scroll-animation";
 
 type FAQ = {
 	question: string;
@@ -17,8 +18,14 @@ type FAQProps = {
 };
 
 export default function FAQ({ faq, openItems, toggleItem }: FAQProps) {
+	const animation = useScrollAnimation(0.1);
+
 	return (
-		<section
+		<motion.section
+			ref={animation.ref}
+			initial="hidden"
+			animate={animation.mainControls}
+			variants={staggerContainerVariants}
 			className="relative w-full max-w-4xl mx-auto px-4"
 			aria-labelledby="faq-heading"
 		>
@@ -43,10 +50,12 @@ export default function FAQ({ faq, openItems, toggleItem }: FAQProps) {
 					transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
 				/>
 			</div>
-			<div className="grid gap-4">
+			<motion.div className="grid gap-4" variants={staggerContainerVariants}>
 				{faq.map((item, index) => (
-					<article
+					<motion.article
 						key={index}
+						variants={staggerItemVariants}
+						transition={defaultTransition}
 						className={`group rounded-xl border border-white/10 hover:border-white/20 transition-all duration-300 overflow-hidden ${openItems.includes(index) ? "border-white/30" : ""}`}
 					>
 						<button
@@ -91,9 +100,9 @@ export default function FAQ({ faq, openItems, toggleItem }: FAQProps) {
 								</motion.div>
 							)}
 						</AnimatePresence>
-					</article>
+					</motion.article>
 				))}
-			</div>
-		</section>
+			</motion.div>
+		</motion.section>
 	);
 }
