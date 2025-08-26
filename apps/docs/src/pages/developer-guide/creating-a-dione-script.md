@@ -122,16 +122,33 @@ When `env` is specified, all commands in that step run within that environment. 
 
 ## Start
 
-This section defines how to launch the application after installation.
+This section defines how to launch the application after installation. You can now define multiple start options to give users different ways to run your application.
+
+### Customizable Commands
+
+Commands can be made customizable to allow users to input custom parameters:
+
+```json
+{
+  "command": "python main.py --port 8080",
+  "customizable": true
+}
+```
+
+When `customizable` is set to `true`, users will be prompted to modify the command before execution.
+
+---
 
 ### Keys
 
 -   **`name`**: A description of the launch step.
 -   **`catch`** (optional): A port number or keyword for Dione to monitor to detect when the app is running.
--   **`env`** (optional): The name of the environment to activate.
--   **`commands`**: The same format as in the `installation` section.
+-   **`env`** (optional): The environment to activate. Can be a string with the environment `name` or an object with `name`, `type`, and `version` properties.
+-   **`commands`**: The same format as in the `installation` section (for simple start options). Commands can also be objects with `customizable` and `platform` properties to allow user input and specify platform-specific commands.
+-   **`steps`** (optional): An array of steps for complex multi-step startup processes.
+-   **`platform`** (optional): The platform to run the script on.
 
-### Example
+### Simple start example
 
 ```json
 "start": [
@@ -144,7 +161,35 @@ This section defines how to launch the application after installation.
 ]
 ```
 
----
+### Multiple Start example
+
+```json
+  "start": [
+    {
+      "name": "Default Start",
+      "catch": "8188",
+      "env": "env",
+      "commands": [
+        "cd melotts/melo",
+        "uv run app.py --port 8188"
+      ]
+    },
+    {
+      "name": "Start with Params",
+      "catch": "8288",
+      "env": "env",
+      "steps": [
+        {
+          "name": "Starting MeloTTS",
+          "commands": [
+            "cd melotts/melo",
+            { "command": "uv run app.py --port 8288", "customizable": true }
+        ]
+        }
+    ]
+    }
+  ]
+```
 
 ## Tips & Best Practices
 
@@ -185,6 +230,12 @@ This section defines how to launch the application after installation.
       "catch": "8888",
       "env": "env",
       "commands": ["cd melotts/melo", "uv run app.py --port 8888"]
+    },
+    {
+      "name": "Start with Custom Port",
+      "catch": "9000",
+      "env": "env",
+      "commands": ["cd melotts/melo", "uv run app.py --port 9000"]
     }
   ]
 }
