@@ -46,7 +46,8 @@ export const getFilteredEntries = async (
 	let query = supabase
 		.from("scripts")
 		.select("*")
-		.eq("pending_review", "false")
+		.eq("pending_review", "false"),
+		.not("status", "ilike", "%DENIED%")
 		.range(startIndex, endIndex - 1);
 
 	if (search) {
@@ -124,17 +125,9 @@ export const getFilteredEntries = async (
 			code: "PGRST116",
 		};
 	}
-
-	const filteredScripts = data.filter((script) => {
-	  return !Object.values(script.status ?? {}).some(
-	    (arr) =>
-	      Array.isArray(arr) &&
-	      arr.some((s) => typeof s === "string" && s.trim().toUpperCase() === "DENIED")
-	  );
-	});
 	
 	return {
 	  status: 200,
-	  data: filteredScripts || [],
+	  data: data || [],
 	};
 };
