@@ -125,16 +125,13 @@ export const getFilteredEntries = async (
 		};
 	}
 
-	const filteredScripts = data.map((script) => {
-	  const hasDenied = Object.values(script.status ?? {}).some(
+	const filteredScripts = data.filter((script) => {
+	  return !Object.values(script.status ?? {}).some(
 	    (arr) =>
 	      Array.isArray(arr) &&
 	      arr.some((s) => typeof s === "string" && s.trim().toUpperCase() === "DENIED")
 	  );
-	
-	  return hasDenied ? { ...script, status: {} } : { ...script, status: script.status };
 	});
-
 	
 	return {
 	  status: 200,
