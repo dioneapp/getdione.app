@@ -125,17 +125,19 @@ export const getFilteredEntries = async (
 		};
 	}
 
-	const filteredScripts = data
-	  .filter((script) => {
-	    return !Object.values(script.status ?? {}).some(
-	      (arr) =>
+	const filteredScripts = data.map((script) => {
+	  const filteredStatus = Object.fromEntries(
+	    Object.entries(script.status ?? {}).filter(
+	      ([_version, arr]) =>
 	        Array.isArray(arr) &&
-	        arr.some(
+	        !arr.some(
 	          (s) => typeof s === "string" && s.trim().toUpperCase() === "DENIED",
 	        ),
-	    );
-	  })
-	  .map((script) => script);
+	    ),
+	  );
+	
+	  return { ...script, status: filteredStatus };
+	});
 
 
 	return {
