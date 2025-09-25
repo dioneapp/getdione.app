@@ -125,15 +125,18 @@ export const getFilteredEntries = async (
 		};
 	}
 
-	const filteredScripts = data.filter((script) => {
-	  return !Object.values(script.status ?? {}).some(
+	const filteredScripts = data.map((script) => {
+	  const hasDenied = Object.values(script.status ?? {}).some(
 	    (arr) =>
 	      Array.isArray(arr) &&
-	      arr.some(
-	        (s) => typeof s === "string" && s.trim().toUpperCase() === "DENIED",
-	      ),
+	      arr.some((s) => typeof s === "string" && s.trim().toUpperCase() === "DENIED")
 	  );
-	});
+	
+	  if (hasDenied) return null;
+	
+	  return { ...script, status: script.status };
+	}).filter((script) => script !== null);
+
 	
 	return {
 	  status: 200,
