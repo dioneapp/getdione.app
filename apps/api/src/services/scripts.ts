@@ -47,7 +47,6 @@ export const getFilteredEntries = async (
 		.from("scripts")
 		.select("*")
 		.eq("pending_review", "false")
-		.not("status", "ilike", "%DENIED%")
 		.range(startIndex, endIndex - 1);
 
 	if (search) {
@@ -125,9 +124,15 @@ export const getFilteredEntries = async (
 			code: "PGRST116",
 		};
 	}
+
+	const filteredScripts = data.filter(script =>
+	    !Object.values(script.status ?? {}).some(arr =>
+	      Array.isArray(arr) && arr.some(s => typeof s === "string" && s.toUpperCase() === "DENIED")
+	    )
+	  );
 	
 	return {
 	  status: 200,
-	  data: data || [],
+	  data: filteredScripts || [],
 	};
 };
