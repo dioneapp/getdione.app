@@ -132,10 +132,8 @@ export const getFilteredEntries = async (
 	      arr.some((s) => typeof s === "string" && s.trim().toUpperCase() === "DENIED")
 	  );
 	
-	  if (hasDenied) return null;
-	
-	  return { ...script, status: script.status };
-	}).filter((script) => script !== null);
+	  return hasDenied ? { ...script, status: {} } : { ...script, status: script.status };
+	});
 
 	
 	return {
