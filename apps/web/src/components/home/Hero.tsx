@@ -22,15 +22,15 @@ export default function Hero() {
 			</h1>
 				{/* App screenshot (hidden on mobile) */}
 				<motion.section
-						className="hidden sm:block w-full max-w-5xl mt-10 sm:mt-12"
+						className="hidden sm:block w-full max-w-5xl -mt-12"
 					>
 						<div className="relative">
 							<div className="h-full w-full overflow-hidden">
 								<div className="overflow-hidden">
 									<Image
-										src="/app.png"
+										src="https://i.imgur.com/t7Hv0BO.png"
 										alt="Dione app screenshot"
-										width={700}
+										width={750}
 										height={500}
 										quality={100}
 										unoptimized
