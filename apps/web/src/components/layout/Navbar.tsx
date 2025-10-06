@@ -36,11 +36,11 @@ export default function Navbar() {
 
 	return (
 		<nav
-			className={`sticky top-0 w-full z-40 border-b border-white/10 ${isScrolled ? "backdrop-blur-md bg-white/[0.02]" : ""}`}
+			className={`sticky top-0 w-full z-40`}
 		>
-			<div className="max-w-7xl mx-auto px-6 pt-6 pb-5">
-				<div className="grid grid-cols-3 items-center">
-					<div className="flex items-center gap-4">
+			<div className={`transition-all duration-300 max-w-5xl mx-auto py-4 lg:border px-8 border-b border-white/0 lg:mt-4 lg:rounded-3xl ${isScrolled ? "border-white/10 px-8 backdrop-blur-md bg-white/[0.02]" : "md:px-0"} `}>
+				<div className="grid md:grid-cols-3 items-center">
+					<div className="flex w-full items-center gap-4">
 						<button
 							ref={menuToggleRef}
 							onClick={toggleMenu}
@@ -51,16 +51,17 @@ export default function Navbar() {
 						>
 							<Menu className="w-5 h-5" />
 						</button>
-						<Link href="/" className="flex items-center gap-2">
+						<Link href="/" className="flex items-center max-md:items-center justify-center lg:justify-start max-md:pr-12 w-full gap-2">
 							<Image
 								src="/Dio.svg"
 								alt="Dione logo"
-								width={28}
-								height={28}
+								width={24}
+								height={24}
 								style={{ height: "auto" }}
 								priority
+								className="max-md:w-4.5 max-md:h-5"
 							/>
-							<span className="font-semibold text-xl text-white hidden sm:inline">
+							<span className="font-semibold lg:text-xl text-2xl text-white">
 								Dione
 							</span>
 						</Link>

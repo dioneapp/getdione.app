@@ -1,3 +1,5 @@
+import { motion } from "framer-motion";
+import Image from "next/image";
 import React from "react";
 
 export default function Hero() {
@@ -8,7 +10,7 @@ export default function Hero() {
 				aria-hidden="true"
 			></div>
 			<h1
-				className="text-center font-medium tracking-tighter text-4xl sm:text-5xl md:text-6xl xl:text-7xl text-balance whitespace-pre-line"
+				className="text-center font-medium tracking-tighter text-5xl sm:text-2xl md:text-3xl xl:text-5xl max-w-4xl text-balance whitespace-pre-line"
 				style={{
 					backgroundImage: "linear-gradient(180deg, #FFFFFF, #BBBBBB)",
 					WebkitBackgroundClip: "text",
@@ -16,8 +18,29 @@ export default function Hero() {
 					color: "transparent",
 				}}
 			>
-				{"Discover & install\nopen-source AI apps."}
+				It has never been easier to install AI on your computer
 			</h1>
+				{/* App screenshot (hidden on mobile) */}
+				<motion.section
+						className="hidden sm:block w-full max-w-5xl mt-10 sm:mt-12"
+					>
+						<div className="relative">
+							<div className="h-full w-full overflow-hidden">
+								<div className="overflow-hidden">
+									<Image
+										src="/app.png"
+										alt="Dione app screenshot"
+										width={700}
+										height={500}
+										quality={100}
+										unoptimized
+										priority
+										className="object-cover mx-auto rounded-md"
+									/>
+								</div>
+							</div>
+						</div>
+				</motion.section>
 			<p
 				className="mt-5 mb-5 max-w-2xl text-center text-base sm:text-lg text-white/80 leading-relaxed text-balance px-4"
 				style={{ textRendering: "optimizeLegibility" }}

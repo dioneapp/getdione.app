@@ -67,29 +67,6 @@ export default function Home() {
 						<Hero />
 					</div>
 
-					{/* App screenshot (hidden on mobile) */}
-					<motion.section
-						className="hidden sm:block w-full max-w-5xl mt-10 sm:mt-12"
-					>
-						<div className="relative">
-							<div className="h-full w-full rounded-xl overflow-hidden bg-gradient-to-b from-white/10 via-white/30 to-white/10 p-0.5 shadow-2xl shadow-black">
-								<div className="overflow-hidden">
-									<Image
-										src="/app.png"
-										alt="Dione app screenshot"
-										width={1195}
-										height={800}
-										quality={100}
-										unoptimized
-										priority
-										sizes="(max-width: 1024px) 100vw, 1024px"
-										className="w-full h-auto rounded-xl"
-									/>
-								</div>
-							</div>
-						</div>
-				</motion.section>
-
 				<motion.p
 					ref={betaTextAnimation.ref}
 					initial="hidden"

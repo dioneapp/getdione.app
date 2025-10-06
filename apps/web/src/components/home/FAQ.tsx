@@ -41,7 +41,7 @@ export default function FAQ({ faq, openItems, toggleItem }: FAQProps) {
 			>
 				<div className="center-radial-glow" />
 				<motion.div
-					className="absolute -top-10 -right-20 h-64 w-64 rounded-full blur-3xl opacity-40"
+					className="absolute -top-10  h-64 w-64 rounded-full blur-3xl opacity-40"
 					animate={{ y: [0, -10, 0] }}
 					transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
 				/>

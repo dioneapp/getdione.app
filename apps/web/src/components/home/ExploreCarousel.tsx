@@ -126,7 +126,7 @@ function CarouselCard({ script }: { script: ScriptItem }) {
 	const { name, description, logo_url, author, author_url } = script;
 
 	return (
-		<article className="group relative p-4 rounded-xl border border-white/10 backdrop-blur-md bg-white/5 hover:bg-white/10 transition-all duration-300 shadow-lg h-full flex flex-col">
+		<article className="group relative p-4 rounded-xl border border-white/10 backdrop-blur-md bg-white/5 hover:bg-white/10 transition-all duration-300 shadow-lg h-full flex flex-col overflow-hidden">
 			<div className="flex items-center gap-3">
 				<img
 					src={logo_url || "/favicon.ico"}
