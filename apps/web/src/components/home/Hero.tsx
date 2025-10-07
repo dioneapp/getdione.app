@@ -20,27 +20,25 @@ export default function Hero() {
 			>
 				It has never been easier to install AI on your computer
 			</h1>
-				{/* App screenshot (hidden on mobile) */}
-				<motion.section
-						className="hidden sm:block w-full max-w-5xl -mt-12"
-					>
-						<div className="relative">
-							<div className="h-full w-full overflow-hidden">
-								<div className="overflow-hidden">
-									<Image
-										src="https://i.imgur.com/t7Hv0BO.png"
-										alt="Dione app screenshot"
-										width={750}
-										height={500}
-										quality={100}
-										unoptimized
-										priority
-										className="object-cover mx-auto rounded-md"
-									/>
-								</div>
-							</div>
+			{/* App screenshot (hidden on mobile) */}
+			<motion.section className="hidden sm:block w-full max-w-5xl -mt-12">
+				<div className="relative">
+					<div className="h-full w-full overflow-hidden">
+						<div className="overflow-hidden">
+							<Image
+								src="https://i.imgur.com/t7Hv0BO.png"
+								alt="Dione app screenshot"
+								width={750}
+								height={500}
+								quality={100}
+								unoptimized
+								priority
+								className="object-cover mx-auto rounded-md"
+							/>
 						</div>
-				</motion.section>
+					</div>
+				</div>
+			</motion.section>
 			<p
 				className="mt-5 mb-5 max-w-2xl text-center text-base sm:text-lg text-white/80 leading-relaxed text-balance px-4"
 				style={{ textRendering: "optimizeLegibility" }}
