@@ -59,13 +59,12 @@ export default function Home() {
 		);
 	};
 
-		return (
-			<main>
-				<div className="relative flex flex-col items-center min-h-screen px-4 sm:px-8 pt-16 sm:pt-20 pb-10 gap-2">
-					<div
-					>
-						<Hero />
-					</div>
+	return (
+		<main>
+			<div className="relative flex flex-col items-center min-h-screen px-4 sm:px-8 pt-16 sm:pt-20 pb-10 gap-2">
+				<div>
+					<Hero />
+				</div>
 
 				<motion.p
 					ref={betaTextAnimation.ref}
