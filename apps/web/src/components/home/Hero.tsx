@@ -14,23 +14,38 @@ export default function Hero() {
 				aria-hidden="true"
 			></div>
 			<AnimatePresence initial={false} mode="wait">
-			{showVideo && (
-			<motion.div key="video-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center" onClick={() => setShowVideo(false)}>
-				<motion.div key="video-dialog" initial={{ opacity: 0, filter: "blur(10px)" }} animate={{ opacity: 1, filter: "blur(0px)" }} exit={{ opacity: 0, filter: "blur(10px)" }} transition={{ duration: 0.2 }} className="flex justify-center items-center w-full h-full max-w-4xl max-h-[60vh] m-auto">
-						<iframe
-							ref={videoRef}
-							width="100%"
-							height="800px"
-							src="https://www.youtube.com/embed/5cWy7-LaUTk?autoplay=1&cc_load_policy=1&mute=1&rel=0&vq=hd1080&controls=0&loop=1"
-							title="YouTube video player"
-							frameBorder="0"
-							allow="autoplay; encrypted-media;"
-							allowFullScreen
-							className="w-full h-full aspect-video rounded-xl shadow-2xl shadow-white/5 border border-white/5 bg-black"
-						></iframe>
-				</motion.div>
-			</motion.div>
-			)}
+				{showVideo && (
+					<motion.div
+						key="video-backdrop"
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
+						exit={{ opacity: 0 }}
+						transition={{ duration: 0.2 }}
+						className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center"
+						onClick={() => setShowVideo(false)}
+					>
+						<motion.div
+							key="video-dialog"
+							initial={{ opacity: 0, filter: "blur(10px)" }}
+							animate={{ opacity: 1, filter: "blur(0px)" }}
+							exit={{ opacity: 0, filter: "blur(10px)" }}
+							transition={{ duration: 0.2 }}
+							className="flex justify-center items-center w-full h-full max-w-4xl max-h-[60vh] m-auto"
+						>
+							<iframe
+								ref={videoRef}
+								width="100%"
+								height="800px"
+								src="https://www.youtube.com/embed/5cWy7-LaUTk?autoplay=1&cc_load_policy=1&mute=1&rel=0&vq=hd1080&controls=0&loop=1"
+								title="YouTube video player"
+								frameBorder="0"
+								allow="autoplay; encrypted-media;"
+								allowFullScreen
+								className="w-full h-full aspect-video rounded-xl shadow-2xl shadow-white/5 border border-white/5 bg-black"
+							></iframe>
+						</motion.div>
+					</motion.div>
+				)}
 			</AnimatePresence>
 			<h1
 				className="text-center font-medium tracking-tighter text-5xl sm:text-2xl md:text-3xl xl:text-5xl max-w-4xl text-balance whitespace-pre-line"
@@ -49,30 +64,34 @@ export default function Hero() {
 			>
 				Explore powerful tools, seamless downloads, 1-click installs.
 			</p>
-				{/* App screenshot (hidden on mobile) */}
-				<motion.section
-						className="hidden sm:block w-full max-w-5xl my-5 mt-10 transition-all duration-300 overflow-hidden"
-					>
-						<div className="relative overflow-hidden">
-							<div className="h-full w-full overflow-hidden group">
-								<button type="button" className="w-full h-full z-50 overflow-hidden" onClick={() => setShowVideo(true)}>
-									<span className={`absolute inset-0 hidden items-center justify-center z-50 ${showVideo ? "hidden" : " group-hover:flex"}`}> 
-										<Play className="w-20 h-20 text-neutral-300/80" />
-									</span>
-									<Image
-										src="https://pbs.twimg.com/media/G1S8Y01WIAAfcrl?format=jpg&name=large"
-										alt="Dione app screenshot"
-										width={750}
-										height={500}
-										quality={100}
-										unoptimized
-										priority
-										className="object-cover mx-auto rounded-lg opacity-85 brightness-110 group-hover:brightness-50 border border-transparent group-hover:border-neutral-400/60 transition-all duration-300"
-									/>
-								</button>
-							</div>
-						</div>
-				</motion.section>
+			{/* App screenshot (hidden on mobile) */}
+			<motion.section className="hidden sm:block w-full max-w-5xl my-5 mt-10 transition-all duration-300 overflow-hidden">
+				<div className="relative overflow-hidden">
+					<div className="h-full w-full overflow-hidden group">
+						<button
+							type="button"
+							className="w-full h-full z-50 overflow-hidden"
+							onClick={() => setShowVideo(true)}
+						>
+							<span
+								className={`absolute inset-0 hidden items-center justify-center z-50 ${showVideo ? "hidden" : " group-hover:flex"}`}
+							>
+								<Play className="w-20 h-20 text-neutral-300/80" />
+							</span>
+							<Image
+								src="https://pbs.twimg.com/media/G1S8Y01WIAAfcrl?format=jpg&name=large"
+								alt="Dione app screenshot"
+								width={750}
+								height={500}
+								quality={100}
+								unoptimized
+								priority
+								className="object-cover mx-auto rounded-lg opacity-85 brightness-110 group-hover:brightness-50 border border-transparent group-hover:border-neutral-400/60 transition-all duration-300"
+							/>
+						</button>
+					</div>
+				</div>
+			</motion.section>
 			<div
 				className="flex flex-col items-center w-full max-w-xl gap-3 sm:gap-4"
 				aria-label="Primary"
