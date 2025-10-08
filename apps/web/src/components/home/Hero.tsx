@@ -1,14 +1,37 @@
-import { motion } from "framer-motion";
+"use client";
+import { AnimatePresence, motion } from "framer-motion";
+import { CirclePlay, Play } from "lucide-react";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 export default function Hero() {
+	const [showVideo, setShowVideo] = useState(false);
+	const videoRef = useRef<HTMLIFrameElement>(null);
 	return (
 		<section className="relative flex flex-col items-center justify-center px-4">
 			<div
 				className="absolute inset-0 pointer-events-none"
 				aria-hidden="true"
 			></div>
+			<AnimatePresence initial={false} mode="wait">
+			{showVideo && (
+			<motion.div key="video-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center" onClick={() => setShowVideo(false)}>
+				<motion.div key="video-dialog" initial={{ opacity: 0, filter: "blur(10px)" }} animate={{ opacity: 1, filter: "blur(0px)" }} exit={{ opacity: 0, filter: "blur(10px)" }} transition={{ duration: 0.2 }} className="flex justify-center items-center w-full h-full max-w-4xl max-h-[60vh] m-auto">
+						<iframe
+							ref={videoRef}
+							width="100%"
+							height="800px"
+							src="https://www.youtube.com/embed/5cWy7-LaUTk?autoplay=1&cc_load_policy=1&mute=1&rel=0&vq=hd1080&controls=0&loop=1"
+							title="YouTube video player"
+							frameBorder="0"
+							allow="autoplay; encrypted-media;"
+							allowFullScreen
+							className="w-full h-full aspect-video rounded-xl shadow-2xl shadow-white/5 border border-white/5 bg-black"
+						></iframe>
+				</motion.div>
+			</motion.div>
+			)}
+			</AnimatePresence>
 			<h1
 				className="text-center font-medium tracking-tighter text-5xl sm:text-2xl md:text-3xl xl:text-5xl max-w-4xl text-balance whitespace-pre-line"
 				style={{
@@ -20,33 +43,36 @@ export default function Hero() {
 			>
 				It has never been easier to install AI on your computer
 			</h1>
+			<p
+				className="mt-4 max-md:mb-5 max-w-2xl text-center text-base sm:text-sm text-neutral-300 leading-relaxed text-balance px-4"
+				style={{ textRendering: "optimizeLegibility" }}
+			>
+				Explore powerful tools, seamless downloads, 1-click installs.
+			</p>
 				{/* App screenshot (hidden on mobile) */}
 				<motion.section
-						className="hidden sm:block w-full max-w-5xl -mt-12"
+						className="hidden sm:block w-full max-w-5xl my-5 mt-10 transition-all duration-300 overflow-hidden"
 					>
-						<div className="relative">
-							<div className="h-full w-full overflow-hidden">
-								<div className="overflow-hidden">
+						<div className="relative overflow-hidden">
+							<div className="h-full w-full overflow-hidden group">
+								<button type="button" className="w-full h-full z-50 overflow-hidden" onClick={() => setShowVideo(true)}>
+									<span className={`absolute inset-0 hidden items-center justify-center z-50 ${showVideo ? "hidden" : " group-hover:flex"}`}> 
+										<Play className="w-20 h-20 text-neutral-300/80" />
+									</span>
 									<Image
-										src="https://i.imgur.com/t7Hv0BO.png"
+										src="https://pbs.twimg.com/media/G1S8Y01WIAAfcrl?format=jpg&name=large"
 										alt="Dione app screenshot"
 										width={750}
 										height={500}
 										quality={100}
 										unoptimized
 										priority
-										className="object-cover mx-auto rounded-md"
+										className="object-cover mx-auto rounded-lg opacity-85 brightness-110 group-hover:brightness-50 border border-transparent group-hover:border-neutral-400/60 transition-all duration-300"
 									/>
-								</div>
+								</button>
 							</div>
 						</div>
 				</motion.section>
-			<p
-				className="mt-5 mb-5 max-w-2xl text-center text-base sm:text-lg text-white/80 leading-relaxed text-balance px-4"
-				style={{ textRendering: "optimizeLegibility" }}
-			>
-				Explore powerful tools, seamless downloads, 1-click installs.
-			</p>
 			<div
 				className="flex flex-col items-center w-full max-w-xl gap-3 sm:gap-4"
 				aria-label="Primary"

@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import {
 	Code2,
 	DollarSign,
@@ -61,10 +61,12 @@ export default function Home() {
 
 		return (
 			<main>
-				<div className="relative flex flex-col items-center min-h-screen px-4 sm:px-8 pt-16 sm:pt-20 pb-10 gap-2">
+				<div className="relative flex flex-col items-center min-h-screen px-4 sm:px-8 pt-16 sm:pt-20 pb-10 gap-2 overflow-hidden">
 					<div
 					>
-						<Hero />
+						<AnimatePresence>
+							<Hero />
+						</AnimatePresence>
 					</div>
 
 				<motion.p
