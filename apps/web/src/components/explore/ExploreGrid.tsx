@@ -18,7 +18,13 @@ interface CardProps {
 	updated_at: string;
 }
 
-export default function ExploreGrid({ scripts, isLoading }: { scripts: CardProps[]; isLoading?: boolean }) {
+export default function ExploreGrid({
+	scripts,
+	isLoading,
+}: {
+	scripts: CardProps[];
+	isLoading?: boolean;
+}) {
 	return (
 		<section
 			className="mt-8 columns-1 md:columns-2 lg:columns-3 xl:columns-4 gap-4 max-w-7xl space-y-4 w-full"
@@ -26,11 +32,16 @@ export default function ExploreGrid({ scripts, isLoading }: { scripts: CardProps
 		>
 			{isLoading ? (
 				<>
-					{Array.from({ length: scripts.length > 0 ? scripts.length : 8 }).map((_, index) => (
-						<div key={`skeleton-${index}`} className="break-inside-avoid mb-4 w-full">
-							<ExploreCardSkeleton />
-						</div>
-					))}
+					{Array.from({ length: scripts.length > 0 ? scripts.length : 8 }).map(
+						(_, index) => (
+							<div
+								key={`skeleton-${index}`}
+								className="break-inside-avoid mb-4 w-full"
+							>
+								<ExploreCardSkeleton />
+							</div>
+						),
+					)}
 				</>
 			) : scripts && scripts.length > 0 ? (
 				<>
@@ -46,5 +57,5 @@ export default function ExploreGrid({ scripts, isLoading }: { scripts: CardProps
 				</div>
 			)}
 		</section>
-	)
+	);
 }
