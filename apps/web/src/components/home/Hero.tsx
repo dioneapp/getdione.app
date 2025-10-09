@@ -15,8 +15,23 @@ export default function Hero() {
 			></div>
 			<AnimatePresence initial={false} mode="wait">
 				{showVideo && (
-					<motion.div key="video-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center" onClick={() => setShowVideo(false)}>
-						<motion.div key="video-dialog" initial={{ opacity: 0, filter: "blur(10px)" }} animate={{ opacity: 1, filter: "blur(0px)" }} exit={{ opacity: 0, filter: "blur(10px)" }} transition={{ duration: 0.2 }} className="flex justify-center items-center w-full h-full max-w-4xl max-h-[60vh] m-auto">
+					<motion.div
+						key="video-backdrop"
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
+						exit={{ opacity: 0 }}
+						transition={{ duration: 0.2 }}
+						className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center"
+						onClick={() => setShowVideo(false)}
+					>
+						<motion.div
+							key="video-dialog"
+							initial={{ opacity: 0, filter: "blur(10px)" }}
+							animate={{ opacity: 1, filter: "blur(0px)" }}
+							exit={{ opacity: 0, filter: "blur(10px)" }}
+							transition={{ duration: 0.2 }}
+							className="flex justify-center items-center w-full h-full max-w-4xl max-h-[60vh] m-auto"
+						>
 							<iframe
 								ref={videoRef}
 								width="100%"
@@ -33,7 +48,7 @@ export default function Hero() {
 				)}
 			</AnimatePresence>
 			<h1
-				className="text-center font-medium tracking-tighter text-5xl max-w-4xl text-balance whitespace-pre-line"
+				className="text-center font-medium tracking-tighter text-5xl xl:text-6xl max-w-4xl text-balance whitespace-pre-line"
 				style={{
 					backgroundImage: "linear-gradient(180deg, #FFFFFF, #BBBBBB)",
 					WebkitBackgroundClip: "text",
@@ -44,7 +59,7 @@ export default function Hero() {
 				It has never been easier to install AI on your computer
 			</h1>
 			<p
-				className="mt-4 max-md:mb-5 max-w-2xl text-center text-base sm:text-sm text-neutral-300 leading-relaxed text-balance px-4"
+				className="mt-4 max-md:mb-5 max-w-2xl text-center text-base sm:text-lg text-neutral-300 leading-relaxed text-balance px-4"
 				style={{ textRendering: "optimizeLegibility" }}
 			>
 				Explore powerful tools, seamless downloads, 1-click installs.

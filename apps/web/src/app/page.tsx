@@ -33,15 +33,14 @@ export default function Home() {
 		);
 	};
 
-		return (
-			<main>
-				<div className="relative flex flex-col items-center min-h-screen px-4 sm:px-8 pt-16 sm:pt-20 pb-10 gap-2 overflow-hidden">
-					<div
-					>
-						<AnimatePresence>
-							<Hero />
-						</AnimatePresence>
-					</div>
+	return (
+		<main>
+			<div className="relative flex flex-col items-center min-h-screen px-4 sm:px-8 pt-16 sm:pt-20 pb-10 gap-2 overflow-hidden">
+				<div>
+					<AnimatePresence>
+						<Hero />
+					</AnimatePresence>
+				</div>
 
 				<motion.p
 					className="text-white/60 text-sm mt-4 text-center"
