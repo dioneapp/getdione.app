@@ -35,7 +35,7 @@ export default function Home() {
 
 	return (
 		<main>
-			<div className="relative flex flex-col items-center min-h-screen px-4 sm:px-8 pt-16 sm:pt-20 pb-10 gap-2 overflow-hidden">
+			<div className="relative flex flex-col items-center min-h-screen px-4 sm:px-8 pt-16 sm:pt-18 2xl:pt-20 pb-10 gap-2 overflow-hidden">
 				<div>
 					<AnimatePresence>
 						<Hero />
