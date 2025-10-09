@@ -1,11 +1,5 @@
 import { motion } from "framer-motion";
 import type React from "react";
-import {
-	defaultTransition,
-	staggerContainerVariants,
-	staggerItemVariants,
-	useScrollAnimation,
-} from "@/utils/use-scroll-animation";
 
 type Feature = {
 	title: string;
@@ -18,14 +12,9 @@ type FeaturesProps = {
 };
 
 export default function Features({ features }: FeaturesProps) {
-	const animation = useScrollAnimation(0.1);
 
 	return (
 		<motion.section
-			ref={animation.ref}
-			initial="hidden"
-			animate={animation.mainControls}
-			variants={staggerContainerVariants}
 			className="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-8 px-4 max-w-5xl w-full"
 			aria-labelledby="features-heading"
 		>
@@ -38,8 +27,6 @@ export default function Features({ features }: FeaturesProps) {
 			{features.map((feature, i) => (
 				<motion.article
 					key={feature.title}
-					variants={staggerItemVariants}
-					transition={defaultTransition}
 					className="group relative overflow-hidden flex flex-col items-center text-center p-6 rounded-xl border border-white/10 backdrop-blur-md bg-white/5 hover:bg-white/10 transition-all duration-300 hover:-translate-y-1 shadow-lg cursor-pointer"
 				>
 					{/* subtle inner glow stripe */}

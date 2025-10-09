@@ -32,6 +32,7 @@ body {
 * {
 	scrollbar-width: thin;
 	scrollbar-color: rgba(188, 177, 231, 0.45) transparent;
+	user-select: none;
 }
 
 /* scrollbar - WebKit (Chrome, Edge, Safari) */
