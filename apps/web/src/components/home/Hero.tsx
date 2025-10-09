@@ -48,7 +48,7 @@ export default function Hero() {
 				)}
 			</AnimatePresence>
 			<h1
-				className="text-center font-medium tracking-tighter text-5xl sm:text-2xl md:text-3xl xl:text-5xl max-w-4xl text-balance whitespace-pre-line"
+				className="text-center font-medium tracking-tighter text-5xl xl:text-6xl max-w-4xl text-balance whitespace-pre-line"
 				style={{
 					backgroundImage: "linear-gradient(180deg, #FFFFFF, #BBBBBB)",
 					WebkitBackgroundClip: "text",
@@ -59,7 +59,7 @@ export default function Hero() {
 				It has never been easier to install AI on your computer
 			</h1>
 			<p
-				className="mt-4 max-md:mb-5 max-w-2xl text-center text-base sm:text-sm text-neutral-300 leading-relaxed text-balance px-4"
+				className="mt-4 max-md:mb-5 max-w-2xl text-center text-base sm:text-lg text-neutral-300 leading-relaxed text-balance px-4"
 				style={{ textRendering: "optimizeLegibility" }}
 			>
 				Explore powerful tools, seamless downloads, 1-click installs.
