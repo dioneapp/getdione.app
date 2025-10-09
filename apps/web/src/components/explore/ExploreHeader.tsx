@@ -31,7 +31,7 @@ export default function ExploreHeader({ setOrderBy, orderBy }: ExploreHeaderProp
 			<h1
 				className="text-center font-medium tracking-tighter text-5xl xl:text-6xl max-w-4xl text-balance whitespace-pre-line"
 			>
-				Download any of these apps with a single click
+				Download any of these apps with one click
 			</h1>
 			<p
 				className="mt-6 max-w-xl text-center text-base sm:text-md text-neutral-300 leading-relaxed text-balance px-4"
