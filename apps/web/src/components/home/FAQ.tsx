@@ -17,7 +17,6 @@ type FAQProps = {
 };
 
 export default function FAQ({ faq, openItems, toggleItem }: FAQProps) {
-
 	return (
 		<motion.section
 			className="relative w-full max-w-4xl mx-auto px-4"

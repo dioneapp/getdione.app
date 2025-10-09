@@ -65,13 +65,17 @@ export default function Hero() {
 				Explore powerful tools, seamless downloads, 1-click installs.
 			</p>
 			{/* App screenshot (hidden on mobile) */}
-			<motion.section
-				className="hidden sm:block w-full max-w-5xl my-5 mt-10 transition-all duration-300"
-			>
+			<motion.section className="hidden sm:block w-full max-w-5xl my-5 mt-10 transition-all duration-300">
 				<div className="relative flex justify-center">
 					<div className="relative group">
-						<button type="button" className="relative block" onClick={() => setShowVideo(true)}>
-							<span className={`absolute inset-0 hidden cursor-pointer items-center justify-center z-10 rounded-lg ${showVideo ? "hidden" : " group-hover:flex"}`}>
+						<button
+							type="button"
+							className="relative block"
+							onClick={() => setShowVideo(true)}
+						>
+							<span
+								className={`absolute inset-0 hidden cursor-pointer items-center justify-center z-10 rounded-lg ${showVideo ? "hidden" : " group-hover:flex"}`}
+							>
 								<Play className="w-20 h-20 text-neutral-300/80" />
 							</span>
 							<Image

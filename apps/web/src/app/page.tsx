@@ -42,9 +42,7 @@ export default function Home() {
 					</AnimatePresence>
 				</div>
 
-				<motion.p
-					className="text-white/60 text-sm mt-4 text-center"
-				>
+				<motion.p className="text-white/60 text-sm mt-4 text-center">
 					Dione is still in beta. Join{" "}
 					<a
 						href="https://getdione.app/discord"
@@ -56,16 +54,12 @@ export default function Home() {
 				</motion.p>
 
 				{/* App carousel */}
-				<motion.section
-					className="w-full max-w-7xl"
-				>
+				<motion.section className="w-full max-w-7xl">
 					<AppCarousel />
 				</motion.section>
 
 				{/* Features */}
-				<motion.section
-					className="w-full max-w-5xl mt-14 sm:mt-20"
-				>
+				<motion.section className="w-full max-w-5xl mt-14 sm:mt-20">
 					<motion.h2
 						className="text-center text-2xl sm:text-3xl font-semibold mb-6 sm:mb-8 tracking-tight"
 						style={{
@@ -77,19 +71,14 @@ export default function Home() {
 					>
 						Why people like Dione
 					</motion.h2>
-					<motion.div
-						className="h-px bg-gradient-to-r from-transparent via-white/15 to-transparent mb-8"
-					></motion.div>
-					<motion.div
-					>
+					<motion.div className="h-px bg-gradient-to-r from-transparent via-white/15 to-transparent mb-8"></motion.div>
+					<motion.div>
 						<Features features={features} />
 					</motion.div>
 				</motion.section>
 
 				{/* FAQ */}
-				<motion.section
-					className="w-full max-w-4xl mt-16 sm:mt-24"
-				>
+				<motion.section className="w-full max-w-4xl mt-16 sm:mt-24">
 					<motion.h2
 						className="text-center text-2xl sm:text-3xl font-semibold mb-6 sm:mb-8 tracking-tight"
 						style={{
@@ -101,11 +90,8 @@ export default function Home() {
 					>
 						Questions & answers
 					</motion.h2>
-					<motion.div
-						className="h-px bg-gradient-to-r from-transparent via-white/15 to-transparent mb-8"
-					></motion.div>
-					<motion.div
-					>
+					<motion.div className="h-px bg-gradient-to-r from-transparent via-white/15 to-transparent mb-8"></motion.div>
+					<motion.div>
 						<FAQ faq={faq} openItems={openItems} toggleItem={toggleItem} />
 					</motion.div>
 				</motion.section>
