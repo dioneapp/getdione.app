@@ -1,8 +1,8 @@
-"use client";
+"use client"
 
 import { Calendar, Download, Tag, ThumbsUp } from "lucide-react";
 
-interface CardProps {
+interface ScriptData {
 	id: number;
 	name: string;
 	description: string;
@@ -19,6 +19,10 @@ interface CardProps {
 	updated_at: string;
 }
 
+interface CardProps extends ScriptData {
+	setOpenModal: (script: ScriptData | null) => void;
+}
+
 export default function ExploreCard({
 	id,
 	name,
@@ -27,16 +31,21 @@ export default function ExploreCard({
 	author_url,
 	logo_url,
 	banner_url,
+	script_url,
+	tags,
 	version,
 	likes,
 	downloads,
 	created_at,
+	updated_at,
+	setOpenModal,
 }: CardProps) {
+	const script: ScriptData = { id, name, description, author, author_url, logo_url, banner_url, script_url, version, tags, likes, downloads, created_at, updated_at };
 	const formattedDate = new Date(created_at).toLocaleDateString();
 
 	return (
 		<article
-			onClick={() => (window.location.href = `dione://download=${id}`)}
+			onClick={() => setOpenModal && setOpenModal(script)}
 			className="group relative p-6 rounded-xl border border-white/10 backdrop-blur-md bg-white/5 hover:bg-white/10 transition-all duration-300 shadow-lg cursor-pointer w-full h-full flex flex-col"
 		>
 			{/* {banner_url && (
