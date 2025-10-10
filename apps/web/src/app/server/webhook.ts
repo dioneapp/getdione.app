@@ -40,7 +40,7 @@ export async function sendFeaturedWebhook(data: unknown) {
 
 export async function sendScriptsWebhook(data: unknown) {
 	try {
-		console.log("env", procecss.env.SCRIPTS_DISCORD_WEBHOOK_URL)
+		console.log("env", process.env.SCRIPTS_DISCORD_WEBHOOK_URL)
 		const response = await fetch(process.env.SCRIPTS_DISCORD_WEBHOOK_URL!, {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
