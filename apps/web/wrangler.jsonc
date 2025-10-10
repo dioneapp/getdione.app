@@ -6,5 +6,10 @@
 	"assets": {
 		"directory": ".open-next/assets",
 		"binding": "ASSETS"
+	},
+	"vars": {
+		"SCRIPTS_DISCORD_WEBHOOK_URL": "",
+		"FEATURED_DISCORD_WEBHOOK_URL": "",
+		"BETA_DISCORD_WEBHOOK_URL": ""
 	}
 }
