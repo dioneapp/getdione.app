@@ -1,0 +1,7 @@
+export interface CloudflareEnv {
+	SCRIPTS_DISCORD_WEBHOOK_URL: string;
+	FEATURED_DISCORD_WEBHOOK_URL: string;
+	BETA_DISCORD_WEBHOOK_URL: string;
+	NEXT_PUBLIC_SUPABASE_URL: string;
+	NEXT_PUBLIC_SUPABASE_ANON_KEY: string;
+}
