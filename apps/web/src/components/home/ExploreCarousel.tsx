@@ -134,7 +134,7 @@ function CarouselCard({ script }: { script: ScriptItem }) {
 						alt={`${name} logo`}
 						className="w-10 h-10 rounded-md object-cover border border-white/10"
 					/>
-				): (
+				) : (
 					<div>
 						<span className="w-10 h-10 rounded-md bg-white/10 border border-white/10 flex items-center justify-center text-white font-medium">
 							{name.charAt(0).toUpperCase()}

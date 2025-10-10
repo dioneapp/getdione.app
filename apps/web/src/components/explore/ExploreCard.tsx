@@ -57,13 +57,13 @@ export default function ExploreCard({
 
 			<div className="relative z-10 flex flex-col h-full">
 				<div className="flex items-center gap-4 mb-4">
-					{logo_url ? (					
+					{logo_url ? (
 						<img
 							src={logo_url || "/favicon.ico"}
 							alt={`${name} logo`}
 							className="w-12 h-12 rounded-md object-cover"
 						/>
-					): (
+					) : (
 						<div>
 							<span className="w-10 h-10 rounded-md bg-white/10 border border-white/10 flex items-center justify-center text-white font-medium">
 								{name.charAt(0).toUpperCase()}

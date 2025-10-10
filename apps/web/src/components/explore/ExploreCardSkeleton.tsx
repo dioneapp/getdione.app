@@ -11,7 +11,9 @@ export default function ExploreCardSkeleton() {
 	}, []);
 
 	if (randomHeight === null || descriptionLines === null) {
-		return <div className="w-full h-[250px] animate-pulse rounded-xl bg-white/5" />;
+		return (
+			<div className="w-full h-[250px] animate-pulse rounded-xl bg-white/5" />
+		);
 	}
 
 	return (
