@@ -1,5 +1,5 @@
-import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
+import { useState } from "react";
 import ExploreCard from "./ExploreCard";
 import ExploreCardSkeleton from "./ExploreCardSkeleton";
 import ExploreModal from "./ExploreModal";
@@ -22,23 +22,32 @@ interface CardProps {
 	og_author?: string;
 }
 
-export default function ExploreGrid({ scripts, isLoading }: { scripts: CardProps[]; isLoading?: boolean }) {
-	const [selectedScript, setSelectedScript] = useState<CardProps | null>(null)
+export default function ExploreGrid({
+	scripts,
+	isLoading,
+}: {
+	scripts: CardProps[];
+	isLoading?: boolean;
+}) {
+	const [selectedScript, setSelectedScript] = useState<CardProps | null>(null);
 
 	// organize scripts into columns but keep the order
 	const distributeScripts = (scripts: CardProps[], numColumns: number) => {
-		const columns: CardProps[][] = Array.from({ length: numColumns }, () => [])
+		const columns: CardProps[][] = Array.from({ length: numColumns }, () => []);
 		scripts.forEach((script, index) => {
-			columns[index % numColumns].push(script)
-		})
-		return columns
-	}
+			columns[index % numColumns].push(script);
+		});
+		return columns;
+	};
 
 	return (
 		<>
 			<AnimatePresence>
 				{selectedScript && (
-					<ExploreModal script={selectedScript} setSelectedScript={setSelectedScript} />
+					<ExploreModal
+						script={selectedScript}
+						setSelectedScript={setSelectedScript}
+					/>
 				)}
 			</AnimatePresence>
 			<section
@@ -47,7 +56,9 @@ export default function ExploreGrid({ scripts, isLoading }: { scripts: CardProps
 			>
 				{isLoading ? (
 					<>
-						{Array.from({ length: scripts.length > 0 ? scripts.length : 8 }).map((_, index) => (
+						{Array.from({
+							length: scripts.length > 0 ? scripts.length : 8,
+						}).map((_, index) => (
 							<div key={`skeleton-${index}`} className="w-full">
 								<ExploreCardSkeleton />
 							</div>
@@ -56,10 +67,18 @@ export default function ExploreGrid({ scripts, isLoading }: { scripts: CardProps
 				) : scripts && scripts.length > 0 ? (
 					<>
 						{distributeScripts(scripts, 4).map((column, columnIndex) => (
-							<div key={`column-${columnIndex}`} className="flex flex-col gap-4">
+							<div
+								key={`column-${columnIndex}`}
+								className="flex flex-col gap-4"
+							>
 								{column.map((script) => (
 									<div key={script.id} className="w-full">
-										<ExploreCard {...script} setOpenModal={(open) => setSelectedScript(open ? script : null)} />
+										<ExploreCard
+											{...script}
+											setOpenModal={(open) =>
+												setSelectedScript(open ? script : null)
+											}
+										/>
 									</div>
 								))}
 							</div>
@@ -72,5 +91,5 @@ export default function ExploreGrid({ scripts, isLoading }: { scripts: CardProps
 				)}
 			</section>
 		</>
-	)
+	);
 }

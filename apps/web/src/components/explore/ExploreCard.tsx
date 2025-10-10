@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { Calendar, Download, Tag, ThumbsUp } from "lucide-react";
 
@@ -40,7 +40,22 @@ export default function ExploreCard({
 	updated_at,
 	setOpenModal,
 }: CardProps) {
-	const script: ScriptData = { id, name, description, author, author_url, logo_url, banner_url, script_url, version, tags, likes, downloads, created_at, updated_at };
+	const script: ScriptData = {
+		id,
+		name,
+		description,
+		author,
+		author_url,
+		logo_url,
+		banner_url,
+		script_url,
+		version,
+		tags,
+		likes,
+		downloads,
+		created_at,
+		updated_at,
+	};
 	const formattedDate = new Date(created_at).toLocaleDateString();
 
 	return (
