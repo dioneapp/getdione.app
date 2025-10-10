@@ -39,11 +39,12 @@ export async function featuredWebhookAction(body: any) {
 export async function scriptsWebhookAction(body: any) {
 	try {
 		const result = await sendScriptsWebhook(body);
-		if ((result as any).success) {
+		if (result.success) {
 			return { success: true };
+		} else {		
+			return { error: "Failed to submit webhook" };
 		}
-		return { error: "Failed to submit webhook" };
-	} catch {
+	} catch (error) {
 		return { error: "Internal server error" };
 	}
 }
