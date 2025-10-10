@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { Calendar, CalendarSync, Download, Heart, Library, Tag } from "lucide-react";
 
 interface ScriptData {
@@ -21,7 +22,12 @@ interface ScriptData {
 
 export default function ExploreModal({ script, setSelectedScript }: { script: ScriptData, setSelectedScript: (script: ScriptData | null) => void }) {
 	return (
-		<article className="fixed max-md:p-4 inset-0 bg-black/50 backdrop-blur-xl flex items-center justify-center z-50 overflow-hidden">
+		<motion.article 
+        initial={{ opacity: 0, filter: "blur(10px)" }}
+        animate={{ opacity: 1, filter: "blur(0px)" }}
+        exit={{ opacity: 0,  filter: "blur(10px)" }}
+        transition={{ duration: 0.15 }}
+        className="fixed max-md:p-4 inset-0 bg-black/50 backdrop-blur-xl flex items-center justify-center z-50 overflow-hidden">
 			<div className="bg-white/5 border border-white/5 rounded-xl p-6 md:max-w-2xl min-h-[50dvh] w-full mx-auto shadow-2xl flex flex-col h-full md:max-h-[50vh]">
                 <div className="flex flex-col flex-1 h-full items-center mx-4 gap-4">
                     <div className="flex flex-1 h-full max-h-full max-md:flex-col items-start justify-start gap-6 w-full">
@@ -98,6 +104,6 @@ export default function ExploreModal({ script, setSelectedScript }: { script: Sc
                     </div>
                 </div>
             </div>
-		</article>
+		</motion.article>
 	)
 }

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AnimatePresence } from "framer-motion";
 import ExploreCard from "./ExploreCard";
 import ExploreCardSkeleton from "./ExploreCardSkeleton";
 import ExploreModal from "./ExploreModal";
@@ -35,9 +36,11 @@ export default function ExploreGrid({ scripts, isLoading }: { scripts: CardProps
 
 	return (
 		<>
-			{selectedScript && (
-				<ExploreModal script={selectedScript} setSelectedScript={setSelectedScript} />
-			)}
+			<AnimatePresence>
+				{selectedScript && (
+					<ExploreModal script={selectedScript} setSelectedScript={setSelectedScript} />
+				)}
+			</AnimatePresence>
 			<section
 				className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 max-w-7xl w-full"
 				aria-labelledby="features-heading"
