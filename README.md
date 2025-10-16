@@ -1,4 +1,4 @@
-# Dione Platform
+# Dione ecosystem
 
 A comprehensive platform for script management and execution, built with modern web technologies and deployed on Cloudflare's edge network.
 

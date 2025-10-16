@@ -1,6 +1,6 @@
 export default function ExploreFooter() {
 	return (
-		<p className="text-white/80 text-sm mt-6 text-center">
+		<p className="text-white/80 text-sm mt-24 text-center">
 			Want to see more? Check out the{" "}
 			<a href="/" rel="noopener" className="underline">
 				home

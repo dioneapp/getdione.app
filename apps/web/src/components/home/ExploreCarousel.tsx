@@ -126,13 +126,21 @@ function CarouselCard({ script }: { script: ScriptItem }) {
 	const { name, description, logo_url, author, author_url } = script;
 
 	return (
-		<article className="group relative p-4 rounded-xl border border-white/10 backdrop-blur-md bg-white/5 hover:bg-white/10 transition-all duration-300 shadow-lg h-full flex flex-col">
+		<article className="group relative p-4 rounded-xl border border-white/10 backdrop-blur-md bg-white/5 hover:bg-white/10 transition-all duration-300 shadow-lg h-full flex flex-col overflow-hidden">
 			<div className="flex items-center gap-3">
-				<img
-					src={logo_url || "/favicon.ico"}
-					alt={`${name} logo`}
-					className="w-10 h-10 rounded-md object-cover border border-white/10"
-				/>
+				{logo_url ? (
+					<img
+						src={logo_url || "/favicon.ico"}
+						alt={`${name} logo`}
+						className="w-10 h-10 rounded-md object-cover border border-white/10"
+					/>
+				) : (
+					<div>
+						<span className="w-10 h-10 rounded-md bg-white/10 border border-white/10 flex items-center justify-center text-white font-medium">
+							{name.charAt(0).toUpperCase()}
+						</span>
+					</div>
+				)}
 				<div className="min-w-0">
 					<h3 className="text-white text-base font-medium truncate">{name}</h3>
 					<a

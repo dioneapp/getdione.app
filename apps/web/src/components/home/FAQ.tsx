@@ -3,12 +3,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import type React from "react";
-import {
-	defaultTransition,
-	staggerContainerVariants,
-	staggerItemVariants,
-	useScrollAnimation,
-} from "@/utils/use-scroll-animation";
 
 type FAQ = {
 	question: string;
@@ -23,14 +17,8 @@ type FAQProps = {
 };
 
 export default function FAQ({ faq, openItems, toggleItem }: FAQProps) {
-	const animation = useScrollAnimation(0.1);
-
 	return (
 		<motion.section
-			ref={animation.ref}
-			initial="hidden"
-			animate={animation.mainControls}
-			variants={staggerContainerVariants}
 			className="relative w-full max-w-4xl mx-auto px-4"
 			aria-labelledby="faq-heading"
 		>
@@ -41,7 +29,7 @@ export default function FAQ({ faq, openItems, toggleItem }: FAQProps) {
 			>
 				<div className="center-radial-glow" />
 				<motion.div
-					className="absolute -top-10 -right-20 h-64 w-64 rounded-full blur-3xl opacity-40"
+					className="absolute -top-10  h-64 w-64 rounded-full blur-3xl opacity-40"
 					animate={{ y: [0, -10, 0] }}
 					transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
 				/>
@@ -55,12 +43,10 @@ export default function FAQ({ faq, openItems, toggleItem }: FAQProps) {
 					transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
 				/>
 			</div>
-			<motion.div className="grid gap-4" variants={staggerContainerVariants}>
+			<motion.div className="grid gap-4">
 				{faq.map((item, index) => (
 					<motion.article
 						key={index}
-						variants={staggerItemVariants}
-						transition={defaultTransition}
 						className={`group rounded-xl border border-white/10 hover:border-white/20 transition-all duration-300 overflow-hidden ${openItems.includes(index) ? "border-white/30" : ""}`}
 					>
 						<button

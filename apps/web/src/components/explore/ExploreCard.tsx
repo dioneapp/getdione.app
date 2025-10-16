@@ -2,7 +2,7 @@
 
 import { Calendar, Download, Tag, ThumbsUp } from "lucide-react";
 
-interface CardProps {
+interface ScriptData {
 	id: number;
 	name: string;
 	description: string;
@@ -19,6 +19,10 @@ interface CardProps {
 	updated_at: string;
 }
 
+interface CardProps extends ScriptData {
+	setOpenModal: (script: ScriptData | null) => void;
+}
+
 export default function ExploreCard({
 	id,
 	name,
@@ -27,16 +31,36 @@ export default function ExploreCard({
 	author_url,
 	logo_url,
 	banner_url,
+	script_url,
+	tags,
 	version,
 	likes,
 	downloads,
 	created_at,
+	updated_at,
+	setOpenModal,
 }: CardProps) {
+	const script: ScriptData = {
+		id,
+		name,
+		description,
+		author,
+		author_url,
+		logo_url,
+		banner_url,
+		script_url,
+		version,
+		tags,
+		likes,
+		downloads,
+		created_at,
+		updated_at,
+	};
 	const formattedDate = new Date(created_at).toLocaleDateString();
 
 	return (
 		<article
-			onClick={() => (window.location.href = `dione://download=${id}`)}
+			onClick={() => setOpenModal && setOpenModal(script)}
 			className="group relative p-6 rounded-xl border border-white/10 backdrop-blur-md bg-white/5 hover:bg-white/10 transition-all duration-300 shadow-lg cursor-pointer w-full h-full flex flex-col"
 		>
 			{/* {banner_url && (
@@ -48,11 +72,19 @@ export default function ExploreCard({
 
 			<div className="relative z-10 flex flex-col h-full">
 				<div className="flex items-center gap-4 mb-4">
-					<img
-						src={logo_url || "/favicon.ico"}
-						alt={`${name} logo`}
-						className="w-12 h-12 rounded-md object-cover"
-					/>
+					{logo_url ? (
+						<img
+							src={logo_url || "/favicon.ico"}
+							alt={`${name} logo`}
+							className="w-12 h-12 rounded-md object-cover"
+						/>
+					) : (
+						<div>
+							<span className="w-10 h-10 rounded-md bg-white/10 border border-white/10 flex items-center justify-center text-white font-medium">
+								{name.charAt(0).toUpperCase()}
+							</span>
+						</div>
+					)}
 					<div>
 						<h3 className="text-lg sm:text-xl font-medium text-white">
 							{name}
@@ -67,7 +99,7 @@ export default function ExploreCard({
 				</div>
 
 				<div className="flex-1 flex flex-col">
-					<p className="text-sm sm:text-base text-white/70 mb-4 line-clamp-3">
+					<p className="text-sm sm:text-base text-white/70 mb-4">
 						{description}
 					</p>
 

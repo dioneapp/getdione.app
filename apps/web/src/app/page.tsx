@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import {
 	Code2,
 	DollarSign,
@@ -20,16 +20,6 @@ import {
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import AppCarousel from "@/components/home/AppCarousel";
-import {
-	defaultTransition,
-	fadeInUpVariants,
-	fadeInVariants,
-	scaleInVariants,
-	slowTransition,
-	staggerContainerVariants,
-	staggerItemVariants,
-	useScrollAnimation,
-} from "@/utils/use-scroll-animation";
 import FAQ from "../components/home/FAQ";
 import Features from "../components/home/Features";
 import Hero from "../components/home/Hero";
@@ -37,67 +27,22 @@ import Hero from "../components/home/Hero";
 export default function Home() {
 	const [openItems, setOpenItems] = useState<number[]>([]);
 
-	// Scroll animation hooks for different sections
-	const heroAnimation = useScrollAnimation(0.2);
-	const screenshotAnimation = useScrollAnimation(0.15);
-	const betaTextAnimation = useScrollAnimation(0.3);
-	const carouselAnimation = useScrollAnimation(0.1);
-	const featuresAnimation = useScrollAnimation(0.1);
-	const faqAnimation = useScrollAnimation(0.1);
-
-	useEffect(() => {
-		// randomly select 4 items to be open initially
-		const shuffled = [...Array(faq.length).keys()].sort(
-			() => Math.random() - 0.5,
-		);
-		setOpenItems(shuffled.slice(0, 4));
-	}, []);
-
 	const toggleItem = (index: number) => {
 		setOpenItems((prev) =>
 			prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index],
 		);
 	};
 
-		return (
-			<main>
-				<div className="relative flex flex-col items-center min-h-screen px-4 sm:px-8 pt-16 sm:pt-20 pb-10 gap-2">
-					<div
-					>
+	return (
+		<main>
+			<div className="relative flex flex-col items-center min-h-screen px-4 sm:px-8 pt-16 sm:pt-18 2xl:pt-20 pb-10 gap-2 overflow-hidden">
+				<div>
+					<AnimatePresence>
 						<Hero />
-					</div>
+					</AnimatePresence>
+				</div>
 
-					{/* App screenshot (hidden on mobile) */}
-					<motion.section
-						className="hidden sm:block w-full max-w-5xl mt-10 sm:mt-12"
-					>
-						<div className="relative">
-							<div className="h-full w-full rounded-xl overflow-hidden bg-gradient-to-b from-white/10 via-white/30 to-white/10 p-0.5 shadow-2xl shadow-black">
-								<div className="overflow-hidden">
-									<Image
-										src="/app.png"
-										alt="Dione app screenshot"
-										width={1195}
-										height={800}
-										quality={100}
-										unoptimized
-										priority
-										sizes="(max-width: 1024px) 100vw, 1024px"
-										className="w-full h-auto rounded-xl"
-									/>
-								</div>
-							</div>
-						</div>
-				</motion.section>
-
-				<motion.p
-					ref={betaTextAnimation.ref}
-					initial="hidden"
-					animate={betaTextAnimation.mainControls}
-					variants={fadeInVariants}
-					transition={defaultTransition}
-					className="text-white/60 text-sm mt-4 text-center"
-				>
+				<motion.p className="text-white/60 text-sm mt-4 text-center">
 					Dione is still in beta. Join{" "}
 					<a
 						href="https://getdione.app/discord"
@@ -109,28 +54,13 @@ export default function Home() {
 				</motion.p>
 
 				{/* App carousel */}
-				<motion.section
-					ref={carouselAnimation.ref}
-					initial="hidden"
-					animate={carouselAnimation.mainControls}
-					variants={fadeInUpVariants}
-					transition={defaultTransition}
-					className="w-full max-w-7xl"
-				>
+				<motion.section className="w-full max-w-7xl">
 					<AppCarousel />
 				</motion.section>
 
 				{/* Features */}
-				<motion.section
-					ref={featuresAnimation.ref}
-					initial="hidden"
-					animate={featuresAnimation.mainControls}
-					variants={staggerContainerVariants}
-					className="w-full max-w-5xl mt-14 sm:mt-20"
-				>
+				<motion.section className="w-full max-w-5xl mt-14 sm:mt-20">
 					<motion.h2
-						variants={staggerItemVariants}
-						transition={defaultTransition}
 						className="text-center text-2xl sm:text-3xl font-semibold mb-6 sm:mb-8 tracking-tight"
 						style={{
 							backgroundImage: "linear-gradient(180deg, #FFFFFF, #BBBBBB)",
@@ -141,30 +71,15 @@ export default function Home() {
 					>
 						Why people like Dione
 					</motion.h2>
-					<motion.div
-						variants={staggerItemVariants}
-						transition={defaultTransition}
-						className="h-px bg-gradient-to-r from-transparent via-white/15 to-transparent mb-8"
-					></motion.div>
-					<motion.div
-						variants={staggerItemVariants}
-						transition={defaultTransition}
-					>
+					<motion.div className="h-px bg-gradient-to-r from-transparent via-white/15 to-transparent mb-8"></motion.div>
+					<motion.div>
 						<Features features={features} />
 					</motion.div>
 				</motion.section>
 
 				{/* FAQ */}
-				<motion.section
-					ref={faqAnimation.ref}
-					initial="hidden"
-					animate={faqAnimation.mainControls}
-					variants={staggerContainerVariants}
-					className="w-full max-w-4xl mt-16 sm:mt-24"
-				>
+				<motion.section className="w-full max-w-4xl mt-16 sm:mt-24">
 					<motion.h2
-						variants={staggerItemVariants}
-						transition={defaultTransition}
 						className="text-center text-2xl sm:text-3xl font-semibold mb-6 sm:mb-8 tracking-tight"
 						style={{
 							backgroundImage: "linear-gradient(180deg, #FFFFFF, #BBBBBB)",
@@ -175,15 +90,8 @@ export default function Home() {
 					>
 						Questions & answers
 					</motion.h2>
-					<motion.div
-						variants={staggerItemVariants}
-						transition={defaultTransition}
-						className="h-px bg-gradient-to-r from-transparent via-white/15 to-transparent mb-8"
-					></motion.div>
-					<motion.div
-						variants={staggerItemVariants}
-						transition={defaultTransition}
-					>
+					<motion.div className="h-px bg-gradient-to-r from-transparent via-white/15 to-transparent mb-8"></motion.div>
+					<motion.div>
 						<FAQ faq={faq} openItems={openItems} toggleItem={toggleItem} />
 					</motion.div>
 				</motion.section>

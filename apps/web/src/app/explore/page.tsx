@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import ExploreFooter from "@/components/explore/ExploreFooter";
 import ExploreGrid from "@/components/explore/ExploreGrid";
 import ExploreHeader from "@/components/explore/ExploreHeader";
@@ -5,8 +8,20 @@ import { getScripts } from "@/utils/getScripts";
 
 export const dynamic = "force-dynamic";
 
-export default async function ExplorePage() {
-	const scripts = await getScripts();
+export default function ExplorePage() {
+	const [orderBy, setOrderBy] = useState<string>();
+	const [scripts, setScripts] = useState([]);
+	const [loading, setLoading] = useState(true);
+
+	useEffect(() => {
+		async function fetchScripts() {
+			setLoading(true);
+			const data = await getScripts(orderBy);
+			setScripts(data);
+			setLoading(false);
+		}
+		fetchScripts();
+	}, [orderBy]);
 
 	return (
 		<main>
@@ -16,8 +31,11 @@ export default async function ExplorePage() {
 					aria-hidden="true"
 				/>
 
-				<ExploreHeader />
-				<ExploreGrid scripts={scripts} />
+				<ExploreHeader
+					setOrderBy={setOrderBy}
+					orderBy={orderBy || "downloads"}
+				/>
+				<ExploreGrid scripts={scripts} isLoading={loading} />
 				<ExploreFooter />
 			</div>
 		</main>
