@@ -41,7 +41,7 @@ export async function scriptsWebhookAction(body: any) {
 		const result = await sendScriptsWebhook(body);
 		if (result.success) {
 			return { success: true };
-		} else {		
+		} else {
 			return { error: "Failed to submit webhook" };
 		}
 	} catch (error) {
