@@ -30,13 +30,13 @@ export default function Hero() {
 							animate={{ opacity: 1, filter: "blur(0px)" }}
 							exit={{ opacity: 0, filter: "blur(10px)" }}
 							transition={{ duration: 0.2 }}
-							className="flex justify-center items-center w-full h-full max-w-4xl max-h-[60vh] m-auto"
+							className="flex justify-center items-center w-full h-full max-w-5xl max-h-[60vh] m-auto"
 						>
 							<iframe
 								ref={videoRef}
 								width="100%"
-								height="800px"
-								src="https://www.youtube.com/embed/5cWy7-LaUTk?autoplay=1&cc_load_policy=1&mute=1&rel=0&vq=hd1080&controls=0&loop=1"
+								height="700px"
+								src="https://www.youtube.com/embed/5cWy7-LaUTk?autoplay=1&cc_load_policy=1&mute=1&rel=0&vq=hd1080&controls=1&loop=1"
 								title="YouTube video player"
 								frameBorder="0"
 								allow="autoplay; encrypted-media;"
@@ -48,7 +48,7 @@ export default function Hero() {
 				)}
 			</AnimatePresence>
 			<h1
-				className="text-center font-medium tracking-tighter text-5xl xl:text-6xl max-w-4xl text-balance whitespace-pre-line"
+				className="mb-4 text-center font-medium tracking-tighter text-5xl xl:text-[3.5rem] max-w-4xl text-balance whitespace-pre-line"
 				style={{
 					backgroundImage: "linear-gradient(180deg, #FFFFFF, #BBBBBB)",
 					WebkitBackgroundClip: "text",
@@ -58,14 +58,8 @@ export default function Hero() {
 			>
 				It has never been easier to install AI on your computer
 			</h1>
-			<p
-				className="mt-4 max-md:mb-5 max-w-2xl text-center text-base sm:text-lg text-neutral-300 leading-relaxed text-balance px-4"
-				style={{ textRendering: "optimizeLegibility" }}
-			>
-				Explore powerful tools, seamless downloads, 1-click installs.
-			</p>
 			{/* App screenshot (hidden on mobile) */}
-			<motion.section className="hidden sm:block w-full max-w-5xl my-5 mt-10 transition-all duration-300">
+			<motion.section className="hidden sm:block w-full max-w-5xl my-5 transition-all duration-300">
 				<div className="relative flex justify-center">
 					<div className="relative group">
 						<button
@@ -81,21 +75,21 @@ export default function Hero() {
 								<Play className="w-20 h-20 text-neutral-300/80" />
 							</span>
 							<Image
-								src="https://pbs.twimg.com/media/G1S8Y01WIAAfcrl?format=jpg&name=large"
+								src="https://i.imgur.com/x7oqLfU.png"
 								alt="Dione app screenshot"
-								width={750}
+								width={680}
 								height={500}
 								quality={100}
 								unoptimized
 								priority
-								className="object-cover rounded-lg opacity-85 brightness-110 group-hover:brightness-80 group-hover:shadow-xl border border-transparent group-hover:border-neutral-400/60 transition-all duration-300"
+								className="object-cover rounded-2xl group-hover:rounded-xl opacity-85 brightness-110 group-hover:brightness-80 group-hover:shadow-xl border border-transparent group-hover:border-white/20 transition-all duration-300"
 							/>
 						</button>
 					</div>
 				</div>
 			</motion.section>
 			<div
-				className="flex flex-col items-center w-full max-w-xl gap-3 sm:gap-4"
+				className="flex flex-col items-center w-full max-w-xl gap-3 sm:gap-4 max-md:mt-5"
 				aria-label="Primary"
 			>
 				<a
