@@ -83,13 +83,18 @@ shareRouter.get("/:id", requireAuth, async (c) => {
 
 		const { data, error } = await supabase
 			.from("shared_urls")
-			.select("long_url")
+			.select("long_url, clicks")
 			.eq("id", id)
 			.single();
 
 		if (error || !data) {
 			return c.json({ error: "URL not found" }, 404);
 		}
+
+		void supabase
+			.from("shared_urls")
+			.update({ clicks: (data.clicks || 0) + 1 })
+			.eq("id", id);
 
 		return c.json({
 			id,
