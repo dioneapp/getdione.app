@@ -1,43 +1,24 @@
-import { redirect } from "next/navigation";
-
-export const runtime = "edge";
+import { redirect } from 'next/navigation';
+import { getShareUrl } from '../actions';
 
 interface PageProps {
-	params: Promise<{
-		id: string;
-	}>;
+  params: {
+    id: string;
+  };
 }
 
 export default async function ShareRedirectPage({ params }: PageProps) {
-	const { id } = await params;
+  const { id } = params;
+  
+  if (!id) {
+    redirect('/');
+  }
 
-	if (!id) {
-		redirect("/");
-	}
-
-	try {
-		const response = await fetch(
-			`https://api.getdione.app/v1/share/${id}`,
-			{
-				headers: {
-					Authorization: `Bearer ${process.env.PRIVATE_KEY}`,
-				},
-			},
-		);
-
-		if (!response.ok) {
-			redirect("/");
-		}
-
-		const data = await response.json();
-
-		if (!data.longUrl) {
-			redirect("/");
-		}
-
-		redirect(data.longUrl);
-	} catch (error) {
-		console.error("Error fetching shared URL:", error);
-		redirect("/");
-	}
+  try {
+    const { url } = await getShareUrl(id);
+    redirect(url);
+  } catch (error) {
+    console.error('Error in ShareRedirectPage:', error);
+    redirect('/');
+  }
 }
