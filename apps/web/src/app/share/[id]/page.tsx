@@ -1,11 +1,10 @@
 import { redirect } from 'next/navigation';
 import { getShareUrl } from '../actions';
 
-interface PageProps {
-  params: {
-    id: string;
-  };
-}
+type PageProps = {
+  params: { id: string };
+  searchParams?: { [key: string]: string | string[] | undefined };
+};
 
 export default async function ShareRedirectPage({ params }: PageProps) {
   const { id } = params;
