@@ -1,19 +1,19 @@
 'use server';
 
 import { createClient } from '@supabase/supabase-js';
-import { redirect } from 'next/navigation';
 
 export async function getShareUrl(id: string) {
   if (!id) {
-    redirect('/');
+    return null;
   }
 
   try {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY;
 
+
     if (!supabaseUrl || !supabaseKey) {
-      throw new Error('Supabase not configured');
+      return null;
     }
 
     const supabase = createClient(supabaseUrl, supabaseKey);
@@ -24,10 +24,11 @@ export async function getShareUrl(id: string) {
       .eq('id', id)
       .single();
 
+
     if (error || !data) {
-      console.error('Error fetching URL:', error);
-      redirect('/');
+      return null;
     }
+
 
     void supabase
       .from('shared_urls')
@@ -37,6 +38,6 @@ export async function getShareUrl(id: string) {
     return { url: data.long_url };
   } catch (error) {
     console.error('Error in getShareUrl:', error);
-    redirect('/');
+    return null;
   }
 }
