@@ -1,6 +1,5 @@
 import { Hono } from "hono";
 import scriptsRouter from "./routes/scripts";
-import shareRouter from "./routes/share";
 
 type Bindings = {
 	SUPABASE_URL: string;
@@ -38,7 +37,6 @@ app.use(async (c, next) => {
 const v1 = new Hono<{ Bindings: Bindings }>();
 // routes
 v1.route("/scripts", scriptsRouter);
-v1.route("/share", shareRouter);
 
 // mount v1
 app.route("/v1", v1);
