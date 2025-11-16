@@ -29,12 +29,10 @@ export async function getShareUrl(id: string) {
       redirect('/');
     }
 
-    supabase
+    void supabase
       .from('shared_urls')
       .update({ clicks: (data.clicks || 0) + 1 })
-      .eq('id', id)
-      .then(() => {})
-      .catch((err) => console.error('Error updating clicks:', err));
+      .eq('id', id);
 
     return { url: data.long_url };
   } catch (error) {
