@@ -29,11 +29,14 @@ export async function getShareUrl(id: string) {
       return null;
     }
 
-
-    void supabase
+    const { error: updateError } = await supabase
       .from('shared_urls')
       .update({ clicks: (data.clicks || 0) + 1 })
       .eq('id', id);
+
+    if (updateError) {
+      console.error('Error updating clicks:', updateError);
+    }
 
     return { url: data.long_url };
   } catch (error) {
