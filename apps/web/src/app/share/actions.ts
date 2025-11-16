@@ -1,5 +1,6 @@
 'use server';
 
+import { createClient } from '@supabase/supabase-js';
 import { redirect } from 'next/navigation';
 
 export async function getShareUrl(id: string) {
@@ -8,27 +9,34 @@ export async function getShareUrl(id: string) {
   }
 
   try {
-    const response = await fetch(
-      `https://api.getdione.app/v1/share/${id}`,
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.PRIVATE_KEY}`,
-        },
-        next: { revalidate: 0 } // Don't cache this request
-      }
-    );
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY;
 
-    if (!response.ok) {
-      throw new Error('Failed to fetch shared URL');
+    if (!supabaseUrl || !supabaseKey) {
+      throw new Error('Supabase not configured');
     }
 
-    const data = await response.json();
+    const supabase = createClient(supabaseUrl, supabaseKey);
 
-    if (!data.longUrl) {
-      throw new Error('No URL found');
+    const { data, error } = await supabase
+      .from('shared_urls')
+      .select('long_url, clicks')
+      .eq('id', id)
+      .single();
+
+    if (error || !data) {
+      console.error('Error fetching URL:', error);
+      redirect('/');
     }
 
-    return { url: data.longUrl };
+    supabase
+      .from('shared_urls')
+      .update({ clicks: (data.clicks || 0) + 1 })
+      .eq('id', id)
+      .then(() => {})
+      .catch((err) => console.error('Error updating clicks:', err));
+
+    return { url: data.long_url };
   } catch (error) {
     console.error('Error in getShareUrl:', error);
     redirect('/');
