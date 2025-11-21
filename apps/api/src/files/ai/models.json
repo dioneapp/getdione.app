@@ -1,0 +1,50 @@
+{
+    "gemma": {
+        "description": "The current, most capable model that runs on a single GPU.",
+        "provider": "Google",
+        "models": [
+            {
+                "id": "gemma3:1b",
+                "name": "Gemma3 1B",
+                "size": "815mb",
+                "category": "small"
+            },
+            {
+                "id": "gemma3:4b",
+                "name": "Gemma3 4B",
+                "size": "3.3gb",
+                "category": "small"
+            },
+            {
+                "id": "gemma3:12b",
+                "name": "Gemma3 12B",
+                "size": "8.1gb",
+                "category": "medium"
+            },
+            {
+                "id": "gemma3:27b",
+                "name": "Gemma3 27B",
+                "size": "17gb",
+                "category": "large"
+            }
+        ]
+    },
+    "gpt-oss": {
+        "description": "OpenAI’s open-weight models designed for powerful reasoning, agentic tasks, and versatile developer use cases.",
+        "provider": "OpenAI",
+        "models": [
+            {
+                "id": "gpt-oss:20b",
+                "name": "GPT OSS 20B",
+                "size": "14gb",
+                "category": "large"
+            },
+            {
+                "id": "gpt-oss:120b",
+                "name": "GPT OSS 120B",
+                "size": "65gb",
+                "category": "large"
+            }
+        ]
+    }
+}
