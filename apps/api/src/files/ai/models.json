@@ -2,6 +2,9 @@
     "gemma": {
         "description": "The current, most capable model that runs on a single GPU.",
         "provider": "Google",
+        "support": [
+            "vision"
+        ],
         "models": [
             {
                 "id": "gemma3:1b",
@@ -32,6 +35,10 @@
     "gpt-oss": {
         "description": "OpenAI’s open-weight models designed for powerful reasoning, agentic tasks, and versatile developer use cases.",
         "provider": "OpenAI",
+        "support": [
+            "tools",
+            "thinking"
+        ],
         "models": [
             {
                 "id": "gpt-oss:20b",
@@ -43,6 +50,34 @@
                 "id": "gpt-oss:120b",
                 "name": "GPT OSS 120B",
                 "size": "65gb",
+                "category": "large"
+            }
+        ]
+    },
+    "qwen3": {
+        "description": "Qwen3 is the latest generation of large language models in Qwen series, offering a comprehensive suite of dense and mixture-of-experts (MoE) models.",
+        "provider": "Alibaba",
+        "support": [
+            "tools",
+            "thinking"
+        ],
+        "models": [
+            {
+                "id": "qwen3:8b",
+                "name": "Qwen3 8B",
+                "size": "5.2gb",
+                "category": "small"
+            },
+            {
+                "id": "qwen3:14b",
+                "name": "Qwen3 14B",
+                "size": "9.3gb",
+                "category": "medium"
+            },
+            {
+                "id": "qwen3:32b",
+                "name": "Qwen3 32B",
+                "size": "20gb",
                 "category": "large"
             }
         ]
