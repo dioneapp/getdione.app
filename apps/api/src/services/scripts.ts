@@ -61,7 +61,12 @@ export const getFilteredEntries = async (
 	}
 
 	if (filters.orderType) {
-		query = query.order(filters.order || "created_at", {
+		let order = filters.order || "created_at";
+		if (order === "latest") {
+			order = "created_at";
+		}
+
+		query = query.order(order, {
 			ascending: filters.orderType === "asc",
 		});
 	}
@@ -85,7 +90,7 @@ export const getFilteredEntries = async (
 			};
 		}
 
-		if (error.code === "22P02") {
+		if (error.code === "22P02" || error.code === "42703") {
 			return {
 				status: 400,
 				message: "Bad request",
