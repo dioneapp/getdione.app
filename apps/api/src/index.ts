@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import scriptsRouter from "./routes/scripts";
 import aiRouter from "./routes/ai";
+import downloadRouter from "./routes/download";
 
 type Bindings = {
 	SUPABASE_URL: string;
@@ -39,6 +40,7 @@ const v1 = new Hono<{ Bindings: Bindings }>();
 // routes
 v1.route("/scripts", scriptsRouter);
 v1.route("/ai", aiRouter);
+v1.route("/download", downloadRouter);
 
 // mount v1
 app.route("/v1", v1);
