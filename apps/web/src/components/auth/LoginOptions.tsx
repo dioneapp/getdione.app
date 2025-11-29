@@ -6,10 +6,14 @@ export default function LoginOptions({
 }: {
 	handleLogin: (provider: Provider) => void;
 }) {
-	const [lastUsedProvider, setLastUsedProvider] = useState<Provider | null>(null);
+	const [lastUsedProvider, setLastUsedProvider] = useState<Provider | null>(
+		null,
+	);
 
 	useEffect(() => {
-		const savedProvider = localStorage.getItem("lastUsedProvider") as Provider | null;
+		const savedProvider = localStorage.getItem(
+			"lastUsedProvider",
+		) as Provider | null;
 		if (savedProvider) {
 			setLastUsedProvider(savedProvider);
 		}
@@ -47,7 +51,9 @@ export default function LoginOptions({
 				</svg>
 				<span className="font-medium">Continue with Google</span>
 				{lastUsedProvider === "google" && (
-					<span className="absolute -top-2 -right-2 bg-[#BCB1E7] text-[#0A0A0A] text-[10px] font-semibold px-2 py-0.5 rounded-full">Last used</span>
+					<span className="absolute -top-2 -right-2 bg-[#BCB1E7] text-[#0A0A0A] text-[10px] font-semibold px-2 py-0.5 rounded-full">
+						Last used
+					</span>
 				)}
 			</button>
 			<button
@@ -67,7 +73,9 @@ export default function LoginOptions({
 				</svg>
 				<span className="font-medium">Continue with Discord</span>
 				{lastUsedProvider === "discord" && (
-					<span className="absolute -top-2 -right-2 bg-[#BCB1E7] text-[#0A0A0A] text-[10px] font-semibold px-2 py-0.5 rounded-full">Last used</span>
+					<span className="absolute -top-2 -right-2 bg-[#BCB1E7] text-[#0A0A0A] text-[10px] font-semibold px-2 py-0.5 rounded-full">
+						Last used
+					</span>
 				)}
 			</button>
 			<button
@@ -87,7 +95,9 @@ export default function LoginOptions({
 				</svg>
 				<span className="font-medium">Continue with GitHub</span>
 				{lastUsedProvider === "github" && (
-					<span className="absolute -top-2 -right-2 bg-[#BCB1E7] text-[#0A0A0A] text-[10px] font-semibold px-2 py-0.5 rounded-full">Last used</span>
+					<span className="absolute -top-2 -right-2 bg-[#BCB1E7] text-[#0A0A0A] text-[10px] font-semibold px-2 py-0.5 rounded-full">
+						Last used
+					</span>
 				)}
 			</button>
 		</div>

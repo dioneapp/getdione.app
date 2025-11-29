@@ -1,7 +1,7 @@
 import { Hono } from "hono";
-import scriptsRouter from "./routes/scripts";
 import aiRouter from "./routes/ai";
 import downloadRouter from "./routes/download";
+import scriptsRouter from "./routes/scripts";
 
 type Bindings = {
 	SUPABASE_URL: string;
