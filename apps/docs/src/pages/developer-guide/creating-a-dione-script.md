@@ -95,6 +95,7 @@ Each installation step is an object with the following fields:
     -   `name`: The environment's name.
     -   `type` (default: `uv`): The environment type (`uv` or `conda`).
     -   `version` (default: `latest`): The Python version.
+-   **`parallel`** (optional): Whether to run the commands simultaneously (default: `false`).
 -   **`commands`**: A list of commands to execute. These can be simple strings or objects for platform-specific commands:
     -   `platform`: `windows`, `linux`, or `mac`.
     -   `gpus`: `nvidia` or `amd`
@@ -144,6 +145,7 @@ When `customizable` is set to `true`, users will be prompted to modify the comma
 -   **`name`**: A description of the launch step.
 -   **`catch`** (optional): A port number or keyword for Dione to monitor to detect when the app is running.
 -   **`env`** (optional): The environment to activate. Can be a string with the environment `name` or an object with `name`, `type`, and `version` properties.
+-   **`parallel`** (optional): Whether to run the commands simultaneously (default: `false`).
 -   **`commands`**: The same format as in the `installation` section (for simple start options). Commands can also be objects with `customizable` and `platform` properties to allow user input and specify platform-specific commands.
 -   **`steps`** (optional): An array of steps for complex multi-step startup processes.
 -   **`platform`** (optional): The platform to run the script on.
@@ -247,6 +249,13 @@ Create a folder named `melotts` and place the `dione.json` file inside it.
 
 ## Submitting Your Script
 
-*We're currently building a better submit system. This will provide a more streamlined experience for script creators. Stay tuned for updates on our new submission system!*
+We made a video tutorial for submitting your script, check it out [here](https://youtu.be/_d63F9ZWdfg).
 
-For now, to add your application to Dione, submit a pull request to the [Official Dione Scripts](https://github.com/dioneapp/official-scripts) repository.
+1. Upload your script into a public GitHub repository
+2. Go to [Your account page](https://getdione.app/profile) and select "Scripts" tab
+3. Click on "Submit Script" button
+4. Fill out the form with your script details (important! you must fill "commit hash" field with the commit hash of the last commit, this protect against submitting malicious versions of a script)
+5. Click on "Submit for review" button
+6. In a short time, your script will be reviewed and approved
+
+We can request changes into your script, if we find any issues or if the script is not up to our standards. Check Scripts tab to see the status of your script and edit it.
