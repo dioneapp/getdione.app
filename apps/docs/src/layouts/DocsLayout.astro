@@ -77,9 +77,7 @@ const orderedSections = Object.entries(sections)
 	.sort(([a], [b]) => {
 		const priorityA = sectionPriority[a] ?? 0;
 		const priorityB = sectionPriority[b] ?? 0;
-		return priorityA !== priorityB
-			? priorityA - priorityB
-			: a.localeCompare(b);
+		return priorityA !== priorityB ? priorityA - priorityB : a.localeCompare(b);
 	})
 	.reduce(
 		(acc, [section, data]) => {
