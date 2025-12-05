@@ -42,17 +42,6 @@ export default function Home() {
 					</AnimatePresence>
 				</div>
 
-				<motion.p className="text-white/60 text-sm mt-6 mb-4 text-center">
-					Dione is still in beta. Join{" "}
-					<a
-						href="https://getdione.app/discord"
-						className="text-white/300 hover:text-white transition-opacity duration-200 hover:underline"
-					>
-						Discord
-					</a>{" "}
-					for updates.
-				</motion.p>
-
 				{/* App carousel */}
 				<motion.section className="w-full max-w-7xl mt-8">
 					<AppCarousel />
@@ -148,7 +137,7 @@ const features = [
 	},
 	{
 		title: "Cross Platform",
-		description: "Available on Windows, Mac and Linux (coming soon)",
+		description: "Available on Windows, Mac and Linux",
 		icon: <Monitor className="w-6 h-6 text-white" />,
 	},
 	{
@@ -193,12 +182,6 @@ const faq = [
 		answer:
 			"No login is required. Your experience won't be limited if you choose not to log in. Logging in provides optional benefits like device sync, but even self-hosting requires no keys or complex setup, we've worked hard to keep it truly open and hassle-free.",
 		icon: <LogIn className="w-5 h-5 text-white" />,
-	},
-	{
-		question: "What is the current state of Dione?",
-		answer:
-			"Dione is in early public beta. While many features are already working, you may encounter bugs or rough edges. We're actively improving the platform based on user feedback.",
-		icon: <Rocket className="w-5 h-5 text-white" />,
 	},
 	{
 		question: "Which platforms are supported?",
