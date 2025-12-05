@@ -1,25 +1,25 @@
 "use client";
 
-import AppCarousel from "@/components/home/AppCarousel";
 import { AnimatePresence, motion } from "framer-motion";
 import {
-    Code2,
-    DollarSign,
-    Download,
-    GitBranch,
-    HelpCircle,
-    Info,
-    LogIn,
-    Monitor,
-    RefreshCw,
-    Rocket,
-    Search,
-    Shield,
-    Sparkles,
-    Zap,
+	Code2,
+	DollarSign,
+	Download,
+	GitBranch,
+	HelpCircle,
+	Info,
+	LogIn,
+	Monitor,
+	RefreshCw,
+	Rocket,
+	Search,
+	Shield,
+	Sparkles,
+	Zap,
 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import AppCarousel from "@/components/home/AppCarousel";
 import FAQ from "../components/home/FAQ";
 import Features from "../components/home/Features";
 import Hero from "../components/home/Hero";
