@@ -6,13 +6,20 @@ layout: ../../layouts/DocsLayout.astro
 
 # Installation
 
-Dione is available for Windows, macOS, and Linux. You can download the latest version from our GitHub releases page.
+Dione is available for Windows, macOS, and Linux. Download the latest version for your operating system.
 
-<a href="https://github.com/dioneapp/dioneapp/releases" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center gap-2 text-lg w-full border-2 border-white hover:bg-white/10 transition-all duration-300 rounded-full text-white font-semibold py-3 px-6 text-center no-underline">
-    Download from GitHub
-</a>
+<div class="not-prose my-8">
+    <a href="https://getdione.app/download" class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-black font-semibold hover:bg-white/90 transition-colors duration-200 no-underline shadow-lg">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        Download Dione
+    </a>
+</div>
 
-After downloading, follow the instructions for your operating system to install the application.
+The download page will automatically detect your operating system and recommend the appropriate version. After downloading, follow the instructions for your operating system to install the application.
 
 ## Windows
 
@@ -26,6 +33,13 @@ After downloading, follow the instructions for your operating system to install 
 
 ## Linux
 
+Choose the appropriate package for your distribution:
+
+-   **AppImage**: Universal format that works on all distributions
+-   **.deb**: For Debian-based systems (Ubuntu, Linux Mint, etc.)
+-   **.rpm**: For Red Hat-based systems (Fedora, RHEL, etc.)
+
+For AppImage:
 1.  Download the `.AppImage` file.
 2.  Make the file executable: `chmod +x Dione-*.AppImage`
 3.  Run the application: `./Dione-*.AppImage`
