@@ -5,7 +5,10 @@ const app = new Hono();
 
 app.get("/", async (c) => {
 	const osParam = c.req.query("os")?.toLowerCase() || "windows";
-	const osMap: Record<string, "windows" | "mac" | "linuxAppImage" | "linuxDeb" | "linuxRpm"> = {
+	const osMap: Record<
+		string,
+		"windows" | "mac" | "linuxAppImage" | "linuxDeb" | "linuxRpm"
+	> = {
 		windows: "windows",
 		win: "windows",
 		mac: "mac",
@@ -17,7 +20,10 @@ app.get("/", async (c) => {
 
 	const os = osMap[osParam];
 	if (!os) {
-		return c.text("Invalid os param. Use ?os=windows|mac|linux|linuxdeb|linuxrpm", 400);
+		return c.text(
+			"Invalid os param. Use ?os=windows|mac|linux|linuxdeb|linuxrpm",
+			400,
+		);
 	}
 
 	try {

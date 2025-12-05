@@ -1,10 +1,10 @@
 "use client";
 
-import useUser from "@/utils/use-user";
 import { Download, Menu, User, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import useUser from "@/utils/use-user";
 
 const links = [
 	{ label: "Explore", href: "/explore" },

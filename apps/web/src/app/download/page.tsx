@@ -71,9 +71,7 @@ export default function DownloadPage() {
 				transition={{ duration: 0.5 }}
 				className="text-center max-w-3xl mx-auto mb-12 sm:mb-16"
 			>
-				<h1
-					className="text-4xl sm:text-5xl md:text-6xl font-semibold text-white tracking-tighter mb-4 sm:mb-6 text-balance"
-				>
+				<h1 className="text-4xl sm:text-5xl md:text-6xl font-semibold text-white tracking-tighter mb-4 sm:mb-6 text-balance">
 					Download Dione
 				</h1>
 				<p className="text-base sm:text-lg text-white/70 leading-relaxed max-w-xl mx-auto px-4">
