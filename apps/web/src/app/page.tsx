@@ -1,24 +1,25 @@
 "use client";
 
+import AppCarousel from "@/components/home/AppCarousel";
 import { AnimatePresence, motion } from "framer-motion";
 import {
-	Code2,
-	DollarSign,
-	Download,
-	GitBranch,
-	HelpCircle,
-	Info,
-	LogIn,
-	Monitor,
-	RefreshCw,
-	Rocket,
-	Search,
-	Shield,
-	Sparkles,
-	Zap,
+    Code2,
+    DollarSign,
+    Download,
+    GitBranch,
+    HelpCircle,
+    Info,
+    LogIn,
+    Monitor,
+    RefreshCw,
+    Rocket,
+    Search,
+    Shield,
+    Sparkles,
+    Zap,
 } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
-import AppCarousel from "@/components/home/AppCarousel";
 import FAQ from "../components/home/FAQ";
 import Features from "../components/home/Features";
 import Hero from "../components/home/Hero";
@@ -119,15 +120,13 @@ export default function Home() {
 							Join thousands of users discovering and installing AI apps with
 							ease.
 						</p>
-						<a
-							href="https://github.com/dioneapp/dioneapp/releases/latest"
-							target="_blank"
-							rel="noopener noreferrer"
+						<Link
+							href="/download"
 							className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-white text-black font-semibold text-base hover:bg-white/90 transition-colors duration-200 shadow-xl shadow-white/20"
 						>
 							<Download className="w-5 h-5" />
 							<span>Download Dione Now</span>
-						</a>
+						</Link>
 					</motion.div>
 				</motion.section>
 			</div>

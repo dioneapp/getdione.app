@@ -2,6 +2,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Play } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRef, useState } from "react";
 
 export default function Hero() {
@@ -92,15 +93,13 @@ export default function Hero() {
 				className="flex flex-col items-center w-full max-w-xl gap-3 sm:gap-4 max-md:mt-5"
 				aria-label="Primary"
 			>
-				<a
-					href="https://github.com/dioneapp/dioneapp/releases/latest"
-					target="_blank"
-					rel="noopener noreferrer"
+				<Link
+					href="/download"
 					className="shrink-0 h-11 sm:h-12 px-8 sm:px-9 flex items-center justify-center rounded-full bg-white text-black font-semibold text-base hover:bg-white/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-xl shadow-white/25"
 					aria-label="Download Dione"
 				>
 					Download Dione
-				</a>
+				</Link>
 
 				<div className="flex items-center gap-4 text-sm">
 					<a

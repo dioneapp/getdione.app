@@ -1,10 +1,10 @@
 "use client";
 
+import useUser from "@/utils/use-user";
 import { Download, Menu, User, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import useUser from "@/utils/use-user";
 
 const links = [
 	{ label: "Explore", href: "/explore" },
@@ -87,9 +87,7 @@ export default function Navbar() {
 
 					<div className="hidden md:flex items-center gap-3 flex-shrink-0">
 						<Link
-							href="https://github.com/dioneapp/dioneapp/releases/latest"
-							target="_blank"
-							rel="noopener noreferrer"
+							href="/download"
 							className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white text-black font-semibold text-sm hover:bg-white/90 transition-colors duration-200 shadow-lg shadow-white/20 whitespace-nowrap"
 						>
 							<Download className="w-4 h-4" />
