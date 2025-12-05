@@ -1,13 +1,13 @@
 "use client";
 
+import type { Provider } from "@supabase/supabase-js";
+import { redirect, useSearchParams } from "next/navigation";
+import { Suspense, useEffect } from "react";
 import LoginOptions from "@/components/auth/LoginOptions";
 import LoginTerms from "@/components/auth/LoginTerms";
 import LoginWelcome from "@/components/auth/LoginWelcome";
 import { supabase } from "@/utils/database";
 import useUser from "@/utils/use-user";
-import type { Provider } from "@supabase/supabase-js";
-import { redirect, useSearchParams } from "next/navigation";
-import { Suspense, useEffect } from "react";
 
 function LoginContent() {
 	const { user } = useUser();
