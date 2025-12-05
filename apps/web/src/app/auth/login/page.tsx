@@ -1,13 +1,13 @@
 "use client";
 
-import type { Provider } from "@supabase/supabase-js";
-import { redirect, useSearchParams } from "next/navigation";
-import { Suspense, useEffect } from "react";
 import LoginOptions from "@/components/auth/LoginOptions";
 import LoginTerms from "@/components/auth/LoginTerms";
 import LoginWelcome from "@/components/auth/LoginWelcome";
 import { supabase } from "@/utils/database";
 import useUser from "@/utils/use-user";
+import type { Provider } from "@supabase/supabase-js";
+import { redirect, useSearchParams } from "next/navigation";
+import { Suspense, useEffect } from "react";
 
 function LoginContent() {
 	const { user } = useUser();
@@ -51,7 +51,7 @@ function LoginContent() {
 export default function LoginPage() {
 	return (
 		<div
-			className="flex flex-col items-center w-full min-h-[100dvh] justify-center px-4 sm:px-6 py-12 relative"
+			className="flex flex-col items-center w-full min-h-screen justify-center px-4 sm:px-6 py-20 -mt-16 sm:-mt-22"
 			id="container"
 		>
 			<Suspense fallback={<div>Loading...</div>}>
