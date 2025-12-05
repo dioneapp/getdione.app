@@ -21,14 +21,14 @@ export default function DownloadPage() {
 		{
 			name: "Windows",
 			icon: "/Windows.svg",
-			href: "http://api.getdione.app/v1/download?os=windows",
+			href: "https://api.getdione.app/v1/download?os=windows",
 			description: "Windows 10/11 (64-bit)",
 			id: "windows",
 		},
 		{
 			name: "macOS",
 			icon: "/Apple.svg",
-			href: "http://api.getdione.app/v1/download?os=mac",
+			href: "https://api.getdione.app/v1/download?os=mac",
 			description: "Apple Silicon",
 			id: "mac",
 		},
@@ -40,15 +40,15 @@ export default function DownloadPage() {
 			options: [
 				{
 					label: "AppImage",
-					href: "http://api.getdione.app/v1/download?os=linux",
+					href: "https://api.getdione.app/v1/download?os=linux",
 				},
 				{
 					label: ".deb",
-					href: "http://api.getdione.app/v1/download?os=linux-deb",
+					href: "https://api.getdione.app/v1/download?os=linux-deb",
 				},
 				{
 					label: ".rpm",
-					href: "http://api.getdione.app/v1/download?os=linux-rpm",
+					href: "https://api.getdione.app/v1/download?os=linux-rpm",
 				},
 			],
 		},
@@ -64,25 +64,24 @@ export default function DownloadPage() {
 	}, [detectedOS]);
 
 	return (
-		<main className="flex flex-col items-center min-h-screen px-4 sm:px-8 pt-32 pb-20">
+		<main className="flex flex-col items-center justify-center min-h-screen px-4 sm:px-8 py-20 -mt-16 sm:-mt-22">
 			<motion.div
 				initial={{ opacity: 0, y: 20 }}
 				animate={{ opacity: 1, y: 0 }}
 				transition={{ duration: 0.5 }}
-				className="text-center max-w-2xl mx-auto mb-16"
+				className="text-center max-w-3xl mx-auto mb-12 sm:mb-16"
 			>
-				<h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-white tracking-tighter mt-4 sm:mt-6 text-balance text-center">
+				<h1
+					className="text-4xl sm:text-5xl md:text-6xl font-semibold text-white tracking-tighter mb-4 sm:mb-6 text-balance"
+				>
 					Download Dione
 				</h1>
-				<p
-					className="mt-3 sm:mt-4 mb-8 sm:mb-12 max-w-xl text-center text-sm sm:text-base md:text-lg text-white/80 leading-relaxed text-balance px-2 sm:px-4"
-					style={{ textRendering: "optimizeLegibility" }}
-				>
+				<p className="text-base sm:text-lg text-white/70 leading-relaxed max-w-xl mx-auto px-4">
 					Select your operating system to start the download.
 				</p>
 			</motion.div>
 
-			<div className="flex flex-col md:flex-row items-start justify-center gap-6 max-w-6xl w-full">
+			<div className="flex flex-col md:flex-row items-stretch justify-center gap-6 max-w-6xl w-full">
 				{orderedPlatforms.map((platform, index) => {
 					const isDetected = platform.name === detectedOS;
 					const isLinux = platform.id === "linux";
@@ -94,12 +93,11 @@ export default function DownloadPage() {
 							animate={{
 								opacity: 1,
 								y: 0,
-								scale: isDetected ? 1.05 : 1,
 							}}
 							transition={{ duration: 0.5, delay: index * 0.1 }}
 							className={`group relative flex flex-col items-center p-8 rounded-xl backdrop-blur-md shadow-lg transition-all duration-300 w-full md:w-1/3 ${
 								isDetected
-									? "bg-white/10 border border-white/30 z-10 shadow-white/5"
+									? "bg-white/10 border border-white/20 shadow-white/5"
 									: "bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20"
 							}`}
 						>
@@ -120,10 +118,10 @@ export default function DownloadPage() {
 									}`}
 								/>
 							</div>
-							<h2 className="text-xl font-semibold text-white mb-2">
+							<h2 className="text-xl font-medium text-white mb-2">
 								{platform.name}
 							</h2>
-							<p className="text-white/40 text-sm mb-6">
+							<p className="text-white/70 text-sm mb-6">
 								{platform.description}
 							</p>
 
@@ -131,7 +129,7 @@ export default function DownloadPage() {
 								<div className="w-full mt-auto relative">
 									<button
 										onClick={() => setLinuxOpen(!linuxOpen)}
-										className={`flex items-center justify-center gap-2 px-6 py-2.5 rounded-full w-full font-medium text-sm transition-colors ${
+										className={`flex items-center justify-center gap-2 px-6 py-2.5 rounded-full w-full font-semibold text-sm transition-colors ${
 											linuxOpen
 												? "bg-white text-black"
 												: "bg-white/10 text-white hover:bg-white hover:text-black"
@@ -171,7 +169,7 @@ export default function DownloadPage() {
 							) : (
 								<a
 									href={platform.href}
-									className={`mt-auto flex items-center justify-center gap-2 px-6 py-2.5 rounded-full font-medium text-sm transition-colors w-full ${
+									className={`mt-auto flex items-center justify-center gap-2 px-6 py-2.5 rounded-full font-semibold text-sm transition-colors w-full ${
 										isDetected
 											? "bg-white text-black hover:bg-white/90"
 											: "bg-white/10 text-white hover:bg-white hover:text-black"
@@ -190,19 +188,19 @@ export default function DownloadPage() {
 				initial={{ opacity: 0 }}
 				animate={{ opacity: 1 }}
 				transition={{ delay: 0.5, duration: 0.5 }}
-				className="text-white/40 text-sm mt-12 text-center"
+				className="text-white/60 text-sm mt-12 text-center"
 			>
 				By downloading, you agree to our{" "}
 				<Link
 					href="/legal/terms-use"
-					className="text-white/60 hover:text-white underline"
+					className="text-white/80 hover:text-white underline"
 				>
 					Terms of Service
 				</Link>{" "}
 				and{" "}
 				<Link
 					href="/legal/privacy-policy"
-					className="text-white/60 hover:text-white underline"
+					className="text-white/80 hover:text-white underline"
 				>
 					Privacy Policy
 				</Link>
