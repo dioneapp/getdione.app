@@ -20,6 +20,13 @@ If the login button doesn't work, please check our [troubleshooting guide](/trou
 
 ![Login](/images/login.png)
 
+### Select installation path
+Select a location to install the apps managed by Dione, after select a route we generate `apps` and `bin` folders where your apps and dependencies will be stored.
+
+**To avoid issues when updating Dione, you must select a location that is not the same folder as `dione.exe`.**
+
+![Select installation path](/images/onboarding2.png)
+
 ### All Set!
 You are now logged into Dione. Happy exploring!
 
