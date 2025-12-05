@@ -20,8 +20,4 @@ In the overview panel, you'll find the port number for your app. Click the port 
 
 You can switch back to the installation log at any time by clicking the **Return to Log** button, even while the app is running. Non-critical warnings or errors may appear in the log, but they will not interrupt the app's execution.
 
-![Information box](/images/info-screen-on-app.png)
-
 To stop the app, click the **Stop** button in either the overview panel or the log view. If Dione is unable to terminate the process automatically, it will prompt you to stop the application manually.
-
-![Stop app](/images/stop-app.png)
