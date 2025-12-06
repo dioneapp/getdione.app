@@ -30,9 +30,7 @@ app.get("/", async (c) => {
 	try {
 		const { stream, fileName } = await downloadLatestVersion(c, os);
 
-		trackDownload(c, os).catch((err) =>
-			console.error("Failed to track download:", err),
-		);
+		await trackDownload(c, os);
 
 		return new Response(stream as any, {
 			status: 200,
@@ -63,11 +61,16 @@ async function trackDownload(
 
 	const rowId = osIdMap[os];
 
-	const { data: currentData } = await supabase
+	const { data: currentData, error } = await supabase
 		.from("downloads")
 		.select("count")
 		.eq("id", rowId)
 		.single();
+
+	if (error) {
+		console.error("Failed to get download count:", error);
+		return;
+	}
 
 	if (!currentData) return;
 
