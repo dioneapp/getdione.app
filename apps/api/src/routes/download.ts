@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import { downloadLatestVersion } from "../services/download";
+import { initializeSupabase } from "../utils/database";
 
 const app = new Hono();
 
@@ -29,6 +30,10 @@ app.get("/", async (c) => {
 	try {
 		const { stream, fileName } = await downloadLatestVersion(c, os);
 
+		trackDownload(c, os).catch((err) =>
+			console.error("Failed to track download:", err),
+		);
+
 		return new Response(stream as any, {
 			status: 200,
 			headers: {
@@ -41,5 +46,35 @@ app.get("/", async (c) => {
 		return c.text(err?.message ?? "Download error", 502);
 	}
 });
+
+async function trackDownload(
+	c: any,
+	os: "windows" | "mac" | "linuxAppImage" | "linuxDeb" | "linuxRpm",
+) {
+	const supabase = initializeSupabase(c);
+
+	const osIdMap: Record<string, string> = {
+		windows: "windows",
+		mac: "mac",
+		linuxAppImage: "linux-appimage",
+		linuxDeb: "linux-deb",
+		linuxRpm: "linux-rpm",
+	};
+
+	const rowId = osIdMap[os];
+
+	const { data: currentData } = await supabase
+		.from("downloads")
+		.select("count")
+		.eq("id", rowId)
+		.single();
+
+	if (!currentData) return;
+
+	await supabase
+		.from("downloads")
+		.update({ count: currentData.count + 1 })
+		.eq("id", rowId);
+}
 
 export default app;
