@@ -7,12 +7,12 @@
 		"cf-typegen": "wrangler types --env-interface CloudflareBindings"
 	},
 	"dependencies": {
-		"@supabase/supabase-js": "^2.49.9",
-		"hono": "^4.7.11",
+		"@supabase/supabase-js": "^2.87.0",
+		"hono": "^4.10.7",
 		"nanoid": "^5.1.6"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
-		"wrangler": "^4.20.0"
+		"wrangler": "^4.53.0"
 	}
 }

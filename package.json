@@ -8,7 +8,7 @@
     "check-types": "turbo run check-types"
   },
   "devDependencies": {
-    "turbo": "^2.5.4",
+    "turbo": "^2.6.3",
     "typescript": "5.8.3"
   },
   "packageManager": "pnpm@9.0.0",
