@@ -69,14 +69,13 @@ export default function Hero() {
 							onClick={() => setShowVideo(true)}
 						>
 							<span
-								className={`absolute inset-0 hidden cursor-pointer items-center justify-center z-10 rounded-lg ${
-									showVideo ? "hidden" : " group-hover:flex"
-								}`}
+								className={`absolute inset-0 hidden cursor-pointer items-center justify-center z-10 rounded-lg ${showVideo ? "hidden" : " group-hover:flex"
+									}`}
 							>
 								<Play className="w-20 h-20 text-neutral-300/80" />
 							</span>
 							<Image
-								src="https://i.imgur.com/x7oqLfU.png"
+								src="/app.png"
 								alt="Dione app screenshot"
 								width={680}
 								height={500}
