@@ -44,11 +44,11 @@ export default function DownloadPage() {
 				},
 				{
 					label: ".deb",
-					href: "https://api.getdione.app/v1/download?os=linux-deb",
+					href: "https://api.getdione.app/v1/download?os=linuxdeb",
 				},
 				{
 					label: ".rpm",
-					href: "https://api.getdione.app/v1/download?os=linux-rpm",
+					href: "https://api.getdione.app/v1/download?os=linuxrpm",
 				},
 			],
 		},
