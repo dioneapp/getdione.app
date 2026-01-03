@@ -182,6 +182,10 @@ export default function DownloadPage() {
 				})}
 			</div>
 
+			<a className="mt-6" href="https://apps.microsoft.com/detail/9N59N7SJRPRK?referrer=appbadge&amp;mode=direct&cid=badge_website">
+				<img src="https://get.microsoft.com/images/en-us%20dark.svg" width="200">
+			</a>
+
 			<motion.p
 				initial={{ opacity: 0 }}
 				animate={{ opacity: 1 }}
