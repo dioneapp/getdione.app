@@ -11,7 +11,7 @@ export default function PrivacyPage() {
 						<span className="text-white/80 mr-2">•</span>
 						<span>
 							Account Information: Email address and username required for
-							account creation.
+							account creation and product-related communications.
 						</span>
 					</li>
 					<li className="flex items-start">
@@ -44,6 +44,12 @@ export default function PrivacyPage() {
 						<span className="text-white/80 mr-2">•</span>
 						<span>
 							Communication: To send important updates about our service.
+						</span>
+					</li>
+					<li className="flex items-start">
+						<span className="text-white/80 mr-2">•</span>
+						<span>
+							Product Updates and News: We may use your email address to send you product updates, feature announcements, and relevant information about Dione that we believe is of legitimate interest to you as a user. You can opt out of these emails at any time.
 						</span>
 					</li>
 				</ul>
@@ -95,6 +101,10 @@ export default function PrivacyPage() {
 					<li className="flex items-start">
 						<span className="text-white/80 mr-2">•</span>
 						<span>Opt-out of system diagnostics.</span>
+					</li>
+					<li className="flex items-start">
+						<span className="text-white/80 mr-2">•</span>
+						<span>Object to our use of your personal data for product update and marketing emails, for example by clicking the ‘unsubscribe’ link in those emails or by contacting us.</span>
 					</li>
 				</ul>
 			</LegalCard>
