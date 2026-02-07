@@ -9,33 +9,29 @@ description: How to install an app via Dione.
 
 Dione automates the entire installation process, requiring no manual intervention.
 
-## Select an App
+## 1. Select an App
 
-Choose an app from the **Featured** or **Explore** sections. Once you've made your selection, click the **Install** button to begin the automatic installation.
+Browse the **Featured** or **Explore** sections and click **Install** on your chosen app.
 
 ![Select script](/images/select-script.png)
 
-## Installation Process
+## 2. Monitor Installation
 
-The installation screen provides real-time feedback. At the top right, you can monitor the installation status. The log window displays detailed information about the process:
--   <span class="text-blue-500">Blue lines</span> indicate important information.
--   <span class="text-yellow-500">Yellow lines</span> represent warnings.
--   <span class="text-neutral-400">Gray lines</span> provide additional details.
+The installation log shows real-time progress.
 
-If an error occurs, a red box will appear with the error details, and the installation will stop.
+-   <span class="text-blue-500">Info</span>: Important status updates.
+-   <span class="text-yellow-500">Warning</span>: Potential issues.
+-   <span class="text-neutral-400">Details</span>: Verbose logs.
+-   <span class="text-red-500">Error</span>: Critical failures (installation will stop).
 
-Below the log, you'll find two buttons:
--   **Copy**: Copies the entire log to your clipboard.
--   **Stop**: Aborts the installation process.
+**Controls**: Use **Copy** to save logs or **Stop** to cancel the process.
 
 ![Downloading script](/images/downloading-script.png)
 
-## Completing the Installation
+## 3. Completion
 
-Once the installation is finished, Dione will automatically redirect you to the **Actions** screen, where you can start or uninstall the app.
+Once finished, Dione automatically redirects you to the app dashboard.
 
-If you are not redirected automatically, you will see an "Installation finished" message in the log. In this case, simply click the **Stop** button to clear the message and proceed to the **Actions** screen.
-
-Now you're ready to [run the app](/user-guide/running-an-app).
+*If redirection doesn't happen, check the logs for "Installation finished" and click **Stop** manually.*
 
 ![Actions screen](/images/actions-screen.png)

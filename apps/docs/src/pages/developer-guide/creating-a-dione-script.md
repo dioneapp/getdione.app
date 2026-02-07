@@ -7,9 +7,7 @@ order: 1
 
 # Creating a Dione Script
 
-This guide explains how to create a valid `dione.json` configuration file to run applications on the Dione platform. This file, written in JSON format, describes the application's dependencies, installation steps, environment setup, and startup commands.
-
----
+This guide explains how to create a valid `dione.json` configuration file. This JSON file defines your application's dependencies, installation steps, environment setup, and startup commands.
 
 ## File Structure
 
@@ -24,82 +22,96 @@ The configuration file must follow this structure:
 }
 ```
 
-Each section is explained in detail below.
-
 ---
 
-## Requirements
+## 1. Requirements
 
-This section lists the system requirements necessary to run the app. Dione checks if the app is compatible with the user's device and displays a message if it's not.
+This section checks if the user's device meets the necessary hardware or OS requirements.
 
 ### Format
 
--   **Key**: The requirement name (e.g., `gpus`).
--   **Value**: An array of strings specifying the required GPU vendors (e.g., `nvidia`, `amd`).
+-   **Key**: Requirement name (e.g., `gpus`).
+-   **Value**: Array of supported values. An empty array `[]` means no restriction.
+
+| Requirement | Description | Example Values |
+| :--- | :--- | :--- |
+| `gpus` | Supported GPU vendors | `["nvidia", "amd"]` |
+| `os` | Supported Operating Systems | `["windows", "linux"]` |
 
 ### Example
 
 ```json
 "requirements": {
     "gpus": ["nvidia", "amd"],
-    "os": ["windows", "linux"]
+    "os": ["windows"] // Only runs on Windows
 }
 ```
 
-An empty array indicates no restrictions for that requirement (i.e., any GPU or OS is supported).
-
 ---
 
-## Dependencies
+## 2. Dependencies
 
-This section lists external dependencies required by the application. Dione ensures these are installed or notifies the user if they are missing.
-
-### Format
-
--   **Key**: The dependency name (e.g., `git`).
--   **Value**: An object specifying the version.
+Dione automatically installs these external tools if they are missing.
 
 ### Available Dependencies
 
-The following dependencies are available for use in Dione scripts:
-
-- **git**: Git version control system
-- **conda**: Conda package and environment manager
-- **uv**: Fast Python package installer and resolver
-- **ffmpeg**: Multimedia framework for audio/video processing
-- **node**: Node.js JavaScript runtime
-- **pnpm**: Fast, disk space efficient package manager
-- **build_tools**: Visual Studio Build Tools for Windows
+| Dependency | Description |
+| :--- | :--- |
+| `git` | Git version control system |
+| `git_lfs` | Git Large File Storage |
+| `conda` | Conda package manager |
+| `uv` | Fast Python package installer (Recommended) |
+| `ffmpeg` | Multimedia framework |
+| `node` | Node.js runtime |
+| `pnpm` | Fast package manager for Node |
+| `build_tools`| Visual Studio Build Tools (Windows) |
+| `cuda` | CUDA Toolkit for NVIDIA GPUs |
+| `ollama` | Ollama server for running LLMs |
 
 ### Example
 
 ```json
 "dependencies": {
-  "git": { "version": "latest" },
-  "uv": { "version": "latest" }
+  "git": { "version": "latest" }
 }
 ```
 
-You can specify a version number (e.g., `"3.10"`) instead of `"latest"`.
-
 ---
 
-## Installation
+## 3. Installation
 
-This section defines the steps to install and set up the application after cloning its repository.
+Defines the steps to install and set up the application.
+
+### Step Properties
 
 Each installation step is an object with the following fields:
 
--   **`name`**: A human-readable description of the step.
--   **`env`** (optional): The environment for executing commands. It can be a string with the environment name or an object with:
-    -   `name`: The environment's name.
-    -   `type` (default: `uv`): The environment type (`uv` or `conda`).
-    -   `version` (default: `latest`): The Python version.
--   **`parallel`** (optional): Whether to run the commands simultaneously (default: `false`).
--   **`commands`**: A list of commands to execute. These can be simple strings or objects for platform-specific commands:
-    -   `platform`: `windows`, `linux`, or `mac`.
-    -   `gpus`: `nvidia` or `amd`
-    -   `command`: The command string for that platform.
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `name` | String | **Required**. Human-readable description of the step. |
+| `commands` | Array | **Required**. List of commands to execute. |
+| `env` | Object/String | Environment to run commands in (details below). |
+| `parallel` | Boolean | If `true`, runs commands simultaneously. Default: `false`. |
+| `variables` | Array | List of environment variables to set for this step. |
+
+### The `env` Object
+
+The `env` property allows you to create isolated environments.
+-   **Structure**: `{ "name": "env_name", "type": "uv" | "conda", "version": "3.10" }`
+-   **Usage**: If specified, all commands in the step run inside this environment.
+
+### Command Format
+
+Commands can be simple strings or objects for platform specifics:
+-   **String**: `"pip install -r requirements.txt"`
+-   **Object**:
+    ```json
+    {
+      "platform": "windows",
+      "gpus": "nvidia",
+      "command": "pip install torch --index-url ..."
+    }
+    ```
 
 ### Example
 
@@ -112,22 +124,34 @@ Each installation step is an object with the following fields:
   {
     "name": "Installing requirements",
     "env": { "name": "env", "version": "3.10", "type": "uv" },
-    "commands": ["cd melotts", "uv pip install -e .", "python -m unidic download"]
+    "variables": [
+      { "key": "MODEL_PATH", "value": "./models" }
+    ],
+    "commands": ["cd melotts", "uv pip install -e ."]
   }
 ]
 ```
 
-When `env` is specified, all commands in that step run within that environment. Dione automatically adds `uv` or `conda` as a dependency if not already listed.
-
 ---
 
-## Start
+## 4. Start
 
-This section defines how to launch the application after installation. You can now define multiple start options to give users different ways to run your application.
+Defines how to launch the application. You can provide multiple start options (e.g., "Default", "Debug", "Custom Port").
+
+### Step Properties
+
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `name` | String | **Required**. Name of the start option. |
+| `commands` | Array | List of commands to execute. |
+| `catch` | String/Number | Port or keyword Dione monitors to know the app is ready. |
+| `env` | Object/String | Environment to activate (reuse the one from Installation). |
+| `steps` | Array | For complex startup sequences involving multiple stages. |
+| `customizable`| Boolean | If `true` on a command object, allows user input. |
 
 ### Customizable Commands
 
-Commands can be made customizable to allow users to input custom parameters:
+Allow users to modify parameters before launch:
 
 ```json
 {
@@ -136,21 +160,9 @@ Commands can be made customizable to allow users to input custom parameters:
 }
 ```
 
-When `customizable` is set to `true`, users will be prompted to modify the command before execution.
+### Examples
 
----
-
-### Keys
-
--   **`name`**: A description of the launch step.
--   **`catch`** (optional): A port number or keyword for Dione to monitor to detect when the app is running.
--   **`env`** (optional): The environment to activate. Can be a string with the environment `name` or an object with `name`, `type`, and `version` properties.
--   **`parallel`** (optional): Whether to run the commands simultaneously (default: `false`).
--   **`commands`**: The same format as in the `installation` section (for simple start options). Commands can also be objects with `customizable` and `platform` properties to allow user input and specify platform-specific commands.
--   **`steps`** (optional): An array of steps for complex multi-step startup processes.
--   **`platform`** (optional): The platform to run the script on.
-
-### Simple start example
+**Simple Start:**
 
 ```json
 "start": [
@@ -163,43 +175,32 @@ When `customizable` is set to `true`, users will be prompted to modify the comma
 ]
 ```
 
-### Multiple Start example
+**Multiple & Customizable Start:**
 
 ```json
-  "start": [
-    {
-      "name": "Default Start",
-      "catch": "8188",
-      "env": "env",
-      "commands": [
-        "cd melotts/melo",
-        "uv run app.py --port 8188"
-      ]
-    },
-    {
-      "name": "Start with Params",
-      "catch": "8288",
-      "env": "env",
-      "steps": [
-        {
-          "name": "Starting MeloTTS",
-          "commands": [
-            "cd melotts/melo",
-            { "command": "uv run app.py --port 8288", "customizable": true }
+"start": [
+  {
+    "name": "Default Start",
+    "catch": "8188",
+    "env": "env",
+    "commands": ["cd melotts/melo", "uv run app.py --port 8188"]
+  },
+  {
+    "name": "Start with Params",
+    "catch": "8288",
+    "env": "env",
+    "steps": [
+      {
+        "name": "Starting",
+        "commands": [
+          "cd melotts/melo",
+          { "command": "uv run app.py --port 8288", "customizable": true }
         ]
-        }
+      }
     ]
-    }
-  ]
+  }
+]
 ```
-
-## Tips & Best Practices
-
--   Use clear and descriptive `name` values for each step.
--   Use `env` blocks for steps requiring a specific interpreter.
--   Provide platform-specific commands where necessary.
--   Use the `catch` key to help Dione detect when the application is ready.
--   Test each command manually on all supported platforms and environments.
 
 ---
 
@@ -231,7 +232,8 @@ When `customizable` is set to `true`, users will be prompted to modify the comma
       "name": "Starting MeloTTS",
       "catch": "8888",
       "env": "env",
-      "commands": ["cd melotts/melo", "uv run app.py --port 8888"]
+      "commands": ["cd melotts/melo", "uv run app.py --port 8888"],
+      "variables": [ { "key": "DEV_MODE", "value": "false" } ]
     },
     {
       "name": "Start with Custom Port",
@@ -243,19 +245,23 @@ When `customizable` is set to `true`, users will be prompted to modify the comma
 }
 ```
 
-Create a folder named `melotts` and place the `dione.json` file inside it.
+## Tips & Best Practices
+
+-   **Use descriptive names**: Help users understand what each step does.
+-   **Use `env` blocks**: Isolate dependencies to avoid conflicts.
+-   **Use `catch`**: Ensure Dione knows when to show the "Open" button.
+-   **Test compatibility**: Verify commands on all supported platforms (Windows/Linux).
 
 ---
 
 ## Submitting Your Script
 
-We made a video tutorial for submitting your script, check it out [here](https://youtu.be/_d63F9ZWdfg).
+[Watch our video tutorial](https://youtu.be/_d63F9ZWdfg) or follow these steps:
 
-1. Upload your script into a public GitHub repository
-2. Go to [Your account page](https://getdione.app/profile) and select "Scripts" tab
-3. Click on "Submit Script" button
-4. Fill out the form with your script details (important! you must fill "commit hash" field with the commit hash of the last commit, this protect against submitting malicious versions of a script)
-5. Click on "Submit for review" button
-6. In a short time, your script will be reviewed and approved
-
-We can request changes into your script, if we find any issues or if the script is not up to our standards. Check Scripts tab to see the status of your script and edit it.
+1.  **Upload to GitHub**: Host your `dione.json` in a public repository.
+2.  **Go to Dione**: Navigate to your [Account > Scripts](https://getdione.app/profile).
+3.  **Submit**: Click "Submit Script".
+4.  **Fill Details**: 
+    -   Enter the repository URL.
+    -   **Important**: Fill the "commit hash" field with the latest commit hash to strictly version your script (security requirement).
+5.  **Review**: Click "Submit for review". Your script will be reviewed shortly.

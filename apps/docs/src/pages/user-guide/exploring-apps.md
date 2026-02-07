@@ -7,14 +7,17 @@ description: How to discover and find apps in Dione.
 
 # Exploring Apps
 
-Dione makes it easy to discover new apps. The main screen is divided into two sections: **Featured** and **Explore**.
+Discover new applications easily through our main dashboard, divided into **Featured** and **Explore**.
 
-## Featured
+## 1. Featured
 
-The **Featured** section showcases a curated list of apps recommended by the Dione team. This is a great place to start if you're looking for high-quality and popular applications.
+A curated selection of the best apps, hand-picked by the Dione team. Start here to find popular and high-quality tools.
 
-## Explore
+## 2. Explore
 
-The **Explore** section provides a powerful search engine to find specific apps. You can search by name, category, or tag, and apply filters for platform, language, and more.
+Use the search engine to find exactly what you need.
+
+-   **Search**: By name, category, or tag.
+-   **Filters**: Narrow down by category, tags, downloads, and more.
 
 ![Home screen](/images/home.png)
