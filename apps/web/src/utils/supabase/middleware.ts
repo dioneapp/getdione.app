@@ -2,7 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
 
 export default async function updateSession(request: NextRequest) {
-	let supabaseResponse = NextResponse.next({ request });
+	const supabaseResponse = NextResponse.next({ request });
 
 	// Initialize Supabase server client with custom cookie handling
 	const supabase = createServerClient(
