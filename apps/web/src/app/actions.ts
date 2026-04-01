@@ -5,7 +5,7 @@ import { sendFeaturedWebhook, sendScriptsWebhook } from "./server/webhook";
 export async function getScriptsAction(limit: number = 50) {
 	try {
 		const response = await fetch(
-			`https://api.getdione.app/v1/scripts?limit=${encodeURIComponent(String(limit))}`,
+			`https://api-getdione-app.deeivihh.workers.dev/v1/scripts?limit=${encodeURIComponent(String(limit))}`,
 			{
 				headers: { Accept: "application/json" },
 				cache: "no-store",

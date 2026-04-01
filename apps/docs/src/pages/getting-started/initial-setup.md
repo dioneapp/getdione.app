@@ -19,7 +19,7 @@ Logging in is **recommended** to access all features, but you can skip this step
 2.  Authenticate in your browser.
 3.  Click **Open Dione** when prompted.
 
-**Note**: We take your privacy seriously. Read our [Privacy Policy](https://getdione.app/legal/privacy-policy).
+**Note**: We take your privacy seriously. Read our [Privacy Policy](https://getdione-app.deeivihh.workers.dev/legal/privacy-policy).
 
 ![Login](/images/login.png)
 

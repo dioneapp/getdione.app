@@ -176,7 +176,7 @@ function AddYourOwnCard() {
 				</p>
 			</div>
 			<a
-				href="https://docs.getdione.app/developer-guide/creating-a-dione-script"
+				href="https://getdione-app.pages.dev//developer-guide/creating-a-dione-script"
 				target="_blank"
 				rel="noopener noreferrer"
 				className="absolute inset-0"

@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /$
-Sitemap: https://getdione.app/sitemap.xml
+Sitemap: https://getdione-app.deeivihh.workers.dev/sitemap.xml

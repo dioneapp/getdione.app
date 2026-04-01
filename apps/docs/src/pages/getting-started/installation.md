@@ -9,7 +9,7 @@ layout: ../../layouts/DocsLayout.astro
 Dione is available for Windows, macOS, and Linux. Download the latest version for your operating system.
 
 <div class="not-prose my-8">
-    <a href="https://getdione.app/download" class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-black font-semibold hover:bg-white/90 transition-colors duration-200 no-underline shadow-lg">
+    <a href="https://getdione-app.deeivihh.workers.dev/download" class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-black font-semibold hover:bg-white/90 transition-colors duration-200 no-underline shadow-lg">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
             <polyline points="7 10 12 15 17 10"></polyline>

@@ -26,18 +26,18 @@ export const metadata: Metadata = {
 	applicationName: "Dione",
 	robots: "index, follow",
 	generator: "Next.js",
-	metadataBase: new URL("https://getdione.app"),
+	metadataBase: new URL("https://getdione-app.deeivihh.workers.dev"),
 	openGraph: {
 		type: "website",
 		locale: "en_US",
-		url: "https://getdione.app",
+		url: "https://getdione-app.deeivihh.workers.dev",
 		siteName: "Dione",
 		title: "Dione - Discover & Install Open-Source AI Apps",
 		description:
 			"Discover and install open-source AI apps effortlessly with Dione. Explore powerful tools, manage downloads, and enjoy 1-click installations—all in one intuitive platform.",
 		images: [
 			{
-				url: "https://getdione.app/opengraph-image.png",
+				url: "https://getdione-app.deeivihh.workers.dev/opengraph-image.png",
 				width: 1280,
 				height: 640,
 			},
@@ -45,12 +45,12 @@ export const metadata: Metadata = {
 	},
 	twitter: {
 		card: "summary_large_image",
-		site: "https://getdione.app",
+		site: "https://getdione-app.deeivihh.workers.dev",
 		creator: "@dioneapp",
 		title: "Dione - Discover & Install Open-Source AI Apps",
 		description:
 			"Discover and install open-source AI apps effortlessly with Dione. Explore powerful tools, manage downloads, and enjoy 1-click installations—all in one intuitive platform.",
-		images: ["https://getdione.app/opengraph-image.png"],
+		images: ["https://getdione-app.deeivihh.workers.dev/opengraph-image.png"],
 	},
 	appleWebApp: {
 		capable: true,

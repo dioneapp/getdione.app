@@ -1,5 +1,5 @@
 {
-  "name": "getdione.app",
+  "name": "getdione-app.deeivihh.workers.dev",
   "private": true,
   "scripts": {
     "build": "turbo run build",

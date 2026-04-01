@@ -15,7 +15,7 @@ const footerData = {
 				{ label: "Changelog", href: "/changelog" },
 				{
 					label: "Documentation",
-					href: "https://docs.getdione.app",
+					href: "https://getdione-app.pages.dev/",
 					external: true,
 				},
 			],

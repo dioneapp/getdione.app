@@ -4,17 +4,14 @@ import { Download, Menu, User, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import useUser from "@/utils/use-user";
 
 const links = [
 	{ label: "Explore", href: "/explore" },
 	{ label: "Changelog", href: "/changelog" },
-	{ label: "Documentation", href: "https://docs.getdione.app", external: true },
-	{ label: "Moderation", href: "/moderation", moderator: true },
+	{ label: "Documentation", href: "https://getdione-app.pages.dev/", external: true },
 ];
 
 export default function Navbar() {
-	const { user } = useUser();
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const [isScrolled, setIsScrolled] = useState(false);
 	const menuToggleRef = useRef<HTMLButtonElement>(null);
@@ -37,11 +34,10 @@ export default function Navbar() {
 	return (
 		<nav className={`sticky top-0 w-full z-40`}>
 			<div
-				className={`transition-all duration-300 max-w-6xl mx-auto py-4 lg:border px-6 border-b border-white/0 lg:mt-4 lg:rounded-3xl ${
-					isScrolled
-						? "border-white/10 px-6 backdrop-blur-md bg-white/[0.02]"
-						: "md:px-4"
-				} `}
+				className={`transition-all duration-300 max-w-6xl mx-auto py-4 lg:border px-6 border-b border-white/0 lg:mt-4 lg:rounded-3xl ${isScrolled
+					? "border-white/10 px-6 backdrop-blur-md bg-white/[0.02]"
+					: "md:px-4"
+					} `}
 			>
 				<div className="flex items-center justify-between gap-8">
 					<div className="flex items-center gap-8 flex-shrink-0">
@@ -71,7 +67,6 @@ export default function Navbar() {
 
 						<div className="hidden lg:flex items-center gap-7">
 							{links
-								.filter((link) => !link.moderator || user?.moderator)
 								.map((link) => (
 									<Link
 										key={link.href}
@@ -95,37 +90,6 @@ export default function Navbar() {
 						</Link>
 
 						<div className="flex items-center gap-2">
-							{!user ? (
-								<Link
-									href="/auth/login"
-									className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/15 text-white/90 hover:bg-white/10 hover:border-white/25 transition-colors duration-200 whitespace-nowrap"
-								>
-									<User className="w-4 h-4" />
-									<span className="text-sm font-medium">Log In</span>
-								</Link>
-							) : (
-								<Link
-									href="/profile"
-									className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/15 text-white/90 hover:bg-white/10 hover:border-white/25 transition-colors duration-200 whitespace-nowrap"
-								>
-									{user.avatar_url ? (
-										<Image
-											src={user.avatar_url}
-											alt="Profile"
-											width={20}
-											height={20}
-											style={{ height: "auto" }}
-											className="rounded-full"
-										/>
-									) : (
-										<div className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center text-white text-xs">
-											{user.username?.charAt(0).toUpperCase()}
-										</div>
-									)}
-									<span className="text-sm font-medium">{user.username}</span>
-								</Link>
-							)}
-
 							<Link
 								href="https://discord.gg/JSAszyCEW5"
 								target="_blank"
@@ -176,11 +140,10 @@ export default function Navbar() {
 			</div>
 			<div
 				id="mobile-menu"
-				className={`fixed inset-0 bg-black/80 backdrop-blur-md transition-opacity duration-200 ${
-					isMenuOpen
-						? "opacity-100 pointer-events-auto"
-						: "opacity-0 pointer-events-none"
-				} md:hidden z-50`}
+				className={`fixed inset-0 bg-black/80 backdrop-blur-md transition-opacity duration-200 ${isMenuOpen
+					? "opacity-100 pointer-events-auto"
+					: "opacity-0 pointer-events-none"
+					} md:hidden z-50`}
 				aria-modal="true"
 				role="dialog"
 			>
@@ -194,7 +157,6 @@ export default function Navbar() {
 				<div className="flex flex-col items-center justify-center h-full gap-8 px-8">
 					<div className="grid grid-cols-1 w-full max-w-sm gap-4">
 						{links
-							.filter((link) => !link.moderator || user?.moderator)
 							.map((link) => (
 								<Link
 									key={link.href}
@@ -207,23 +169,6 @@ export default function Navbar() {
 								</Link>
 							))}
 					</div>
-					{!user ? (
-						<Link
-							href="/auth/login"
-							onClick={toggleMenu}
-							className="mt-4 w-full max-w-sm text-base py-3 rounded-xl text-center bg-white/5 border border-white/10 text-white/90 hover:bg-white/10 transition-colors"
-						>
-							Log In
-						</Link>
-					) : (
-						<Link
-							href="/profile"
-							onClick={toggleMenu}
-							className="mt-4 w-full max-w-sm text-base py-3 rounded-xl text-center bg-white/5 border border-white/10 text-white/90 hover:bg-white/10 transition-colors"
-						>
-							{user.username}
-						</Link>
-					)}
 				</div>
 			</div>
 		</nav>

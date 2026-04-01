@@ -5,7 +5,7 @@ export async function getScripts(orderBy?: string) {
 		const order = orderBy || "downloads";
 		const limit = process.env.NODE_ENV === "development" ? 12 : 50;
 		const res = await fetch(
-			`https://api.getdione.app/v1/scripts?limit=${limit}&order=${order === "latest" ? "created_at" : order}&order_type=desc`,
+			`https://api-getdione-app.deeivihh.workers.dev/v1/scripts?limit=${limit}&order=${order === "latest" ? "created_at" : order}&order_type=desc`,
 			{
 				headers: { Accept: "application/json" },
 				cache: "no-store",

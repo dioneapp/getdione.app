@@ -122,10 +122,10 @@ export default function PrivacyPage() {
 					If you have any questions about this privacy policy, please contact us
 					at{" "}
 					<a
-						href="mailto:support@getdione.app"
+						href="mailto:support@getdione-app.deeivihh.workers.dev"
 						className="text-white/80 underline"
 					>
-						support@getdione.app
+						support@getdione-app.deeivihh.workers.dev
 					</a>
 					.
 				</p>

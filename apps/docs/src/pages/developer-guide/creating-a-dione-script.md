@@ -259,7 +259,7 @@ Allow users to modify parameters before launch:
 [Watch our video tutorial](https://youtu.be/_d63F9ZWdfg) or follow these steps:
 
 1.  **Upload to GitHub**: Host your `dione.json` in a public repository.
-2.  **Go to Dione**: Navigate to your [Account > Scripts](https://getdione.app/profile).
+2.  **Go to Dione**: Navigate to your [Account > Scripts](https://getdione-app.deeivihh.workers.dev/profile).
 3.  **Submit**: Click "Submit Script".
 4.  **Fill Details**: 
     -   Enter the repository URL.

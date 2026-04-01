@@ -47,12 +47,12 @@ app.route("/v1", v1);
 
 // general routes
 app.get("/", async (c) => {
-	return c.redirect("https://getdione.app/docs");
+	return c.redirect("https://getdione-app.deeivihh.workers.dev/docs");
 });
 
 app.get("/status", async (c) => {
 	const startAt = Date.now();
-	const res = await fetch("https://getdione.app");
+	const res = await fetch("https://getdione-app.deeivihh.workers.dev");
 	const dummy = await res.ok;
 	const endAt = Date.now();
 	const latency = endAt - startAt;
