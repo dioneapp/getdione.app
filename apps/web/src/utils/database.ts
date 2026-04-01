@@ -9,14 +9,14 @@ const mockClient = {
 				limit: () => Promise.resolve({ data: [], error: null }),
 			}),
 		}),
-	})
+	}),
 } as unknown as SupabaseClient;
 
 // use real client if credentials are provided, otherwise use mock
 export const supabase =
 	process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_KEY
 		? createBrowserClient(
-			process.env.NEXT_PUBLIC_SUPABASE_URL,
-			process.env.NEXT_PUBLIC_SUPABASE_KEY,
-		)
+				process.env.NEXT_PUBLIC_SUPABASE_URL,
+				process.env.NEXT_PUBLIC_SUPABASE_KEY,
+			)
 		: mockClient;

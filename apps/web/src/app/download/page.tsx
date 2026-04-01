@@ -93,10 +93,11 @@ export default function DownloadPage() {
 								y: 0,
 							}}
 							transition={{ duration: 0.5, delay: index * 0.1 }}
-							className={`group relative flex flex-col items-center p-8 rounded-xl backdrop-blur-md shadow-lg transition-all duration-300 w-full md:w-1/3 ${isDetected
+							className={`group relative flex flex-col items-center p-8 rounded-xl backdrop-blur-md shadow-lg transition-all duration-300 w-full md:w-1/3 ${
+								isDetected
 									? "bg-white/10 border border-white/20 shadow-white/5"
 									: "bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20"
-								}`}
+							}`}
 						>
 							{isDetected && (
 								<div className="absolute -top-3 px-3 py-1 rounded-full bg-white text-black text-xs font-bold uppercase tracking-wider">
@@ -110,8 +111,9 @@ export default function DownloadPage() {
 									alt={platform.name}
 									width={32}
 									height={32}
-									className={`w-8 h-8 ${platform.id === "linux" ? "" : "brightness-0 invert"
-										}`}
+									className={`w-8 h-8 ${
+										platform.id === "linux" ? "" : "brightness-0 invert"
+									}`}
 								/>
 							</div>
 							<h2 className="text-xl font-medium text-white mb-2">
@@ -125,16 +127,18 @@ export default function DownloadPage() {
 								<div className="w-full mt-auto relative">
 									<button
 										onClick={() => setLinuxOpen(!linuxOpen)}
-										className={`flex items-center justify-center gap-2 px-6 py-2.5 rounded-full w-full font-semibold text-sm transition-colors ${linuxOpen
+										className={`flex items-center justify-center gap-2 px-6 py-2.5 rounded-full w-full font-semibold text-sm transition-colors ${
+											linuxOpen
 												? "bg-white text-black"
 												: "bg-white/10 text-white hover:bg-white hover:text-black"
-											}`}
+										}`}
 									>
 										<Download className="w-4 h-4" />
 										<span>Download</span>
 										<ChevronDown
-											className={`w-4 h-4 transition-transform duration-200 ${linuxOpen ? "rotate-180" : ""
-												}`}
+											className={`w-4 h-4 transition-transform duration-200 ${
+												linuxOpen ? "rotate-180" : ""
+											}`}
 										/>
 									</button>
 
@@ -163,10 +167,11 @@ export default function DownloadPage() {
 							) : (
 								<a
 									href={platform.href}
-									className={`mt-auto flex items-center justify-center gap-2 px-6 py-2.5 rounded-full font-semibold text-sm transition-colors w-full ${isDetected
+									className={`mt-auto flex items-center justify-center gap-2 px-6 py-2.5 rounded-full font-semibold text-sm transition-colors w-full ${
+										isDetected
 											? "bg-white text-black hover:bg-white/90"
 											: "bg-white/10 text-white hover:bg-white hover:text-black"
-										}`}
+									}`}
 								>
 									<Download className="w-4 h-4" />
 									<span>Download</span>
@@ -177,8 +182,14 @@ export default function DownloadPage() {
 				})}
 			</div>
 
-			<a className="mt-6" href="https://apps.microsoft.com/detail/9N59N7SJRPRK?referrer=appbadge&amp;mode=direct&cid=badge_website">
-				<img src="https://get.microsoft.com/images/en-us%20dark.svg" width="200" />
+			<a
+				className="mt-6"
+				href="https://apps.microsoft.com/detail/9N59N7SJRPRK?referrer=appbadge&amp;mode=direct&cid=badge_website"
+			>
+				<img
+					src="https://get.microsoft.com/images/en-us%20dark.svg"
+					width="200"
+				/>
 			</a>
 
 			<motion.p

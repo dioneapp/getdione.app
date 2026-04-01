@@ -8,7 +8,11 @@ import { useEffect, useRef, useState } from "react";
 const links = [
 	{ label: "Explore", href: "/explore" },
 	{ label: "Changelog", href: "/changelog" },
-	{ label: "Documentation", href: "https://getdione-app.pages.dev/", external: true },
+	{
+		label: "Documentation",
+		href: "https://getdione-app.pages.dev/",
+		external: true,
+	},
 ];
 
 export default function Navbar() {
@@ -34,10 +38,11 @@ export default function Navbar() {
 	return (
 		<nav className={`sticky top-0 w-full z-40`}>
 			<div
-				className={`transition-all duration-300 max-w-6xl mx-auto py-4 lg:border px-6 border-b border-white/0 lg:mt-4 lg:rounded-3xl ${isScrolled
-					? "border-white/10 px-6 backdrop-blur-md bg-white/[0.02]"
-					: "md:px-4"
-					} `}
+				className={`transition-all duration-300 max-w-6xl mx-auto py-4 lg:border px-6 border-b border-white/0 lg:mt-4 lg:rounded-3xl ${
+					isScrolled
+						? "border-white/10 px-6 backdrop-blur-md bg-white/[0.02]"
+						: "md:px-4"
+				} `}
 			>
 				<div className="flex items-center justify-between gap-8">
 					<div className="flex items-center gap-8 flex-shrink-0">
@@ -66,17 +71,16 @@ export default function Navbar() {
 						</div>
 
 						<div className="hidden lg:flex items-center gap-7">
-							{links
-								.map((link) => (
-									<Link
-										key={link.href}
-										href={link.href}
-										target={link.external ? "_blank" : undefined}
-										className="text-sm text-white/85 hover:text-white transition-colors duration-200 whitespace-nowrap"
-									>
-										{link.label}
-									</Link>
-								))}
+							{links.map((link) => (
+								<Link
+									key={link.href}
+									href={link.href}
+									target={link.external ? "_blank" : undefined}
+									className="text-sm text-white/85 hover:text-white transition-colors duration-200 whitespace-nowrap"
+								>
+									{link.label}
+								</Link>
+							))}
 						</div>
 					</div>
 
@@ -140,10 +144,11 @@ export default function Navbar() {
 			</div>
 			<div
 				id="mobile-menu"
-				className={`fixed inset-0 bg-black/80 backdrop-blur-md transition-opacity duration-200 ${isMenuOpen
-					? "opacity-100 pointer-events-auto"
-					: "opacity-0 pointer-events-none"
-					} md:hidden z-50`}
+				className={`fixed inset-0 bg-black/80 backdrop-blur-md transition-opacity duration-200 ${
+					isMenuOpen
+						? "opacity-100 pointer-events-auto"
+						: "opacity-0 pointer-events-none"
+				} md:hidden z-50`}
 				aria-modal="true"
 				role="dialog"
 			>
@@ -156,18 +161,17 @@ export default function Navbar() {
 				</button>
 				<div className="flex flex-col items-center justify-center h-full gap-8 px-8">
 					<div className="grid grid-cols-1 w-full max-w-sm gap-4">
-						{links
-							.map((link) => (
-								<Link
-									key={link.href}
-									href={link.href}
-									target={link.external ? "_blank" : undefined}
-									onClick={toggleMenu}
-									className="w-full text-base py-3 rounded-xl text-center bg-white/5 border border-white/10 text-white/90 hover:bg-white/10 transition-colors"
-								>
-									{link.label}
-								</Link>
-							))}
+						{links.map((link) => (
+							<Link
+								key={link.href}
+								href={link.href}
+								target={link.external ? "_blank" : undefined}
+								onClick={toggleMenu}
+								className="w-full text-base py-3 rounded-xl text-center bg-white/5 border border-white/10 text-white/90 hover:bg-white/10 transition-colors"
+							>
+								{link.label}
+							</Link>
+						))}
 					</div>
 				</div>
 			</div>
